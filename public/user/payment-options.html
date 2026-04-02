@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - Payment Options - Soleverse</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root {
+            --primary-black: #000000;
+            --primary-white: #ffffff;
+            --text-grey: #757575;
+            --text-grey-light: #999999;
+            --border-color: #e5e5e5;
+            --bg-light: #f9f9f9;
+            --bg-secondary: #f5f5f5;
+            --font-main: 'Inter', sans-serif;
+            --container-width: 1170px;
+            --padding-x: 20px;
+            --accent-red: #db4444;
+            --accent-blue: #4285F4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--primary-black);
+            background-color: var(--primary-white);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
+
+        .container {
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: 0 var(--padding-x);
+        }
+
+        .breadcrumb-section {
+            padding: 80px 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            color: var(--text-grey);
+        }
+
+        .breadcrumb span {
+            color: var(--text-grey-light);
+        }
+
+        .breadcrumb .active {
+            color: var(--primary-black);
+            font-weight: 500;
+        }
+
+        .welcome-text {
+            font-size: 14px;
+        }
+
+        .welcome-text span {
+            color: var(--accent-red);
+            font-weight: 500;
+        }
+
+        .account-wrapper {
+            margin-bottom: 140px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 100px;
+        }
+
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 24px;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .sidebar-item {
+            font-size: 16px;
+            color: var(--text-grey);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .sidebar-item:hover, .sidebar-item.active {
+            color: var(--accent-red);
+        }
+
+        .wallet-content {
+            width: 100%;
+        }
+
+        .section-header {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .wallet-card {
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 30px;
+            background: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .wallet-info h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .wallet-info span {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .wallet-icon {
+            font-size: 40px;
+            color: #555;
+        }
+
+        .add-money-section {
+            margin-bottom: 40px;
+        }
+
+        .add-money-label {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .add-money-box {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .currency-input-wrapper {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 250px;
+            height: 48px;
+        }
+
+        .currency-symbol {
+            padding: 0 16px;
+            font-size: 18px;
+            font-weight: 600;
+            border-right: 1px solid #eee;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .amount-input {
+            border: none;
+            height: 100%;
+            padding: 0 16px;
+            font-size: 16px;
+            width: 100%;
+            outline: none;
+        }
+
+        .btn-add-funds {
+            background-color: var(--accent-blue);
+            color: white;
+            padding: 0 32px;
+            height: 48px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        .btn-add-funds:hover {
+            opacity: 0.9;
+        }
+
+        .transactions-section {
+            margin-top: 40px;
+        }
+
+        .transactions-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .transactions-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .transactions-table th {
+            text-align: left;
+            padding: 12px 0;
+            font-size: 14px;
+            font-weight: 700;
+            border-bottom: 1px solid #eee;
+        }
+
+        .transactions-table th:last-child {
+            text-align: right;
+        }
+
+        .no-transactions {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-grey);
+            font-size: 16px;
+        }
+
+        @media (max-width: 991px) {
+            .account-wrapper {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            .add-money-box {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .currency-input-wrapper {
+                width: 100%;
+            }
+            .btn-add-funds {
+                width: 100%;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="header.css">
+    <link rel="stylesheet" href="footer.css">
+</head>
+
+<body>
+    <!-- Main Header -->
+    <header class="main-header">
+        <div class="container nav-container">
+            <div class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            <a href="index.html" class="logo">Soleverse</a>
+            <nav class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="shop.html" class="nav-link">Shop</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <a href="about.html" class="nav-link">About</a>
+            </nav>
+            <div class="header-right">
+                <div class="search-box-container">
+                    <input type="text" class="search-input" placeholder="What are you looking for?">
+                    <i class="fas fa-search search-icon-btn"></i>
+                </div>
+                <div class="nav-icons">
+                    <a href="#" class="mobile-search-icon"><i class="fas fa-search"></i></a>
+                    <a href="wishlist.html" class="nav-icon-link"><i class="far fa-heart"></i></a>
+                    <a href="cart.html" class="nav-icon-link"><i class="fas fa-shopping-cart"></i></a>
+                    <div class="user-dropdown-container">
+                        <a href="account.html" class="nav-icon-link"><i class="far fa-user"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container breadcrumb-section">
+        <div class="breadcrumb">
+            <span>Home /</span> <span class="active">My Account</span>
+        </div>
+        <div class="welcome-text">
+            Welcome! <span id="welcome-name">User</span>
+        </div>
+    </div>
+
+    <div class="container account-wrapper">
+        <aside class="account-sidebar">
+            <div class="sidebar-block">
+                <h4 class="sidebar-title">Manage My Account</h4>
+                <div class="sidebar-menu">
+                    <a href="account.html" class="sidebar-item">My Profile</a>
+                    <a href="address-book.html" class="sidebar-item">Address Book</a>
+                    <a href="payment-options.html" class="sidebar-item active">My Payment Options</a>
+                </div>
+            </div>
+            <div class="sidebar-block" style="margin-top: 24px;">
+                <h4 class="sidebar-title">My Orders</h4>
+                <div class="sidebar-menu">
+                    <a href="orders.html" class="sidebar-item">My Orders</a>
+                    <a href="returns.html" class="sidebar-item">My Returns</a>
+                    <a href="cancellations.html" class="sidebar-item">Cancellations</a>
+                </div>
+            </div>
+        </aside>
+
+        <main class="wallet-content">
+            <div class="section-header">
+                <h2 class="section-title">My Wallet</h2>
+            </div>
+
+            <div class="wallet-card">
+                <div class="wallet-info">
+                    <h2 id="wallet-balance">₹0.00</h2>
+                    <span>Available Balance</span>
+                </div>
+                <div class="wallet-icon">
+                    <i class="fas fa-wallet"></i>
+                </div>
+            </div>
+
+            <div class="add-money-section">
+                <label class="add-money-label">Add Money</label>
+                <div class="add-money-box">
+                    <div class="currency-input-wrapper">
+                        <span class="currency-symbol">₹</span>
+                        <input type="number" class="amount-input" placeholder="Enter amount">
+                    </div>
+                    <button class="btn-add-funds">Add Funds</button>
+                </div>
+            </div>
+
+            <div class="transactions-section">
+                <h3 class="transactions-title">Transactions History</h3>
+                <table class="transactions-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th style="text-align: right;">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transaction-list"></tbody>
+                </table>
+                <div class="no-transactions" id="no-trans-msg">No transactions yet.</div>
+            </div>
+        </main>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="header.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        const API_BASE = "http://localhost:5000/api";
+        const currentToken = localStorage.getItem("token");
+
+        if (!currentToken) {
+            window.location.href = "login.html";
+        }
+
+        const addFundsBtn = document.querySelector('.btn-add-funds');
+        const amountInput = document.querySelector('.amount-input');
+        const walletBalanceDisplay = document.getElementById('wallet-balance');
+        const transactionList = document.getElementById('transaction-list');
+        const noTransVal = document.getElementById('no-trans-msg');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchProfile();
+            fetchTransactions();
+        });
+
+        async function fetchProfile() {
+            try {
+                const res = await fetch(`${API_BASE}/auth/me`, {
+                    headers: { "Authorization": `Bearer ${currentToken}` }
+                });
+                const data = await res.json();
+                if (res.ok && data.user) {
+                    const user = data.user;
+                    document.getElementById('welcome-name').innerText = user.name;
+                    walletBalanceDisplay.innerText = `₹${(user.wallet || 0).toFixed(2)}`;
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function fetchTransactions() {
+            try {
+                const res = await fetch(`${API_BASE}/transactions/my`, {
+                    headers: { "Authorization": `Bearer ${currentToken}` }
+                });
+                const data = await res.json();
+                if (data.success && data.transactions.length > 0) {
+                    renderTransactions(data.transactions);
+                    noTransVal.style.display = 'none';
+                } else {
+                    noTransVal.style.display = 'block';
+                    transactionList.innerHTML = '';
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function renderTransactions(transactions) {
+            transactionList.innerHTML = '';
+            transactions.forEach(trx => {
+                const date = new Date(trx.createdAt).toLocaleDateString();
+                const row = document.createElement('tr');
+                const isCredit = trx.type === 'Credit';
+                row.innerHTML = `
+                    <td style="padding: 12px 0; color:#777;">${date}</td>
+                    <td style="padding: 12px 0;">${trx.description}</td>
+                    <td style="padding: 12px 0; text-align:right; color: ${isCredit ? 'green' : 'red'}; font-weight:600;">
+                        ${isCredit ? '+' : '-'}₹${trx.amount.toFixed(2)}
+                    </td>
+                `;
+                transactionList.appendChild(row);
+            });
+        }
+
+        addFundsBtn.addEventListener('click', async () => {
+            const val = parseFloat(amountInput.value);
+            if (!val || val <= 0) {
+                Swal.fire("Error", "Please enter a valid amount.", "error");
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/transactions/add-funds`, {
+                    method: 'POST',
+                    headers: {
+                        "Authorization": `Bearer ${currentToken}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ amount: val })
+                });
+                const razorpayOrder = await res.json();
+
+                const options = {
+                    key: "rzp_test_SNVoMDgbxRlWwu",
+                    amount: razorpayOrder.amount,
+                    currency: razorpayOrder.currency,
+                    name: "Soleverse Wallet",
+                    description: "Add Money to Wallet",
+                    order_id: razorpayOrder.id,
+                    handler: function (response) {
+                        verifyAndCreditWallet(response, val);
+                    },
+                    prefill: {
+                        name: document.getElementById('welcome-name').innerText,
+                    },
+                    theme: { color: "#000000" }
+                };
+
+                const rzp = new Razorpay(options);
+                rzp.open();
+
+            } catch (err) {
+                Swal.fire("Error", "Failed to initiate payment", "error");
+            }
+        });
+
+        async function verifyAndCreditWallet(rzpResponse, amount) {
+            try {
+                Swal.fire({
+                    title: 'Adding Funds...',
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
+                });
+
+                const res = await fetch(`${API_BASE}/transactions/verify-add-funds`, {
+                    method: 'POST',
+                    headers: {
+                        "Authorization": `Bearer ${currentToken}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        razorpay_order_id: rzpResponse.razorpay_order_id,
+                        razorpay_payment_id: rzpResponse.razorpay_payment_id,
+                        razorpay_signature: rzpResponse.razorpay_signature,
+                        amount: amount
+                    })
+                });
+
+                const data = await res.json();
+                Swal.close();
+
+                if (data.success) {
+                    Swal.fire("Success", data.message, "success");
+                    walletBalanceDisplay.innerText = `₹${data.wallet.toFixed(2)}`;
+                    amountInput.value = '';
+                    fetchTransactions();
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (err) {
+                Swal.fire("Error", err.message, "error");
+            }
+        }
+    </script>
+    <script src="footer.js"></script>
+</body>
+
+</html>

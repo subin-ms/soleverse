@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | Soleverse</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;700&display=swap"
+        rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+
+    <link rel="stylesheet" href="header.css">
+    <link rel="stylesheet" href="footer.css">
+    <style>
+        /* 
+        GLOBAL STYLES (Copied & Adapted)
+        */
+        :root {
+            --primary-black: #000000;
+            --primary-white: #ffffff;
+            --grey-light: #f5f5f5;
+            --accent-red: #db4444;
+            /* Matches the red card */
+            --font-main: 'Inter', sans-serif;
+            --font-heading: 'Oswald', sans-serif;
+            --max-width: 1440px;
+            --padding-desktop: 0 135px;
+            /* Matched screenshot wide margins */
+            --padding-tablet: 0 40px;
+            --padding-mobile: 0 20px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--primary-black);
+            overflow-x: hidden;
+            background-color: var(--primary-white);
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: var(--padding-desktop);
+        }
+
+        /* Header CSS removed to use header.css */
+
+        /* 
+        BREADCRUMB
+        */
+        .breadcrumb {
+            padding: 40px 0;
+            font-size: 14px;
+            color: #000;
+        }
+
+        .breadcrumb span {
+            color: #000;
+            /* Opacity or grey? */
+            opacity: 0.5;
+        }
+
+        .breadcrumb span:last-child {
+            opacity: 1;
+            font-weight: 500;
+        }
+
+        /* 
+        ABOUT SECTION
+        */
+        .about-section {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            /* Text is smaller than image */
+            gap: 60px;
+            align-items: center;
+            margin-bottom: 100px;
+        }
+
+        .about-content h1 {
+            font-size: 54px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 40px;
+        }
+
+        .about-content p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #000;
+            margin-bottom: 24px;
+            max-width: 500px;
+        }
+
+        .about-image img {
+            width: 100%;
+            border-radius: 4px;
+            /* Placeholder styling if image fails */
+            background-color: #f0f0f0;
+            min-height: 400px;
+        }
+
+        /* 
+        STATS SECTION
+        */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-bottom: 140px;
+        }
+
+        .stat-card {
+            border: 1px solid #b3b3b3;
+            border-radius: 4px;
+            padding: 30px 20px;
+            text-align: center;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .stat-card.active {
+            background-color: var(--accent-red);
+            border-color: var(--accent-red);
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(219, 68, 68, 0.3);
+        }
+
+        .stat-icon-circle {
+            background: #000;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: #fff;
+            font-size: 24px;
+            border: 8px solid #c1c1c1;
+            /* Outer ring */
+        }
+
+        .stat-card.active .stat-icon-circle {
+            background: #fff;
+            color: #000;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        /* 
+        SERVICES SECTION
+        */
+        .services-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 140px;
+            text-align: center;
+        }
+
+        .service-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .icon-wrapper {
+            background: #000;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 24px;
+            margin-bottom: 24px;
+            border: 8px solid #c1c1c1;
+        }
+
+        .service-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .service-desc {
+            font-size: 14px;
+            color: #000;
+        }
+
+        /* 
+        FOOTER
+        */
+        footer {
+            background-color: #000;
+            color: #fff;
+            padding: 80px 0 24px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
+            /* 5 columns */
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .footer-col h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            font-family: var(--font-main);
+        }
+
+        .footer-col h4 {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 24px;
+        }
+
+        .subscribe-text {
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+
+        .footer-sub-text {
+            font-size: 12px;
+            color: #fafafa;
+            opacity: 0.7;
+            margin-bottom: 16px;
+        }
+
+        .footer-input-group {
+            position: relative;
+            border: 1px solid #fff;
+            border-radius: 4px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-input-group input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #fff;
+            width: 100%;
+        }
+
+        .footer-links li {
+            margin-bottom: 16px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .footer-links li:hover {
+            text-decoration: underline;
+        }
+
+        .apps-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        /* FOOTER REMOVED - Using global footer.css */
+    </style>
+</head>
+
+<body>
+
+    <!-- TOP BAR -->
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-center-text">
+                Summer Sale For All Free Express Delivery - OFF 50%!
+                <a href="shop.html" class="shop-now-link">ShopNow</a>
+            </div>
+            <div class="lang-selector">
+                English <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <header class="main-header">
+        <div class="container nav-container">
+            <!-- Mobile Toggle (Left) -->
+            <div class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+
+            <!-- Logo (Center on Mobile, Left on Desktop) -->
+            <a href="index.html" class="logo">Soleverse</a>
+
+            <!-- Navigation Links (Center on Desktop) -->
+            <nav class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="shop.html" class="nav-link">Shop</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <a href="about.html" class="nav-link">About</a>
+            </nav>
+
+            <!-- Icons (Right) -->
+            <div class="header-right">
+                <!-- Search Box (Desktop) -->
+                <div class="search-box-container">
+                    <input type="text" class="search-input" placeholder="What are you looking for?">
+                    <i class="fas fa-search search-icon-btn"></i>
+                </div>
+
+                <div class="nav-icons">
+                    <!-- Mobile Search Icon -->
+                    <a href="#" class="mobile-search-icon"><i class="fas fa-search"></i></a>
+
+                    <a href="wishlist.html" class="nav-icon-link"><i class="far fa-heart"></i></a>
+                    <a href="cart.html" class="nav-icon-link"><i class="fas fa-shopping-cart"></i></a>
+
+                    <!-- User Dropdown -->
+                    <div class="user-dropdown-container">
+                        <a href="account.html" class="user-icon-red"><i class="far fa-user"></i></a>
+                        <div class="dropdown-menu">
+                            <a href="account.html"><i class="far fa-user"></i> Manage My Account</a>
+                            <a href="orders.html"><i class="fas fa-box-open"></i> My Order</a>
+                            <a href="cancellations.html"><i class="fas fa-times-circle"></i> My Cancellations</a>
+                            <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- BREADCRUMB -->
+    <div class="container breadcrumb">
+        <span>Home</span> / <span>About</span>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="container">
+        <!-- ABOUT SECTION -->
+        <section class="about-section">
+            <div class="about-content">
+                <h1>About us</h1>
+                <p>Founded in 2026, our store is built for those who don't just wear sneakers — they express themselves
+                    through them. We specialize in customized Converse, transforming classic silhouettes into bold,
+                    creative, and one-of-a-kind designs.</p>
+                <p>From street-inspired graphics and artistic themes to vibrant colors and limited custom drops, every
+                    pair is crafted to stand out while keeping the timeless Converse DNA intact. Our goal is simple:
+                    give you sneakers that feel personal, unique, and unforgettable.</p>
+                <p>We believe footwear should tell a story — your story. That's why each design blends creativity,
+                    quality, and comfort, made for everyday wear and statement looks alik</p>
+            </div>
+            <div class="about-image">
+                <img src="../img/about page.png"
+                    alt="Converse Poster">
+                <!-- Using a placeholder Unsplash image that resembles a shoe poster -->
+            </div>
+        </section>
+
+        <!-- STATS SECTION -->
+        <section class="stats-container">
+            <div class="stat-card">
+                <div class="stat-icon-circle"><i class="fas fa-store"></i></div>
+                <div class="stat-number">10.5k</div>
+                <div class="stat-label">Sellers active our site</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon-circle"><i class="fas fa-dollar-sign"></i></div>
+                <div class="stat-number">33k</div>
+                <div class="stat-label">Mopnthly Produduct Sale</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon-circle"><i class="fas fa-shopping-bag"></i></div>
+                <div class="stat-number">45.5k</div>
+                <div class="stat-label">Customer active in our site</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon-circle"><i class="fas fa-money-bill-wave"></i></div>
+                <div class="stat-number">25k</div>
+                <div class="stat-label">Anual gross sale in our site</div>
+            </div>
+        </section>
+
+        <!-- SERVICES SECTION -->
+        <section class="services-container">
+            <div class="service-box">
+                <div class="icon-wrapper"><i class="fas fa-truck-fast"></i></div>
+                <div class="service-title">FREE AND FAST DELIVERY</div>
+                <div class="service-desc">Free delivery for all orders over ₹140</div>
+            </div>
+            <div class="service-box">
+                <div class="icon-wrapper"><i class="fas fa-headset"></i></div>
+                <div class="service-title">24/7 CUSTOMER SERVICE</div>
+                <div class="service-desc">Friendly 24/7 customer support</div>
+            </div>
+            <div class="service-box">
+                <div class="icon-wrapper"><i class="fas fa-shield-alt"></i></div>
+                <div class="service-title">MONEY BACK GUARANTEE</div>
+                <div class="service-desc">We return money within 30 days</div>
+            </div>
+        </section>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="auth.js"></script>
+    <script src="footer.js"></script>
+    <script src="header.js"></script>
+</body>
+
+</html>

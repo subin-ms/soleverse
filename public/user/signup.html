@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | Soleverse</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="auth.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+    <div class="split-layout">
+        <!-- 🎨 LEFT SIDE (DESIGN) -->
+        <div class="split-left">
+            <div class="blob shape-olive"></div>
+            <div class="blob shape-beige"></div>
+            <div class="blob shape-brown"></div>
+            <div class="logo-center">Soleverse</div>
+        </div>
+
+        <!-- 🧾 RIGHT SIDE (FORM) -->
+        <div class="split-right">
+            <div class="form-container">
+                <h1>Create your Free Account</h1>
+                <p>Enter your details below</p>
+
+                <form id="signupForm">
+                    <div class="form-group">
+                        <input type="text" id="signupName" class="form-input" placeholder="Full Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="signupEmail" class="form-input" placeholder="Email or Phone Number" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="signupPassword" class="form-input" placeholder="Password" required>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Create Account</button>
+
+                    <div class="divider"><span>OR</span></div>
+                    
+                    <button type="button" class="btn-google">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                        Sign up with Google
+                    </button>
+
+                    <div class="form-footer">
+                        <span>Already have account? <a href="login.html" class="link-red">Log in</a></span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. CLEAR EXISTING SESSION ON SIGNUP LOAD (To ensure fresh signup)
+        localStorage.removeItem('token');
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('isLoggedIn');
+        console.log('Session cleared for new signup.');
+
+        const form = document.getElementById("signupForm");
+        const submitBtn = form.querySelector(".btn-submit");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Sending OTP...";
+
+            const name = document.getElementById("signupName").value.trim();
+            const email = document.getElementById("signupEmail").value.trim();
+            const password = document.getElementById("signupPassword").value.trim();
+
+            try {
+                const res = await fetch("http://localhost:5000/api/auth/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    Swal.fire("Signup Failed", data.message, "error");
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "Create Account";
+                    return;
+                }
+
+                openOtpModal(email);
+
+            } catch (err) {
+                Swal.fire("Error", "Server not reachable", "error");
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Create Account";
+            }
+        });
+
+        function openOtpModal(email) {
+            Swal.fire({
+                title: "Verify OTP",
+                text: "Enter the 6-digit OTP sent to your email",
+                input: "text",
+                inputPlaceholder: "123456",
+                inputAttributes: {
+                    maxlength: 6,
+                    autocapitalize: "off",
+                    autocorrect: "off"
+                },
+                confirmButtonText: "Verify",
+                showCancelButton: false,
+                allowOutsideClick: false,
+                preConfirm: async (otp) => {
+                    if (!otp || otp.length !== 6) {
+                        Swal.showValidationMessage("Please enter a valid 6-digit OTP");
+                        return false;
+                    }
+
+                    try {
+                        const res = await fetch("http://localhost:5000/api/auth/verify-otp", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ email, otp })
+                        });
+
+                        const data = await res.json();
+
+                        if (!res.ok) {
+                            Swal.showValidationMessage(data.message);
+                            return false;
+                        }
+
+                        return data;
+
+                    } catch (err) {
+                        Swal.showValidationMessage("Server error");
+                        return false;
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire(
+                        "Success",
+                        "Account verified successfully!",
+                        "success"
+                    ).then(() => {
+                        window.location.href = "login.html";
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>

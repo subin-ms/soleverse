@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancellation Details - Soleverse</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* RESET & VARIABLES */
+        :root {
+            --primary-black: #000000;
+            --primary-white: #ffffff;
+            --text-grey: #757575;
+            --text-grey-light: #999999;
+            --font-main: 'Inter', sans-serif;
+            --container-width: 1170px;
+            --padding-x: 20px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--primary-black);
+            background-color: var(--primary-white);
+            line-height: 1.5;
+            overflow-x: hidden;
+            background: #f9f9f9; /* Soft background */
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* HEADER (Simplified for details view) */
+        .simple-header {
+            background: #fff;
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 40px;
+        }
+        
+        .main-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 60px 80px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            margin-bottom: 80px;
+        }
+
+        .back-link {
+            font-size: 13px;
+            font-weight: 700;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 40px;
+        }
+        .back-link:hover {
+            color: #000;
+        }
+
+        .cd-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+        .cd-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #000;
+            letter-spacing: -1px;
+        }
+        .cd-badge {
+            background: #FFE5E5;
+            color: #db4444;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .cd-date {
+            font-size: 15px;
+            color: #777;
+            margin-bottom: 50px;
+        }
+
+        /* Progress Bar */
+        .cd-progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            margin-bottom: 60px;
+            padding: 0 40px;
+        }
+        .cd-progress::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 10%;
+            right: 10%;
+            height: 2px;
+            background: #eee;
+            z-index: 0;
+        }
+        .cd-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1;
+            gap: 12px;
+        }
+        .cd-circle {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #000;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .cd-step-text {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #000;
+        }
+
+        /* Grid */
+        .cd-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            row-gap: 30px;
+            column-gap: 40px;
+            margin-bottom: 40px;
+        }
+        .cd-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .cd-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #000;
+        }
+
+        /* Notice Block */
+        .cd-notice {
+            background: #FAFAFA;
+            border-radius: 6px;
+            padding: 24px 30px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            margin-bottom: 60px;
+            border-left: 4px solid #888;
+        }
+        .cd-notice.wallet {
+            background: #f0fdf4;
+            border-left: 4px solid #0f7a37;
+        }
+        .cd-notice.cod {
+            background: #FAFAFA;
+            border-left: 4px solid #555;
+        }
+        .cd-notice-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .cd-notice.wallet .cd-notice-icon {
+            font-size: 26px;
+            color: #0f7a37;
+        }
+        .cd-notice.cod .cd-notice-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            font-size: 14px;
+            color: #555;
+        }
+        .cd-notice-content h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #333;
+        }
+        .cd-notice.wallet .cd-notice-content h4 { color: #0f7a37; }
+        .cd-notice-content p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+        }
+        .cd-notice.wallet .cd-notice-content p { color: #15803d; font-weight: 500; }
+
+        /* Items */
+        .cd-items-title {
+            font-size: 18px;
+            font-weight: 800;
+            text-transform: uppercase;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 16px;
+            margin-bottom: 30px;
+        }
+
+        .cd-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+        .cd-item-left {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .cd-item-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            background: #f5f5f5;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .cd-item-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .cd-item-info h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .cd-item-meta {
+            font-size: 14px;
+            color: #777;
+        }
+        .cd-item-price {
+            font-size: 18px;
+            font-weight: 800;
+            color: #000;
+        }
+        
+    </style>
+    <link rel="stylesheet" href="footer.css">
+</head>
+
+<body>
+
+    <header class="simple-header">
+        <div style="max-width: var(--container-width); margin: 0 auto; padding: 0 var(--padding-x);">
+            <a href="index.html" style="font-size: 24px; font-weight: 700; color: #000;">Soleverse</a>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <a href="cancellations.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to my cancellations</a>
+        <div id="loadingMask">Loading details...</div>
+        <div id="contentMask" style="display:none;">
+            <!-- Header -->
+            <div class="cd-header">
+                <div class="cd-title" id="orderId">...</div>
+                <div class="cd-badge">CANCELLED</div>
+            </div>
+            <div class="cd-date" id="orderDate">...</div>
+
+            <!-- Progress Bar -->
+            <div class="cd-progress">
+                <div class="cd-step">
+                    <div class="cd-circle"><i class="fas fa-check"></i></div>
+                    <div class="cd-step-text">Ordered</div>
+                </div>
+                <div class="cd-step">
+                    <div class="cd-circle"><i class="fas fa-times"></i></div>
+                    <div class="cd-step-text">Cancelled</div>
+                </div>
+                <div class="cd-step" id="refund-step">
+                    <div class="cd-circle">3</div>
+                    <div class="cd-step-text">Refunded</div>
+                </div>
+            </div>
+
+            <!-- Grid -->
+            <div class="cd-grid">
+                <div>
+                    <div class="cd-label">Reason</div>
+                    <div class="cd-value" id="cancellationReason">User Requested Cancellation</div>
+                </div>
+                <div>
+                    <div class="cd-label">Refund Status</div>
+                    <div class="cd-value" id="refundStatusVal">...</div>
+                </div>
+                <div>
+                    <div class="cd-label">Payment Method</div>
+                    <div class="cd-value" id="paymentMethodVal" style="text-transform: uppercase;">...</div>
+                </div>
+                <div>
+                    <div class="cd-label">Net Amount Paid</div>
+                    <div class="cd-value" id="netAmountVal">...</div>
+                </div>
+            </div>
+
+            <!-- Notice Block -->
+            <div class="cd-notice" id="noticeBlock">
+                <div class="cd-notice-icon"><i id="noticeIcon" class="fas fa-info"></i></div>
+                <div class="cd-notice-content">
+                    <h4 id="noticeTitle">...</h4>
+                    <p id="noticeDesc">...</p>
+                </div>
+            </div>
+
+            <!-- Items -->
+            <div class="cd-items-title">Cancelled Items</div>
+            <div id="itemsList">
+                <!-- Generated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderId = urlParams.get('id');
+
+            if (!orderId) {
+                alert("Missing Order ID");
+                window.location.href = "cancellations.html";
+                return;
+            }
+
+            const token = localStorage.getItem("token");
+            try {
+                const res = await fetch(`http://localhost:5000/api/orders/${orderId}`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+
+                if (!res.ok) throw new Error("Failed to fetch order");
+
+                const order = await res.json();
+                renderPage(order);
+            } catch (err) {
+                console.error(err);
+                document.getElementById('loadingMask').innerText = "Failed to load order details.";
+            }
+        });
+
+        async function renderPage(order) {
+            document.getElementById('loadingMask').style.display = 'none';
+            document.getElementById('contentMask').style.display = 'block';
+
+            // Top Header
+            document.getElementById('orderId').innerText = `#${order._id.slice(-6).toUpperCase()}`;
+            const dateStr = new Date(order.updatedAt || order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('orderDate').innerText = `Cancelled on ${dateStr}`;
+
+            // Logic for Refund Status etc.
+            const isCod = order.paymentMethod === 'cod';
+            const pMethod = isCod ? 'COD' : order.paymentMethod;
+
+            document.getElementById('paymentMethodVal').innerText = pMethod;
+            document.getElementById('netAmountVal').innerText = `₹${order.totalAmount.toFixed(2)}`;
+
+            // Fetch Cancellation Reason
+            try {
+                const cancelRes = await fetch(`http://localhost:5000/api/orders/${order._id}/cancellation`, {
+                    headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
+                });
+                if (cancelRes.ok) {
+                    const cancelData = await cancelRes.json();
+                    document.getElementById('cancellationReason').innerText = cancelData.reason;
+                }
+            } catch (err) {
+                console.log("No specific cancellation record found");
+            }
+
+            const refundStep = document.getElementById('refund-step');
+            const refundStepCircle = refundStep.querySelector('.cd-circle');
+            
+            const noticeBlock = document.getElementById('noticeBlock');
+            const noticeTitle = document.getElementById('noticeTitle');
+            const noticeDesc = document.getElementById('noticeDesc');
+            const noticeIcon = document.getElementById('noticeIcon');
+
+            if (isCod && order.paymentStatus !== 'Paid') {
+                document.getElementById('refundStatusVal').innerText = 'No Refund Needed';
+                
+                noticeBlock.className = 'cd-notice cod';
+                noticeIcon.className = 'fas fa-info';
+                noticeIcon.style.color = '#555';
+                noticeTitle.innerText = 'No Refund Required';
+                noticeDesc.innerText = 'This was a Cash on Delivery (COD) order. Since no payment was made, no refund is necessary.';
+                
+                refundStepCircle.innerHTML = '3';
+                refundStepCircle.style.background = '#eee';
+                refundStepCircle.style.color = '#888';
+                refundStep.querySelector('.cd-step-text').style.color = '#888';
+            } else {
+                document.getElementById('refundStatusVal').innerText = 'Refund Processed';
+                
+                noticeBlock.className = 'cd-notice wallet';
+                noticeIcon.className = 'fas fa-wallet';
+                noticeTitle.innerText = 'Refund Credited to Wallet';
+                noticeDesc.innerText = 'The refund amount has been automatically added to your wallet. Please check your wallet in the Payment Options section.';
+                
+                refundStepCircle.innerHTML = '<i class="fas fa-check"></i>';
+                refundStepCircle.style.background = '#000';
+            }
+
+            // Render Items
+            const itemsList = document.getElementById('itemsList');
+            itemsList.innerHTML = order.items.map(item => {
+                const p = item.product;
+                let imgPath = p.image || 'https://via.placeholder.com/80';
+                if (!imgPath.startsWith('http')) {
+                    imgPath = imgPath.startsWith('/') ? `http://localhost:5000${imgPath}` : `http://localhost:5000/${imgPath.replace(/\\/g, '/')}`;
+                }
+
+                return `
+                    <div class="cd-item">
+                        <div class="cd-item-left">
+                            <div class="cd-item-img">
+                                <img src="${imgPath}" alt="${p.name}">
+                            </div>
+                            <div class="cd-item-info">
+                                <h4>${p.name}</h4>
+                                <div class="cd-item-meta">Size: ${item.size || 'N/A'} | Qty: ${item.quantity}</div>
+                            </div>
+                        </div>
+                        <div class="cd-item-price">₹${item.price.toFixed(2)}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+    </script>
+    <script src="footer.js"></script>
+</body>
+</html>

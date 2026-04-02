@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - Soleverse</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link rel="stylesheet" href="header.css">
+    <link rel="stylesheet" href="footer.css">
+    <style>
+        /* RESET & VARIABLES */
+        :root {
+            --primary-black: #000000;
+            --primary-white: #ffffff;
+            --text-grey: #757575;
+            --text-grey-light: #999999;
+            --border-color: #e5e5e5;
+            --bg-light: #f9f9f9;
+            --bg-secondary: #f5f5f5;
+            --font-main: 'Inter', sans-serif;
+            --container-width: 1170px;
+            --padding-x: 20px;
+            --accent-red: #db4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--primary-black);
+            background-color: var(--primary-white);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+        }
+
+        input {
+            font-family: inherit;
+            outline: none;
+        }
+
+        .container {
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: 0 var(--padding-x);
+        }
+
+        /* Header CSS removed to use header.css */
+
+        .icon-user-active {
+            color: var(--accent-red);
+            background: var(--accent-red);
+            color: white;
+            /* Active state background per screenshot/previous implementation */
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-toggle {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* 3. BREADCRUMB & WELCOME */
+        .breadcrumb-section {
+            padding: 80px 0 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            color: var(--text-grey);
+        }
+
+        .breadcrumb span {
+            color: var(--text-grey-light);
+        }
+
+        .breadcrumb .active {
+            color: var(--primary-black);
+            font-weight: 500;
+            opacity: 1;
+        }
+
+        .welcome-text {
+            font-size: 14px;
+            color: var(--primary-black);
+        }
+
+        .welcome-text span {
+            color: var(--accent-red);
+            font-weight: 500;
+        }
+
+
+        /* 4. ACCOUNT MAIN SECTION */
+        .account-wrapper {
+            margin-bottom: 140px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            /* Approximately 25% / 75% */
+            gap: 100px;
+        }
+
+        /* Sidebar */
+
+
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 24px;
+            padding-left: 0;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .sidebar-item {
+            font-size: 16px;
+            color: var(--text-grey);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .sidebar-item:hover {
+            color: var(--accent-red);
+        }
+
+        .sidebar-item.active {
+            color: var(--accent-red);
+            font-weight: 500;
+        }
+
+        .sidebar-section-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin: 24px 0 16px;
+            /* If there were collapsible sections, but screenshot shows a list. 
+               Wait, screenshot has "Manage My Account" type hierarchy implicitly. 
+               Actually screenshot list is: Manage My Account (Bold) -> Items.
+               Let's try to match the screenshot exactly which has "ACCOUNT INFORMATION" bold?
+               Screenshot has "ACCOUNT INFORMATION" big on the left? No, it's a menu.
+               Screenshot Left: "ACCOUNT INFORMATION", "ADDRESS BOOK", "PAYMENT OPTIONS"...
+               Ah, the screenshot shows a list of links. The active one is likely "Account Information". 
+            */
+        }
+
+
+        /* Profile Form */
+        .profile-form-container {
+            background: #fff;
+            padding: 40px 80px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            /* Optional: Container shadow */
+            padding: 0;
+            /* Screenshot looks like it's just on the white bg, maybe no container box */
+            box-shadow: none;
+        }
+
+        .form-section-title {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--accent-red);
+            margin-bottom: 16px;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            column-gap: 50px;
+            row-gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-size: 16px;
+            color: var(--primary-black);
+        }
+
+        .form-input {
+            height: 50px;
+            background: var(--bg-secondary);
+            /* Light grey bg for inputs */
+            border: none;
+            border-radius: 4px;
+            padding: 0 16px;
+            font-size: 16px;
+            color: var(--text-grey);
+        }
+
+        .password-section {
+            margin-top: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .btn-actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 32px;
+            margin-top: 24px;
+        }
+
+        .btn-cancel {
+            font-size: 16px;
+            color: var(--primary-black);
+            font-weight: 400;
+        }
+
+        .btn-save {
+            background: var(--primary-black);
+            color: var(--primary-white);
+            padding: 16px 48px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        .btn-save:hover {
+            opacity: 0.8;
+        }
+
+        .social-links a {
+            font-size: 24px;
+        }
+        /* FOOTER REMOVED - Using global footer.css */
+
+        /* RESPONSIVENESS */
+
+        /* Tablet: 768px – 1199px */
+        @media (max-width: 1199px) {
+            .container {
+                max-width: 100%;
+                padding: 0 40px;
+            }
+
+            .nav-menu {
+                gap: 20px;
+            }
+
+            .search-box {
+                width: 200px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 40px;
+            }
+
+            .account-wrapper {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            /* Convert sidebar to horizontal scroll or list */
+            .sidebar-menu {
+                flex-direction: row;
+                overflow-x: auto;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #e5e5e5;
+            }
+
+            .sidebar-item {
+                white-space: nowrap;
+            }
+        }
+
+        /* Mobile: ≤767px */
+        @media (max-width: 767px) {
+            .container {
+                padding: 0 20px;
+            }
+
+            .top-bar .container {
+                justify-content: center;
+            }
+
+            .top-center-text {
+                position: static;
+                transform: none;
+                flex-direction: column;
+                text-align: center;
+                gap: 5px;
+            }
+
+            .lang-selector {
+                display: none;
+            }
+
+            /* Nav */
+            .nav-menu,
+            .search-box {
+                display: none;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .nav-menu.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background: white;
+                padding: 20px;
+                box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .breadcrumb-section {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 40px 0;
+            }
+
+            .account-wrapper {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            /* Sidebar vertical again on mobile */
+            .sidebar-menu {
+                flex-direction: column;
+                border-bottom: none;
+            }
+
+            .profile-grid {
+                grid-template-columns: 1fr;
+                column-gap: 0;
+            }
+
+            .btn-actions {
+                flex-direction: column-reverse;
+                align-items: stretch;
+            }
+
+            .btn-cancel,
+            .btn-save {
+                width: 100%;
+                text-align: center;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 1. TOP ANNOUNCEMENT BAR -->
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-center-text">
+                Summer Sale For All Free Express Delivery - OFF 50%!
+                <a href="shop.html" class="shop-now-link">ShopNow</a>
+            </div>
+            <div class="lang-selector">
+                English <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <header class="main-header">
+        <div class="container nav-container">
+            <!-- Mobile Toggle (Left) -->
+            <div class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+
+            <!-- Logo (Center on Mobile, Left on Desktop) -->
+            <a href="index.html" class="logo">Soleverse</a>
+
+            <!-- Navigation Links (Center on Desktop) -->
+            <nav class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="shop.html" class="nav-link">Shop</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <a href="about.html" class="nav-link">About</a>
+            </nav>
+
+            <!-- Icons (Right) -->
+            <div class="header-right">
+                <!-- Search Box (Desktop) -->
+                <div class="search-box-container">
+                    <input type="text" class="search-input" placeholder="What are you looking for?">
+                    <i class="fas fa-search search-icon-btn"></i>
+                </div>
+
+                <div class="nav-icons">
+                    <!-- Mobile Search Icon -->
+                    <a href="#" class="mobile-search-icon"><i class="fas fa-search"></i></a>
+
+                    <a href="wishlist.html" class="nav-icon-link"><i class="far fa-heart"></i></a>
+                    <a href="cart.html" class="nav-icon-link"><i class="fas fa-shopping-cart"></i></a>
+
+                    <!-- User Dropdown -->
+                    <div class="user-dropdown-container">
+                        <a href="account.html" class="user-icon-red"><i class="far fa-user"></i></a>
+                        <div class="dropdown-menu">
+                            <a href="account.html"><i class="far fa-user"></i> Manage My Account</a>
+                            <a href="orders.html"><i class="fas fa-box-open"></i> My Order</a>
+                            <a href="cancellations.html"><i class="fas fa-times-circle"></i> My Cancellations</a>
+                            <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 3. BREADCRUMB & WELCOME -->
+    <div class="container breadcrumb-section">
+        <div class="breadcrumb">
+            <span>Home /</span> <span class="active">My Account</span>
+        </div>
+        <div class="welcome-text">
+            Welcome! <span id="welcome-name">Md Rimel</span>
+        </div>
+    </div>
+
+    <!-- 4. ACCOUNT CONTENT -->
+    <div class="container account-wrapper">
+        <!-- Sidebar -->
+        <aside class="account-sidebar">
+            <div class="sidebar-block">
+                <h4 class="sidebar-title">Manage My Account</h4>
+                <div class="sidebar-menu">
+                    <a href="account.html" class="sidebar-item">My Profile</a>
+                    <a href="address-book.html" class="sidebar-item">Address Book</a>
+                    <a href="payment-options.html" class="sidebar-item">My Payment Options</a>
+                </div>
+            </div>
+
+            <div class="sidebar-block" style="margin-top: 24px;">
+                <h4 class="sidebar-title" style="margin-bottom: 16px;">My Orders</h4>
+                <div class="sidebar-menu">
+                    <a href="orders.html" class="sidebar-item">My Orders</a>
+                    <a href="returns.html" class="sidebar-item">My Returns</a>
+                    <a href="cancellations.html" class="sidebar-item">Cancellations</a>
+                </div>
+            </div>
+
+            <div class="sidebar-menu" style="margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px;">
+                <div class="sidebar-item" style="font-weight: 500;">LOG OUT</div>
+            </div>
+            <script src="account-sidebar.js"></script>
+        </aside>
+
+        <!-- Profile Form -->
+        <main class="profile-content">
+            <h2 class="form-section-title">Edit Your Profile</h2>
+
+            <form id="profile-form" autocomplete="off">
+                <div class="profile-grid" style="grid-template-columns: 1fr 1fr;">
+                    <div class="form-group">
+                        <label class="form-label">Name</label>
+                        <input type="text" id="full-name" class="form-input" placeholder="Full Name" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" id="email" class="form-input" placeholder="Email" readonly style="background: #f0f0f0; cursor: not-allowed;" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="password-section">
+                    <div class="form-group">
+                        <label class="form-label">Password Changes</label>
+                        <input type="password" id="current-password" class="form-input" placeholder="Current Password" autocomplete="new-password">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="new-password" class="form-input" placeholder="New Password" autocomplete="new-password">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="confirm-password" class="form-input" placeholder="Confirm New Password" autocomplete="new-password">
+                    </div>
+                    <div id="password-error" style="color: #db4444; font-size: 14px; margin-top: -16px; display: none;">Current password does not match</div>
+                </div>
+
+                <div class="btn-actions">
+                    <button type="button" class="btn-cancel">Cancel</button>
+                    <button type="submit" class="btn-save">Save Changes</button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        const AUTH_API = "http://localhost:5000/api/auth";
+
+        // 1. IMMEDIATE AUTH & ROLE CHECK (Synchronous Check for Token, Then Role)
+        async function checkAuthAndRole() {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            try {
+                const res = await fetch(`${AUTH_API}/me`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    const user = data.user;
+                    // If OK, populate fields
+                    renderProfile(user);
+                } else {
+                    // Token invalid or expired
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('isLoggedIn');
+                    window.location.href = "login.html";
+                }
+            } catch (error) {
+                console.error("Auth check failed:", error);
+            }
+        }
+
+        function renderProfile(user) {
+            document.getElementById("full-name").value = user.name || "";
+            document.getElementById("email").value = user.email || "";
+            document.getElementById("welcome-name").innerText = user.name;
+        }
+
+        const profileForm = document.getElementById('profile-form');
+        profileForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Clear previous errors
+            const errorDiv = document.getElementById("password-error");
+            errorDiv.style.display = "none";
+
+            const name = document.getElementById("full-name").value;
+            const currentPassword = document.getElementById("current-password").value;
+            const newPassword = document.getElementById("new-password").value;
+            const confirmPassword = document.getElementById("confirm-password").value;
+
+            if (newPassword && newPassword !== confirmPassword) {
+                return Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'New passwords do not match!'
+                });
+            }
+
+            const token = localStorage.getItem("token");
+            try {
+                const res = await fetch(`${AUTH_API}/profile`, {
+                    method: 'PUT',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        name,
+                        currentPassword,
+                        newPassword
+                    })
+                });
+
+                const result = await res.json();
+
+                if (!res.ok) {
+                    if (result.message && result.message.toLowerCase().includes("current password")) {
+                        errorDiv.style.display = "block";
+                        return;
+                    }
+                    throw new Error(result.message || "Failed to update profile");
+                }
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Profile Updated',
+                    text: 'Your profile has been updated successfully!',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+
+                // Clear password fields
+                document.getElementById("current-password").value = "";
+                document.getElementById("new-password").value = "";
+                document.getElementById("confirm-password").value = "";
+
+                // Refresh welcome name
+                document.getElementById("welcome-name").innerText = name;
+
+            } catch (error) {
+                console.error("Error updating profile:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Update Failed',
+                    text: error.message
+                });
+            }
+        });
+
+        const cancelBtn = document.querySelector('.btn-cancel');
+        cancelBtn.addEventListener('click', () => {
+            checkAuthAndRole(); // Re-fetch data to reset
+        });
+
+        document.addEventListener('DOMContentLoaded', checkAuthAndRole);
+    </script>
+    <script src="auth.js"></script>
+    <script src="footer.js"></script>
+    <script src="header.js"></script>
+</body>
+
+</html>

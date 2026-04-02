@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shop - Soleverse</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Oswald:wght@500;700&display=swap"
+        rel="stylesheet" />
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link rel="stylesheet" href="header.css" />
+    <link rel="stylesheet" href="footer.css" />
+    <style>
+        /* 
+        SHOP SPECIFIC STYLES 
+        Pixel-Perfect Replication
+        */
+
+        :root {
+            --primary-black: #000000;
+            --primary-white: #ffffff;
+            --text-grey: #757575;
+            --border-color: #e5e5e5;
+            --bg-light: #f9f9f9;
+            --accent-orange: #ff9900;
+            /* Star color */
+            --accent-red: #db4444;
+            /* Discount/Badge color if needed */
+            --font-main: 'Inter', sans-serif;
+            --font-heading: 'Oswald', sans-serif;
+        }
+
+        body {
+            background-color: var(--primary-white);
+            color: var(--primary-black);
+            font-family: var(--font-main);
+        }
+
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 60px;
+        }
+
+        /* HERO BANNER */
+        .shop-hero {
+            position: relative;
+            margin: 40px 0;
+            border-radius: 20px;
+            overflow: hidden;
+            background: linear-gradient(90deg, #111 0%, #333 100%);
+            color: white;
+            height: 300px;
+            /* Adjust height matches screenshot */
+            display: flex;
+            align-items: center;
+            padding: 0 80px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-content {
+            z-index: 2;
+            width: 50%;
+        }
+
+        .hero-label {
+            font-size: 16px;
+            color: #ccc;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .hero-title {
+            font-family: var(--font-heading);
+            font-size: 64px;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            color: #ff9900;
+            /* Orange Accent matching screenshot */
+            text-transform: uppercase;
+        }
+
+        /* Make 'Get' and 'off' white, '30%' orange if needed, based on screenshot it varies. 
+           Assuming Title is orange as per some variants or plain white. 
+           Let's match the reference text "Get 30% off" */
+
+        .hero-title span {
+            color: #fff;
+        }
+
+        .hero-desc {
+            font-size: 14px;
+            max-width: 400px;
+            line-height: 1.6;
+            color: #ddd;
+        }
+
+        .hero-image {
+            position: absolute;
+            right: 50px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-15deg);
+            width: 450px;
+            z-index: 1;
+        }
+
+        /* SECTION HEADER */
+        .section-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            margin-top: 60px;
+        }
+
+        .section-title {
+            font-family: var(--font-heading);
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .item-count {
+            display: block;
+            font-size: 14px;
+            color: var(--text-grey);
+            font-family: var(--font-main);
+            margin-top: 5px;
+            font-weight: 400;
+        }
+
+        .sort-dropdown {
+            background: #f5f5f5;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* LAYOUT */
+        .shop-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+
+        /* SIDEBAR */
+        /* SIDEBAR */
+
+
+        .filter-title-main {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            font-family: var(--font-heading);
+        }
+
+        .filter-group {
+            border-bottom: 1px solid #eee;
+            padding: 24px 0;
+        }
+
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-bottom: 16px;
+        }
+
+        .filter-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .filter-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #000;
+            cursor: pointer;
+        }
+
+        .filter-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #000;
+            border: 1px solid #ddd;
+        }
+
+        /* Size Grid */
+        .size-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .size-box {
+            border: 1px solid #eee;
+            text-align: center;
+            padding: 8px 0;
+            font-size: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .size-box:hover,
+        .size-box.active {
+            background: #000;
+            color: #fff;
+            border-color: #000;
+        }
+
+        /* Color Circles */
+        .color-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .color-circle {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 1px solid #eee;
+            position: relative;
+        }
+
+        .color-circle.active::after {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border: 1px solid #000;
+            border-radius: 50%;
+        }
+
+        /* Price Range */
+        .price-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            outline: none;
+            margin: 15px 0 15px 0;
+            padding: 0;
+            background: linear-gradient(to right, #000 0%, #000 var(--range-progress, 100%), #e5e5e5 var(--range-progress, 100%), #e5e5e5 100%);
+        }
+
+        .price-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #000;
+            cursor: pointer;
+        }
+
+        .price-label {
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* PRODUCT GRID */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .product-card {
+            border: 1px solid transparent;
+            border-radius: 8px;
+            padding: 16px;
+            transition: 0.3s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+        }
+
+        .product-card:hover {
+            border-color: #eee;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .img-container {
+            background-color: #f6f6f6;
+            border-radius: 8px;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .img-container img {
+            width: 90%;
+            transition: transform 0.3s ease;
+            mix-blend-mode: multiply;
+        }
+
+        .product-card:hover img {
+            transform: scale(1.08);
+            /* Hover Zoom Requirement */
+        }
+
+        .badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 4px;
+            z-index: 2;
+        }
+
+        .badge.new {
+            background: #ff9900;
+            color: #000;
+        }
+
+        .badge.sale {
+            background: #db4444;
+            color: #fff;
+        }
+
+        .card-details {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            text-transform: capitalize;
+            /* "converse leopard" -> Capitalize if needed, usually css handles it */
+        }
+
+        .card-price {
+            font-size: 14px;
+            font-weight: 700;
+            color: #4a90e2; /* Modern blue for price */
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .old-price {
+            color: #757575;
+            text-decoration: line-through;
+            font-size: 12px;
+            font-weight: 400;
+        }
+
+
+        .card-rating {
+            font-size: 12px;
+            color: var(--accent-orange);
+            margin-bottom: 12px;
+        }
+
+        .btn-view-product {
+            margin-top: auto;
+            display: block;
+            /* Added for anchor tag behavior */
+            background: #000;
+            color: #fff;
+            text-transform: uppercase;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 12px;
+            text-align: center;
+            border-radius: 4px;
+            width: 100%;
+            border: 1px solid #000;
+            transition: 0.3s;
+        }
+
+        .btn-view-product:hover {
+            background: #333;
+        }
+
+        /* Cart & Wishlist Buttons */
+        .add-to-cart-btn {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #000;
+            color: #fff;
+            border: none;
+            padding: 12px 0;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transform: translateY(100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            z-index: 5;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .img-container:hover .add-to-cart-btn {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .wishlist-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #fff;
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 5;
+            transition: 0.3s;
+        }
+
+        .wishlist-btn:hover {
+            background: #db4444;
+            color: #fff;
+        }
+
+        /* PAGINATION */
+        .pagination {
+            grid-column: 1 / -1;
+            /* Adjust if inside grid */
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 60px;
+        }
+
+        .page-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .page-btn.active,
+        .page-btn:hover {
+            background: #000;
+            color: #fff;
+            border-color: #000;
+        }
+
+        .page-btn.nav {
+            width: auto;
+            padding: 0 20px;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        /* FOOTER (Copied Global Styles for standalone rendering if css fails load, but we rely on header.css mainly, footer likely needs its own styles if not in header.css. Added basic footer styles here to be safe) */
+        footer {
+            background-color: #000;
+            color: #fff;
+            padding: 80px 0 24px;
+            margin-top: 100px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .footer-col h3 {
+            font-family: var(--font-heading);
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .footer-col h4 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: #ccc;
+            cursor: pointer;
+        }
+
+        .footer-links li:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1200px) {
+            .container {
+                padding: 0 32px;
+            }
+
+            .shop-layout {
+                grid-template-columns: 240px 1fr;
+                gap: 30px;
+            }
+
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .shop-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            /* Mobile filter logic needed */
+
+            /* Add Mobile Filter Toggle */
+            .mobile-filter-bar {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 20px;
+            }
+
+            .filter-btn-mobile {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-weight: 700;
+                cursor: pointer;
+                background: #f5f5f5;
+                padding: 10px 20px;
+                border-radius: 4px;
+            }
+
+            /* Sidebar becomes overlay or simpler list */
+            .sidebar.active {
+                display: block;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .hero-title {
+                font-size: 42px;
+            }
+
+            .hero-image {
+                width: 300px;
+                right: -50px;
+                opacity: 0.8;
+            }
+
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .footer-col {
+                margin-bottom: 30px;
+            }
+
+            /* Collapsed Filter Sidebar (Simple implementation: Visible when active) */
+            .sidebar {
+                display: none;
+                margin-bottom: 40px;
+            }
+
+            .sidebar.active {
+                display: block;
+            }
+
+            .mobile-filter-trigger {
+                display: flex !important;
+            }
+        }
+
+        .mobile-filter-trigger {
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-apply-filter {
+            background: #000;
+            color: #fff;
+            width: 100%;
+            padding: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-apply-filter:hover {
+            background: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOP BAR (Global) -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-center-text">
+                Summer Sale For All Swim Suits and Free Express Delivery - OFF 50%!
+                <a href="shop.html" class="shop-now-link">ShopNow</a>
+            </div>
+            <div class="lang-selector">
+                English <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN HEADER (Global) -->
+    <header class="main-header">
+        <div class="container nav-container">
+            <div class="mobile-toggle" id="mobileToggle"><i class="fas fa-bars"></i></div>
+            <a href="index.html" class="logo">Soleverse</a>
+            <nav class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="shop.html" class="nav-link">Shop</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="signup.html" class="nav-link">Sign Up</a>
+            </nav>
+            <div class="header-right">
+                <div class="search-box-container">
+                    <input type="text" class="search-input" placeholder="What are you looking for?">
+                    <i class="fas fa-search search-icon-btn"></i>
+                </div>
+                <div class="nav-icons">
+                    <a href="#" class="mobile-search-trigger"><i class="fas fa-search"></i></a>
+                    <a href="wishlist.html" class="nav-icon-link"><i class="far fa-heart"></i></a>
+                    <a href="cart.html" class="nav-icon-link"><i class="fas fa-shopping-cart"></i></a>
+                    <div class="user-dropdown-container">
+                        <a href="account.html" class="user-icon-red"><i class="far fa-user"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- HERO BANNER -->
+        <section class="shop-hero">
+            <div class="hero-content">
+                <div class="hero-label">Limited time only</div>
+                <h1 class="hero-title"><span>GET</span> 30% OFF</h1>
+                <p class="hero-desc">Sneakers made with your comfort in mind so you can put all of your focus into your
+                    next session.</p>
+            </div>
+            <img src="../img/yellow tiger banner.png" alt="Hero Shoe" class="hero-image">
+        </section>
+
+        <!-- SECTION HEADER -->
+        <div class="section-header-row">
+            <div>
+                <h1 class="section-title">Life Style Shoes</h1>
+                <span class="item-count">122 items</span>
+            </div>
+            <div class="sort-dropdown" style="padding: 0; border: none;">
+                <select id="sortSelect" style="appearance: none; -webkit-appearance: none; background: #f9f9f9 url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E') no-repeat right .7em top 50%; background-size: .65em auto; border: 1px solid #e5e5e5; border-radius: 4px; padding: 10px 30px 10px 15px; font-family: 'Inter', sans-serif; font-size: 14px; color: #000; cursor: pointer; outline: none; width: 100%; min-width: 150px;">
+                    <option value="">Trending</option>
+                    <option value="price_asc">Price: Low to High</option>
+                    <option value="price_desc">Price: High to Low</option>
+                    <option value="newest">Newest Arrivals</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- MOBILE FILTER TRIGGER -->
+        <div class="mobile-filter-trigger">
+            <div class="filter-btn-mobile" id="filterToggleBtn">
+                <i class="fas fa-sliders-h"></i> Filters
+            </div>
+        </div>
+
+        <!-- LAYOUT -->
+        <div class="shop-layout">
+            <!-- SIDEBAR -->
+            <aside class="sidebar" id="sidebarFilter">
+                <div class="filter-title-main">Filters</div>
+
+                <div class="filter-group">
+                    <div class="filter-header">CATEGORY <i class="fas fa-chevron-up"></i></div>
+                    <div class="filter-list" id="categoryList"></div>
+                </div>
+
+                <div class="filter-group">
+                    <div class="filter-header">SIZE <i class="fas fa-chevron-up"></i></div>
+                    <div class="size-grid" id="sizeGridContainer">
+                        <div class="size-box" data-size="6">6</div>
+                        <div class="size-box" data-size="7">7</div>
+                        <div class="size-box" data-size="8">8</div>
+                        <div class="size-box" data-size="9">9</div>
+                        <div class="size-box" data-size="10">10</div>
+                        <div class="size-box" data-size="11">11</div>
+                        <div class="size-box" data-size="12">12</div>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <div class="filter-header">PRICE <i class="fas fa-chevron-up"></i></div>
+                    <div class="price-slider-container">
+                        <input type="range" class="price-slider" min="50" max="1000" value="1000">
+                        <div class="price-label">
+                            <span>₹50</span>
+                            <span id="maxPriceLabel">₹1000+</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-apply-filter">Apply Filter</button>
+            </aside>
+
+            <!-- PRODUCT GRID -->
+            <main class="product-content">
+                <div class="product-grid" id="productGrid">
+                    <!-- Products will be injected here dynamically -->
+                </div>
+
+                <!-- PAGINATION -->
+                <div class="pagination"></div>
+            </main>
+        </div>
+    </div>
+
+    <!-- GLOBAL FOOTER PLACEHOLDER -->
+    <div id="footer-placeholder"></div>
+
+    <script src="wishlist.js"></script>
+    <script src="auth.js"></script>
+    <script src="products.js"></script>
+    <script src="cart.js"></script>
+    <script src="header.js"></script>
+    <script>
+        // Mobile Sidebar Toggle Logic
+        const filterToggleBtn = document.getElementById('filterToggleBtn');
+        const sidebar = document.getElementById('sidebarFilter');
+
+        if (filterToggleBtn) {
+            filterToggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+        }
+
+        // Selection Logic for Size and Color
+        const sizeBoxes = document.querySelectorAll('.size-box');
+        sizeBoxes.forEach(box => {
+            box.addEventListener('click', () => {
+                box.classList.toggle('active');
+            });
+        });
+
+        const colorCircles = document.querySelectorAll('.color-circle');
+        colorCircles.forEach(circle => {
+            circle.addEventListener('click', () => {
+                circle.classList.toggle('active');
+            });
+        });
+
+        // Price Slider Logic
+        const priceSlider = document.querySelector('.price-slider');
+        const priceDisplay = document.getElementById('maxPriceLabel');
+        
+        if (priceSlider) {
+            priceSlider.addEventListener('input', function() {
+                const min = parseInt(this.min) || 50;
+                const max = parseInt(this.max) || 1000;
+                const val = parseInt(this.value);
+                const percent = ((val - min) / (max - min)) * 100;
+                this.style.setProperty('--range-progress', `${percent}%`);
+                if (priceDisplay) {
+                    priceDisplay.textContent = val === max ? `₹${val}+` : `₹${val}`;
+                }
+            });
+            priceSlider.dispatchEvent(new Event('input'));
+        }
+
+        // Apply Filter Logic
+        const applyBtn = document.querySelector('.btn-apply-filter');
+
+        if (applyBtn) {
+            applyBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                const checkedCats = Array.from(document.querySelectorAll('.category-filter:checked')).map(cb => cb.value);
+                const selectedSizes = Array.from(document.querySelectorAll('.size-box.active')).map(box => box.getAttribute('data-size'));
+                const params = new URLSearchParams(window.location.search);
+                
+                params.delete('category');
+                params.delete('size');
+                params.delete('maxPrice');
+                params.set('page', '1');
+                
+                if (priceSlider) params.set('maxPrice', priceSlider.value);
+                if (checkedCats.length > 0) params.set('category', checkedCats[0]);
+                if (selectedSizes.length > 0) params.set('size', selectedSizes.join(','));
+
+                const newUrl = `${window.location.pathname}?${params.toString()}`;
+                window.history.pushState({}, '', newUrl);
+
+                fetchPublishedProducts(1);
+
+                if (window.innerWidth < 992 && sidebar) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        }
+        
+        // Sort Logic
+        const sortSelect = document.getElementById('sortSelect');
+        if (sortSelect) {
+            const currentSort = new URLSearchParams(window.location.search).get('sort');
+            if (currentSort) sortSelect.value = currentSort;
+
+            sortSelect.addEventListener('change', (e) => {
+                const sortValue = e.target.value;
+                const params = new URLSearchParams(window.location.search);
+                
+                if (sortValue) params.set('sort', sortValue);
+                else params.delete('sort');
+                
+                params.set('page', '1');
+                window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
+                
+                fetchPublishedProducts(1);
+            });
+        }
+
+        let currentPage = 1;
+        let totalPages = 1;
+
+        function getQueryParam(param) {
+            return new URLSearchParams(window.location.search).get(param);
+        }
+
+        async function fetchPublishedProducts(page = 1) {
+            try {
+                const categoryParam = getQueryParam('category');
+                const sizeParam = getQueryParam('size');
+                const maxPriceParam = getQueryParam('maxPrice');
+                const sortParam = getQueryParam('sort');
+
+                let url = `http://localhost:5000/api/products/public?page=${page}&limit=6`;
+                
+                if (categoryParam) url += `&category=${categoryParam}`;
+                if (sizeParam) url += `&size=${sizeParam}`;
+                if (maxPriceParam) url += `&maxPrice=${maxPriceParam}`;
+                if (sortParam) url += `&sort=${sortParam}`;
+
+                const res = await fetch(url);
+                const data = await res.json();
+                
+                currentPage = data.currentPage || 1;
+                totalPages = data.totalPages || 1;
+
+                renderProducts(data.products || []);
+                renderPagination();
+                
+                const itemCountSpan = document.querySelector('.item-count');
+                if (itemCountSpan) itemCountSpan.textContent = `${data.totalProducts || 0} items`;
+                
+                if(page > 1 && document.querySelector('.shop-layout')) {
+                    document.querySelector('.shop-layout').scrollIntoView({ behavior: 'smooth' });
+                }
+
+            } catch (error) {
+                console.error("Error fetching products:", error);
+                document.getElementById('productGrid').innerHTML = `<p style="grid-column: 1/-1;">Error loading products.</p>`;
+            }
+        }
+
+        function renderProducts(products) {
+            const container = document.getElementById('productGrid');
+            if (!products || products.length === 0) {
+                container.innerHTML = `<p style="grid-column: 1/-1;">No products found.</p>`;
+                return;
+            }
+
+            container.innerHTML = products.map(p => {
+                // Use p.image (from API) instead of p.images
+                const imgSrc = (p.image) ? `http://localhost:5000${p.image}` : '../img/logo.png';
+                const hasDiscount = p.discountValue > 0;
+                const displayPrice = hasDiscount 
+                    ? (p.discountType === 'percent' ? p.price - (p.price * p.discountValue / 100) : p.price - p.discountValue)
+                    : p.price;
+                
+                const badge = hasDiscount ? `<span class="badge sale">-${p.discountValue}${p.discountType === 'percent' ? '%' : ' OFF'}</span>` : '';
+                
+                return `
+                <div class="product-card" onclick="window.location.href='product.html?id=${p._id}'">
+                    <div class="img-container">
+                        ${badge}
+                        <img src="${imgSrc}" alt="${p.name}" onerror="this.src='../img/logo.png'">
+                        <span class="wishlist-btn" onclick="event.stopPropagation(); addToWishlist('${p._id}')">
+                            <i class="far fa-heart"></i>
+                        </span>
+                        <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart('${p._id}')">
+                            <i class="fas fa-shopping-cart"></i> Add To Cart
+                        </button>
+                    </div>
+                    <div class="card-details">
+                        <h3 class="card-title">${p.name}</h3>
+                        <div class="card-rating">
+                            <i class="fas fa-star" style="color: #ff9900;"></i>
+                            <i class="fas fa-star" style="color: #ff9900;"></i>
+                            <i class="fas fa-star" style="color: #ff9900;"></i>
+                            <i class="fas fa-star" style="color: #ff9900;"></i>
+                            <i class="fas fa-star" style="color: #ff9900;"></i>
+                        </div>
+                        <div class="card-price">
+                            ₹${displayPrice.toFixed(2)}
+                            ${hasDiscount ? `<span class="old-price">₹${p.price.toFixed(2)}</span>` : ''}
+                        </div>
+                        <a href="product.html?id=${p._id}" class="btn-view-product">View Product</a>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        function renderPagination() {
+            const paginationContainer = document.querySelector('.pagination');
+            if (!paginationContainer) return;
+
+            paginationContainer.innerHTML = '';
+
+            const prevBtn = document.createElement('div');
+            prevBtn.className = 'page-btn nav';
+            if (currentPage <= 1) prevBtn.style.opacity = '0.5';
+            prevBtn.textContent = 'Previous';
+            if (currentPage > 1) prevBtn.onclick = () => fetchPublishedProducts(currentPage - 1);
+            paginationContainer.appendChild(prevBtn);
+
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('div');
+                pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                pageBtn.textContent = i;
+                pageBtn.onclick = () => fetchPublishedProducts(i);
+                paginationContainer.appendChild(pageBtn);
+            }
+
+            const nextBtn = document.createElement('div');
+            nextBtn.className = 'page-btn nav';
+            if (currentPage >= totalPages || totalPages === 0) nextBtn.style.opacity = '0.5';
+            nextBtn.textContent = 'Next';
+            if (currentPage < totalPages) nextBtn.onclick = () => fetchPublishedProducts(currentPage + 1);
+            paginationContainer.appendChild(nextBtn);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => fetchPublishedProducts(1));
+        
+        async function loadCategories() {
+            try {
+                const res = await fetch("http://localhost:5000/api/categories/published");
+                const categories = await res.json();
+                const container = document.getElementById("categoryList");
+                container.innerHTML = "";
+                
+                const urlCategory = getQueryParam('category');
+
+                categories.forEach(cat => {
+                    const label = document.createElement("label");
+                    label.className = "filter-item category-option";
+                    const isChecked = (urlCategory && (urlCategory.toLowerCase() === (cat.slug || '').toLowerCase() || urlCategory === cat._id)) ? 'checked' : '';
+                    label.innerHTML = `<input type="checkbox" value="${cat._id}" class="category-filter" ${isChecked}> ${cat.name}`;
+                    container.appendChild(label);
+                });
+            } catch (error) {
+                console.error("Error loading categories:", error);
+            }
+        }
+
+        loadCategories();
+
+    </script>
+    <script src="footer.js"></script>
+</body>
+</html>

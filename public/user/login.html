@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Soleverse</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="auth.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+    <div class="split-layout">
+        <!-- 🎨 LEFT SIDE (DESIGN) -->
+        <div class="split-left">
+            <div class="blob shape-olive"></div>
+            <div class="blob shape-beige"></div>
+            <div class="blob shape-brown"></div>
+            <div class="logo-center">Soleverse</div>
+        </div>
+
+        <!-- 🧾 RIGHT SIDE (FORM) -->
+        <div class="split-right">
+            <div class="form-container">
+                <h1>Log in to Soleverse</h1>
+                <p>Enter your details below</p>
+
+                <form id="loginForm">
+                    <div class="form-group">
+                        <input type="text" id="email" class="form-input" placeholder="Email or Phone Number" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="password" class="form-input" placeholder="Password" required>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Log In</button>
+
+                    <div class="divider"><span>OR</span></div>
+                    
+                    <button type="button" class="btn-google" onclick="Swal.fire('Info', 'Google Login Coming Soon', 'info')">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                        Log in with Google
+                    </button>
+
+                    <div class="form-footer">
+                        <a href="forgot-password.html" class="link-red">Forget Password?</a>
+                        <span>Don't have an account? <a href="signup.html" class="link-bold">Sign Up</a></span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const API_BASE = "http://localhost:5000/api";
+            localStorage.removeItem('token');
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('isLoggedIn');
+            console.log('Session cleared for new login.');
+
+            const loginForm = document.getElementById("loginForm");
+            if (!loginForm) return;
+
+            loginForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                const email = document.getElementById("email").value.trim();
+                const password = document.getElementById("password").value.trim();
+
+                try {
+                    const res = await fetch(`${API_BASE}/auth/login`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        credentials: "include",
+                        body: JSON.stringify({ email, password })
+                    });
+
+                    const data = await res.json();
+
+                    if (!res.ok) {
+                        return Swal.fire({
+                            icon: "error",
+                            title: "Login Failed",
+                            text: data.message || "Invalid credentials"
+                        });
+                    }
+
+                    // Save auth data
+                    localStorage.setItem("token", data.token);
+                    localStorage.setItem("currentUser", JSON.stringify(data.user));
+                    localStorage.setItem("isLoggedIn", "true");
+
+                    // Success Alert
+                    await Swal.fire({
+                        icon: "success",
+                        title: "Login Successful",
+                        text: "Welcome to Soleverse!",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+
+                    // Redirect based on role
+                    const role = data.user && data.user.role ? data.user.role.toLowerCase() : 'user';
+
+                    if (role === "admin") {
+                        window.location.href = "../admin/dashboard.html";
+                    } else {
+                        window.location.href = "index.html";
+                    }
+
+                } catch (error) {
+                    console.error("Login Error:", error);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Server Error",
+                        text: "Something went wrong. Please try again."
+                    });
+                }
+            });
+        });
+    </script>
+    <script src="auth.js"></script>
+</body>
+</html>

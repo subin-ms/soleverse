@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soleverse - Customer List</title>
+    <script src="admin-guard.js"></script>
+    <link rel="stylesheet" href="admin-sidebar.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --primary-blue: #4e73df;
+            --primary-bg: #f9fafb;
+            --white: #ffffff;
+            --text-dark: #111827;
+            --text-gray: #6b7280;
+            --border-color: #f3f4f6;
+            --success-green: #10b981;
+            --bg-success: #ecfdf5;
+            --danger-red: #ef4444;
+            --warning-orange: #f97316;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-dark);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            margin-left: 260px; /* Sidebar width */
+        }
+
+        /* Header Area */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .search-wrapper {
+            position: relative;
+            width: 320px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.6rem 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #374151;
+            background-color: #fff;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Table Card */
+        .table-card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #f3f4f6;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 1.25rem 1.5rem;
+            color: #6b7280;
+            font-weight: 500;
+            font-size: 0.85rem;
+            background-color: #fff;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        td {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #f3f4f6;
+            color: #374151;
+            vertical-align: middle;
+        }
+
+        tbody tr:hover {
+            background-color: #f9fafb;
+        }
+
+        /* Column Specifics */
+        .td-name { font-weight: 500; color: #111827; }
+        .td-email { color: #6b7280; font-size: 0.9rem; }
+        .td-date { font-weight: 500; color: #111827; }
+        .td-spent { font-weight: 600; color: #4e73df; }
+        .td-cancellations { color: #ef4444; font-weight: 500; }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.025em;
+            text-transform: uppercase;
+        }
+
+        .status-badge.active {
+            background-color: #ecfdf5;
+            color: #10b981;
+            border: 1px solid #d1fae5;
+        }
+
+        .status-badge.blocked {
+            background-color: #fef2f2;
+            color: #ef4444;
+            border: 1px solid #fee2e2;
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #f97316; /* Orange lock */
+            padding: 8px;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn:hover {
+            color: #ea580c;
+        }
+
+        .icon {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        /* Loading State */
+        .loading-overlay {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem;
+            color: var(--text-gray);
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 12px;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        @media (max-width: 1024px) {
+            .main-content { margin-left: 0; padding: 1.5rem; }
+            .sidebar { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar (Preserved from original Soleverse admin) -->
+    <aside class="sidebar">
+        <a href="dashboard.html" class="logo">SOLEVERSE</a>
+        
+        <div class="menu-category">Main menu</div>
+        <a href="dashboard.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+            Dashboard
+        </a>
+        <a href="orders.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
+            Orders
+        </a>
+        <a href="customers.html" class="nav-item active">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            Customers
+        </a>
+        <a href="categories.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+            Categories
+        </a>
+        <a href="coupons.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+            Coupons
+        </a>
+        <a href="transactions.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+            Transactions
+        </a>
+
+        <div class="menu-category">Product</div>
+        <a href="product-list.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
+            Product List
+        </a>
+        <a href="add-product.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+            Add Product
+        </a>
+        <a href="reviews.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+            Product Reviews
+        </a>
+
+        <div class="menu-category">Admin</div>
+        <a href="admin-role.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            Admin Role
+        </a>
+
+        <div class="sidebar-footer">
+            <button class="logout-btn" id="logoutBtn">
+                Logout
+                <svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="page-header">
+            <h1>Customer List</h1>
+            <div class="search-wrapper">
+                <input type="text" id="customerSearch" class="search-input" placeholder="Search customers...">
+            </div>
+        </header>
+
+        <section class="table-card">
+            <div id="loadingState" class="loading-overlay">
+                <div class="spinner"></div>
+                <span>Loading customers...</span>
+            </div>
+            
+            <table id="customerTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Joined Date</th>
+                        <th>Orders</th>
+                        <th>Cancellations</th>
+                        <th>Spent</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="customerTableBody">
+                    <!-- Dynamic Rows -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const customerSearch = document.getElementById('customerSearch');
+        const customerTableBody = document.getElementById('customerTableBody');
+        const loadingState = document.getElementById('loadingState');
+        const customerTable = document.getElementById('customerTable');
+
+        let searchTimeout;
+
+        async function fetchCustomers(search = '') {
+            try {
+                loadingState.style.display = 'flex';
+                customerTable.style.opacity = '0.5';
+
+                const response = await fetch(`/api/customers/admin?search=${search}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                    }
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    renderCustomers(data.customers);
+                }
+            } catch (error) {
+                console.error('Error fetching customers:', error);
+            } finally {
+                loadingState.style.display = 'none';
+                customerTable.style.opacity = '1';
+            }
+        }
+
+        function renderCustomers(customers) {
+            customerTableBody.innerHTML = '';
+            
+            if (customers.length === 0) {
+                customerTableBody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 3rem; color: #6b7280;">No customers found</td></tr>';
+                return;
+            }
+
+            customers.forEach(customer => {
+                const date = new Date(customer.joinedDate).toLocaleDateString('en-GB'); // DD/MM/YYYY
+                const spent = new Intl.NumberFormat('en-IN', {
+                    style: 'currency',
+                    currency: 'INR',
+                    maximumFractionDigits: 2
+                }).format(customer.spent);
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="td-name">${customer.name}</td>
+                    <td class="td-email">${customer.email}</td>
+                    <td class="td-date">${date}</td>
+                    <td>${customer.orders}</td>
+                    <td class="td-cancellations">${customer.cancellations}</td>
+                    <td class="td-spent">${spent}</td>
+                    <td><span class="status-badge ${customer.isBlocked ? 'blocked' : 'active'}">${customer.status}</span></td>
+                    <td>
+                        <button class="action-btn" onclick="confirmToggleBlock('${customer._id}', ${customer.isBlocked})" title="${customer.isBlocked ? 'Unblock User' : 'Block User'}" style="color: ${customer.isBlocked ? '#10b981' : '#f97316'}">
+                            ${customer.isBlocked 
+                                ? `<svg class="icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>` 
+                                : `<svg class="icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`}
+                        </button>
+                    </td>
+                `;
+                customerTableBody.appendChild(row);
+            });
+        }
+
+        async function confirmToggleBlock(userId, isBlocked) {
+            const action = isBlocked ? 'unblock' : 'block';
+            const color = isBlocked ? '#10b981' : '#ef4444';
+            
+            const result = await Swal.fire({
+                title: `Are you sure?`,
+                text: `You are about to ${action} this user account.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: color,
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: `Yes, ${action} them!`
+            });
+
+            if (result.isConfirmed) {
+                toggleBlock(userId);
+            }
+        }
+
+        async function toggleBlock(userId) {
+            try {
+                const response = await fetch(`/api/customers/admin/${userId}/block`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                    }
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    Swal.fire({
+                        title: 'Updated!',
+                        text: data.message,
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    fetchCustomers(customerSearch.value);
+                }
+            } catch (error) {
+                console.error('Error toggling block:', error);
+                Swal.fire('Error', 'Something went wrong', 'error');
+            }
+        }
+
+        // Live Search with Debounce
+        customerSearch.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                fetchCustomers(e.target.value);
+            }, 300);
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('adminToken');
+            window.location.href = 'login.html';
+        });
+
+        // Initial Load
+        fetchCustomers();
+    </script>
+</body>
+</html>

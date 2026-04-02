@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Returns - Soleverse</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* RESET & VARIABLES */
+        :root {
+            --primary-black: #000000;
+            --primary-white: #ffffff;
+            --text-grey: #757575;
+            --text-grey-light: #999999;
+            --border-color: #e5e5e5;
+            --bg-light: #f9f9f9;
+            --accent-red: #db4444;
+            --accent-blue: #00BFFF;
+            /* Primary Blue for buttons per screenshot/request "Primary blue button" */
+            --primary-blue: #4285F4;
+            /* Screenshot button looks like a standard bright blue. */
+
+            --font-main: 'Inter', sans-serif;
+            --container-width: 1170px;
+            --padding-x: 20px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--primary-black);
+            background-color: var(--primary-white);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+        }
+
+        input {
+            font-family: inherit;
+            outline: none;
+        }
+
+        .container {
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: 0 var(--padding-x);
+        }
+
+        .mobile-toggle {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+    </style>
+    <link rel="stylesheet" href="header.css">
+    <style>
+        /* 
+        GLOBAL STYLES 
+        */
+
+        /* 3. BREADCRUMB & WELCOME */
+        .breadcrumb-section {
+            padding: 80px 0 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            color: var(--text-grey);
+        }
+
+        .breadcrumb span {
+            color: var(--text-grey-light);
+        }
+
+        .breadcrumb .active {
+            color: var(--primary-black);
+            font-weight: 500;
+            opacity: 1;
+        }
+
+        .welcome-text {
+            font-size: 14px;
+            color: var(--primary-black);
+        }
+
+        .welcome-text span {
+            color: var(--accent-red);
+            font-weight: 500;
+        }
+
+        /* 4. ACCOUNT MAIN SECTION */
+        .account-wrapper {
+            margin-bottom: 140px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 100px;
+        }
+
+        /* Sidebar definition */
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 24px;
+            padding-left: 0;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .sidebar-item {
+            font-size: 16px;
+            color: var(--text-grey);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .sidebar-item:hover {
+            color: var(--accent-red);
+        }
+
+        .sidebar-item.active {
+            color: var(--accent-red);
+            font-weight: 500;
+        }
+
+        .sidebar-item a {
+            color: inherit;
+        }
+
+        /* RETURNS CONTENT */
+        .returns-content {
+            width: 100%;
+        }
+
+        .section-header-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            /* Screenshot spacing check */
+        }
+
+        /* Empty State Card */
+        .empty-returns-card {
+            width: 100%;
+            background: #fff;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            /* Matching other cards */
+            border-radius: 8px;
+            /* Rounded corners */
+            padding: 100px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .empty-msg {
+            font-size: 20px;
+            font-weight: 700;
+            /* Looks bold in screenshot */
+            color: #000;
+            margin-bottom: 24px;
+        }
+
+        .btn-go-orders {
+            background: #4285F4;
+            /* Primary Blue Button */
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 12px 32px;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+
+        .btn-go-orders:hover {
+            opacity: 0.9;
+        }
+
+        /* Order Card */
+        .order-card {
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            background: #fff;
+            padding: 24px 40px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .order-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .order-id {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--primary-black);
+        }
+
+        .order-meta {
+            font-size: 14px;
+            color: var(--text-grey);
+            display: flex;
+            gap: 24px;
+        }
+
+        .order-price {
+            font-weight: 500;
+            color: var(--primary-black);
+        }
+
+        .order-status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .status-completed {
+            color: #28a745;
+        }
+
+        .btn-view-details {
+            border: 1px solid #ddd;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--primary-black);
+            display: inline-block;
+            transition: 0.3s;
+        }
+
+        .btn-view-details:hover {
+            background: #f5f5f5;
+            border-color: #ccc;
+        }
+
+
+
+        /* RESPONSIVENESS */
+        @media (max-width: 1199px) {
+            .container {
+                max-width: 100%;
+                padding: 0 40px;
+            }
+
+            .nav-menu {
+                gap: 20px;
+            }
+
+            .search-box {
+                width: 200px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 40px;
+            }
+
+            .account-wrapper {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .sidebar-menu {
+                flex-direction: row;
+                overflow-x: auto;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #e5e5e5;
+            }
+
+            .sidebar-item {
+                white-space: nowrap;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .container {
+                padding: 0 20px;
+            }
+
+            .top-bar .container {
+                justify-content: center;
+            }
+
+            .top-center-text {
+                position: static;
+                transform: none;
+                flex-direction: column;
+                text-align: center;
+                gap: 5px;
+            }
+
+            .lang-selector {
+                display: none;
+            }
+
+            .nav-menu,
+            .search-box {
+                display: none;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .nav-menu.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background: white;
+                padding: 20px;
+                box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .breadcrumb-section {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 40px 0;
+            }
+
+            .account-wrapper {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .sidebar-menu {
+                flex-direction: column;
+                border-bottom: none;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            /* My Returns Page Specific Mobile */
+            .empty-returns-card {
+                padding: 60px 20px;
+            }
+
+            .btn-go-orders {
+                width: 100%;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="footer.css">
+</head>
+
+<body>
+
+    <!-- TOP BAR -->
+        <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-center-text">
+                Summer Sale For All Swim Suits and Free Express Delivery - OFF 50%!
+                <a href="shop.html" class="shop-now-link">ShopNow</a>
+            </div>
+            <div class="lang-selector">
+                English <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <header class="main-header">
+        <div class="container nav-container">
+            <!-- Mobile Toggle (Left) -->
+            <div class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+
+            <!-- Logo (Center on Mobile, Left on Desktop) -->
+            <a href="index.html" class="logo">Soleverse</a>
+
+            <!-- Navigation Links (Center on Desktop) -->
+            <nav class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="shop.html" class="nav-link">Shop</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <a href="about.html" class="nav-link">About</a>
+            </nav>
+
+            <!-- Icons (Right) -->
+            <div class="header-right">
+                <!-- Search Box (Desktop) -->
+                <div class="search-box-container">
+                    <input type="text" class="search-input" placeholder="What are you looking for?">
+                    <i class="fas fa-search search-icon-btn"></i>
+                </div>
+
+                <div class="nav-icons">
+                    <!-- Mobile Search Icon -->
+                    <a href="#" class="mobile-search-icon"><i class="fas fa-search"></i></a>
+                    
+                    <a href="wishlist.html" class="nav-icon-link"><i class="far fa-heart"></i></a>
+                    <a href="cart.html" class="nav-icon-link"><i class="fas fa-shopping-cart"></i></a>
+                    
+                    <!-- User Dropdown -->
+                    <div class="user-dropdown-container">
+                        <a href="account.html" class="user-icon-red"><i class="far fa-user"></i></a>
+                        <div class="dropdown-menu">
+                            <a href="account.html"><i class="far fa-user"></i> Manage My Account</a>
+                            <a href="orders.html"><i class="fas fa-box-open"></i> My Order</a>
+                            <a href="cancellations.html"><i class="fas fa-times-circle"></i> My Cancellations</a>
+                            <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 3. BREADCRUMB & WELCOME -->
+    <div class="container breadcrumb-section">
+        <div class="breadcrumb">
+            <span>Home /</span> <span class="active">My Account</span>
+        </div>
+        <div class="welcome-text">
+            Welcome! <span id="welcome-name">Md Rimel</span>
+        </div>
+    </div>
+
+    <!-- 4. MAIN CONTENT -->
+    <div class="container account-wrapper">
+        <!-- Sidebar -->
+        <aside class="account-sidebar">
+            <div class="sidebar-block">
+                <h4 class="sidebar-title">Manage My Account</h4>
+                <div class="sidebar-menu">
+                    <a href="account.html" class="sidebar-item">My Profile</a>
+                    <a href="address-book.html" class="sidebar-item">Address Book</a>
+                    <a href="payment-options.html" class="sidebar-item">My Payment Options</a>
+                </div>
+            </div>
+
+            <div class="sidebar-block" style="margin-top: 24px;">
+                <h4 class="sidebar-title" style="margin-bottom: 16px;">My Orders</h4>
+                <div class="sidebar-menu">
+                    <a href="orders.html" class="sidebar-item">My Orders</a>
+                    <a href="returns.html" class="sidebar-item">My Returns</a>
+                    <a href="cancellations.html" class="sidebar-item">Cancellations</a>
+                </div>
+            </div>
+
+            <div class="sidebar-menu" style="margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px;">
+                <div class="sidebar-item" style="font-weight: 500;">LOG OUT</div>
+            </div>
+            <script src="account-sidebar.js"></script>
+        </aside>
+
+        <!-- Right Content: My Returns -->
+        <main class="returns-content">
+            <h2 class="section-header-title">Returns</h2>
+
+            <div id="returns-list" style="display: flex; flex-direction: column; gap: 20px;">
+                <!-- Fetched dynamically -->
+                <div style="padding:40px; text-align:center; color:#888;">Loading returns...</div>
+            </div>
+        </main>
+    </div>
+
+
+    <div id="footer-placeholder"></div>
+
+
+    <script src="header.js"></script>
+    <script>
+        const ORDERS_API = "http://localhost:5000/api/orders";
+
+        async function fetchReturns() {
+            const container = document.getElementById("returns-list");
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                container.innerHTML = `<p>Please <a href="login.html" style="text-decoration: underline;">login</a> to view your returns.</p>`;
+                return;
+            }
+
+            try {
+                const res = await fetch(ORDERS_API, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+
+                if (!res.ok) throw new Error("Failed to fetch returns");
+
+                const allOrders = await res.json();
+                const returns = allOrders.filter(o => o.status.toLowerCase() === 'returned');
+
+                if (returns.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-returns-card">
+                            <div class="empty-msg">Sorry, no results found</div>
+                            <button class="btn-go-orders" onclick="window.location.href='orders.html'">Go to my orders</button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = returns.map(order => {
+                    const date = new Date(order.createdAt).toLocaleDateString();
+                    const itemCount = order.items.reduce((acc, item) => acc + item.quantity, 0);
+
+                    return `
+                    <div class="order-card">
+                        <div class="order-info">
+                            <div class="order-id">Order #${order._id.slice(-6).toUpperCase()}</div>
+                            <div class="order-meta">
+                                <span>${date}</span>
+                                <span class="order-price">₹${order.totalAmount}</span>
+                                <span>${itemCount} Items</span>
+                            </div>
+                        </div>
+                        <div class="order-actions">
+                            <span class="order-status-badge status-completed">Returned</span>
+                            <a href="order-details.html?id=${order._id}" class="btn-view-details" style="margin-left: 16px;">View Details</a>
+                        </div>
+                    </div>
+                    `;
+                }).join("");
+
+            } catch (error) {
+                console.error("Error fetching returns:", error);
+                container.innerHTML = `<p>Error loading returns. Please try again later.</p>`;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", fetchReturns);
+    </script>
+    <script src="footer.js"></script>
+    <script src="auth.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cancel Order - Soleverse</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+        /* RESET & VARIABLES */
+        :root {
+            --primary-black: #000000;
+            --primary-white: #ffffff;
+            --text-grey: #757575;
+            --text-grey-light: #999999;
+            --border-color: #e5e5e5;
+            --bg-light: #f9f9f9;
+            --bg-secondary: #f5f5f5;
+            --font-main: 'Inter', sans-serif;
+            --container-width: 1170px;
+            --padding-x: 20px;
+            --accent-red: #db4444;
+            --accent-blue: #00BFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--primary-black);
+            background-color: var(--primary-white);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+        }
+
+        input {
+            font-family: inherit;
+            outline: none;
+        }
+
+        .container {
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: 0 var(--padding-x);
+        }
+
+        .mobile-toggle {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+    </style>
+    <link rel="stylesheet" href="header.css" />
+    <style>
+        /* 
+        GLOBAL STYLES 
+        */
+
+        /* 3. BREADCRUMB & WELCOME */
+        .breadcrumb-section {
+            padding: 80px 0 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            color: var(--text-grey);
+        }
+
+        .breadcrumb span {
+            color: var(--text-grey-light);
+        }
+
+        .breadcrumb .active {
+            color: var(--primary-black);
+            font-weight: 500;
+            opacity: 1;
+        }
+
+        .welcome-text {
+            font-size: 14px;
+            color: var(--primary-black);
+        }
+
+        .welcome-text span {
+            color: var(--accent-red);
+            font-weight: 500;
+        }
+
+
+        /* 4. ACCOUNT MAIN SECTION */
+        .account-wrapper {
+            margin-bottom: 140px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 100px;
+        }
+
+        /* Sidebar */
+        .account-sidebar {
+            /* Inherited */
+        }
+
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 24px;
+            padding-left: 0;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .sidebar-item {
+            font-size: 16px;
+            color: var(--text-grey);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .sidebar-item:hover {
+            color: var(--accent-red);
+        }
+
+        .sidebar-item.active {
+            color: var(--accent-red);
+            font-weight: 500;
+        }
+
+        /* Details Content */
+        .details-content {
+            width: 100%;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-black);
+        }
+
+        /* 1) Address Box */
+        .address-box {
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 30px 40px;
+            margin-bottom: 30px;
+            background: #fff;
+        }
+
+        .address-line {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .addr-label {
+            width: 80px;
+            font-weight: 400;
+            color: #000;
+            text-transform: lowercase;
+        }
+
+        .addr-value {
+            font-weight: 400;
+            color: #000;
+        }
+
+        /* 2) Payment & Total Row */
+        .payment-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 20px 40px;
+            margin-bottom: 30px;
+            background: #fff;
+        }
+
+        .sub-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .sub-label {
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-cod {
+            background: #000;
+            color: #fff;
+            padding: 4px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        .total-price {
+            color: #00BFFF;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        /* 3) Items Section */
+        .items-section {}
+
+        .items-title {
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .item-card {
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+        }
+
+        .item-left {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .item-img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+        }
+
+        .item-details {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .item-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #000;
+        }
+
+        .item-meta {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .size-qty {
+            margin-top: 4px;
+            font-size: 14px;
+            color: #000;
+            font-weight: 500;
+        }
+
+        .status-badge-pending {
+            background: #FFF8E1;
+            color: #FFC107;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-top: 8px;
+            width: fit-content;
+        }
+
+        .item-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 40px;
+        }
+
+        .item-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #00BFFF;
+        }
+
+        /* CANCEL CONFIRMATION OVERLAY (Simulated as part of page or separate page per user request) */
+        /* User requested separate page order-cancel.html */
+
+        .cancel-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 20px;
+            justify-content: flex-end;
+            /* Or center? Screenshot: Center of Item Card or Right aligned? */
+            /* Actually in "order_cancel" screenshot, there is a Warning Icon overlay in the middle? 
+                Wait, looking at screenshot "order_cancel":
+                The content IS Order Details, but overlaid or replaced with "Cancel Item?" message.
+                Ah, the screenshot shows the item list, but instead of the status "Pending", it shows:
+                "Cancel Item?" (Title?)
+                "Are you sure you want to cancel this item?" (Text)
+                Buttons: "Yes, Cancel" "No"
+             */
+            /* Let's follow that. The Item Card content changes. */
+        }
+
+        .cancel-overlay-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            text-align: center;
+        }
+
+        .cancel-warning-icon {
+            font-size: 24px;
+            color: orange;
+            /* Or SVG icon */
+        }
+
+        .cancel-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .cancel-desc {
+            font-size: 14px;
+            color: #777;
+            max-width: 200px;
+        }
+
+        .btn-yes-cancel {
+            background: #FF0000;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 500;
+            width: 120px;
+        }
+
+        .btn-no-go-back {
+            background: #eee;
+            color: #333;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 500;
+            width: 120px;
+        }
+
+
+        /* 5. FOOTER REMOVED - Using global footer.css */
+
+        /* RESPONSIVENESS */
+
+        @media (max-width: 1199px) {
+            .container {
+                max-width: 100%;
+                padding: 0 40px;
+            }
+
+            .nav-menu {
+                gap: 20px;
+            }
+
+            .search-box {
+                width: 200px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 40px;
+            }
+
+            .account-wrapper {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .sidebar-menu {
+                flex-direction: row;
+                overflow-x: auto;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #e5e5e5;
+            }
+
+            .sidebar-item {
+                white-space: nowrap;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .container {
+                padding: 0 20px;
+            }
+
+            .top-bar .container {
+                justify-content: center;
+            }
+
+            .top-center-text {
+                position: static;
+                transform: none;
+                flex-direction: column;
+                text-align: center;
+                gap: 5px;
+            }
+
+            .lang-selector {
+                display: none;
+            }
+
+            .nav-menu,
+            .search-box {
+                display: none;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .nav-menu.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background: white;
+                padding: 20px;
+                box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .breadcrumb-section {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 40px 0;
+            }
+
+            .account-wrapper {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .sidebar-menu {
+                flex-direction: column;
+                border-bottom: none;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            /* Order Details Responsive */
+            .payment-row {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            .item-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+
+            .item-left {
+                width: 100%;
+                gap: 16px;
+            }
+
+            .item-right {
+                width: 100%;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="footer.css">
+</head>
+
+<body>
+
+    <!-- TOP BAR -->
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-center-text">
+                Summer Sale For All Free Express Delivery - OFF 50%!
+                <a href="shop.html" class="shop-now-link">ShopNow</a>
+            </div>
+            <div class="lang-selector">
+                English <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <header class="main-header">
+        <div class="container nav-container">
+            <!-- Mobile Toggle (Left) -->
+            <div class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+
+            <!-- Logo (Center on Mobile, Left on Desktop) -->
+            <a href="index.html" class="logo">Soleverse</a>
+
+            <!-- Navigation Links (Center on Desktop) -->
+            <nav class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="shop.html" class="nav-link">Shop</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <a href="about.html" class="nav-link">About</a>
+            </nav>
+
+            <!-- Icons (Right) -->
+            <div class="header-right">
+                <!-- Search Box (Desktop) -->
+                <div class="search-box-container">
+                    <input type="text" class="search-input" placeholder="What are you looking for?">
+                    <i class="fas fa-search search-icon-btn"></i>
+                </div>
+
+                <div class="nav-icons">
+                    <!-- Mobile Search Icon -->
+                    <a href="#" class="mobile-search-icon"><i class="fas fa-search"></i></a>
+
+                    <a href="wishlist.html" class="nav-icon-link"><i class="far fa-heart"></i></a>
+                    <a href="cart.html" class="nav-icon-link"><i class="fas fa-shopping-cart"></i></a>
+
+                    <!-- User Dropdown -->
+                    <div class="user-dropdown-container">
+                        <a href="account.html" class="user-icon-red"><i class="far fa-user"></i></a>
+                        <div class="dropdown-menu">
+                            <a href="account.html"><i class="far fa-user"></i> Manage My Account</a>
+                            <a href="orders.html"><i class="fas fa-box-open"></i> My Order</a>
+                            <a href="cancellations.html"><i class="fas fa-times-circle"></i> My Cancellations</a>
+                            <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+
+
+    <!-- 3. BREADCRUMB & WELCOME -->
+    <div class="container breadcrumb-section">
+        <div class="breadcrumb">
+            <span>Home /</span> <span class="active">My Account</span>
+        </div>
+        <div class="welcome-text">
+            Welcome! <span id="welcome-name">Md Rimel</span>
+        </div>
+    </div>
+
+    <!-- 4. MAIN CONTENT -->
+    <div class="container account-wrapper">
+        <!-- Sidebar -->
+        <aside class="account-sidebar">
+            <div class="sidebar-block">
+                <h4 class="sidebar-title">Manage My Account</h4>
+                <div class="sidebar-menu">
+                    <a href="account.html" class="sidebar-item">My Profile</a>
+                    <a href="address-book.html" class="sidebar-item">Address Book</a>
+                    <a href="payment-options.html" class="sidebar-item">My Payment Options</a>
+                </div>
+            </div>
+
+            <div class="sidebar-block" style="margin-top: 24px;">
+                <h4 class="sidebar-title" style="margin-bottom: 16px;">My Orders</h4>
+                <div class="sidebar-menu">
+                    <a href="orders.html" class="sidebar-item" style="margin-bottom:16px; display:block;">My
+                        Orders</a>
+                    <a href="returns.html" class="sidebar-item">My Returns</a>
+                    <a href="cancellations.html" class="sidebar-item">Cancellations</a>
+                </div>
+            </div>
+
+            <div class="sidebar-menu" style="margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px;">
+                <div class="sidebar-item" style="font-weight: 500;">LOG OUT</div>
+            </div>
+            <script src="account-sidebar.js"></script>
+        </aside>
+
+        <!-- Details Content -->
+        <main class="details-content">
+            <div class="section-header">
+                <h2 class="section-title" id="order-id-title">Order Details</h2>
+            </div>
+
+            <!-- Address Box -->
+            <div class="address-box" id="shipping-address-container">
+                <p>Loading address...</p>
+            </div>
+
+            <!-- Payment & Total -->
+            <div class="payment-row">
+                <div class="sub-group">
+                    <span class="sub-label">PAYMENT</span>
+                    <span class="badge-cod" id="payment-method-badge">...</span>
+                </div>
+                <div class="sub-group" style="align-items: flex-end;">
+                    <span class="sub-label">TOTAL</span>
+                    <span class="total-price" id="order-total-price">₹...</span>
+                </div>
+            </div>
+
+            <!-- Items - Cancel State -->
+            <div class="items-section" id="order-items-container">
+                <h3 class="items-title">Items</h3>
+                <p>Loading items...</p>
+            </div>
+
+        </main>
+    </div>
+
+
+    <div id="footer-placeholder"></div>
+
+
+    <script src="header.js"></script>
+    <script>
+        const API_BASE = "http://localhost:5000/api/orders";
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('id');
+
+        async function fetchOrderForCancellation() {
+            if (!orderId) {
+                alert("Order ID missing in URL");
+                window.location.href = "orders.html";
+                return;
+            }
+
+            const token = localStorage.getItem("token");
+            if (!token) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/${orderId}`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+
+                if (!res.ok) throw new Error("Failed to fetch order details");
+
+                const order = await res.json();
+                renderCancellationPage(order);
+
+            } catch (error) {
+                console.error("Error fetching order details:", error);
+                alert("Error loading order details");
+            }
+        }
+
+        function renderCancellationPage(order) {
+            document.getElementById('order-id-title').innerText = `Cancel Order #${order._id.slice(-6).toUpperCase()}`;
+            
+            // Render Address
+            const addr = order.shippingAddress;
+            document.getElementById('shipping-address-container').innerHTML = `
+                <div class="address-line">
+                    <span class="addr-label">address:</span>
+                    <span class="addr-value">${addr.streetAddress}${addr.apartment ? `, ${addr.apartment}` : ''}</span>
+                </div>
+                <div class="address-line">
+                    <span class="addr-label"></span>
+                    <span class="addr-value">name: ${addr.firstName}</span>
+                </div>
+                <div class="address-line">
+                    <span class="addr-label"></span>
+                    <span class="addr-value">City: ${addr.city}</span>
+                </div>
+                <div class="address-line">
+                    <span class="addr-label"></span>
+                    <span class="addr-value">ph: ${addr.phone}</span>
+                </div>
+            `;
+
+            document.getElementById('payment-method-badge').innerText = order.paymentMethod.toUpperCase();
+            document.getElementById('order-total-price').innerText = `₹${order.totalAmount}`;
+
+            // Render Items for confirmation
+            const itemsContainer = document.getElementById('order-items-container');
+            itemsContainer.innerHTML = '<h3 class="items-title">Items to Cancel</h3>';
+            
+            order.items.forEach(item => {
+                const p = item.product;
+                itemsContainer.innerHTML += `
+                    <div class="item-card" style="margin-bottom: 20px;">
+                        <div class="item-left">
+                            <img src="http://localhost:5000${p.image}" alt="${p.name}" class="item-img">
+                            <div class="item-details">
+                                <div class="item-name">${p.name}</div>
+                                <div class="size-qty">Size: ${item.size || 'N/A'} &nbsp; Quantity: ${item.quantity}</div>
+                            </div>
+                        </div>
+                        <div class="item-right">
+                            <div class="item-price">₹${item.price}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Add the final confirmation section
+            itemsContainer.innerHTML += `
+                <div class="cancel-overlay-content" style="background: #fff; padding: 30px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); margin-top: 30px;">
+                    <i class="fas fa-exclamation-circle cancel-warning-icon" style="font-size: 40px; color: #FFC107; margin-bottom: 16px;"></i>
+                    <div class="cancel-title" style="font-size: 20px; margin-bottom: 8px;">Cancel This Order?</div>
+                    <div class="cancel-desc" style="max-width: 400px; margin-bottom: 24px;">Are you sure you want to cancel this entire order? This action cannot be undone.</div>
+
+                    <div class="cancel-actions">
+                        <button class="btn-no-go-back" onclick="window.history.back()" style="padding: 12px 30px; width: auto; margin-right: 16px;">No, Keep Order</button>
+                        <button class="btn-yes-cancel" id="btn-confirm-cancel" onclick="confirmCancellation()" style="padding: 12px 30px; width: auto;">Yes, Cancel Order</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function confirmCancellation() {
+            const token = localStorage.getItem("token");
+            try {
+                const res = await fetch(`${API_BASE}/${orderId}/cancel`, {
+                    method: 'PUT',
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+
+                if (!res.ok) {
+                    const error = await res.json();
+                    throw new Error(error.message || "Failed to cancel order");
+                }
+
+                window.location.href = 'order-cancel-success.html';
+
+            } catch (error) {
+                console.error("Error cancelling order:", error);
+                alert(error.message || "Error cancelling order");
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", fetchOrderForCancellation);
+    </script>
+    <script src="footer.js"></script>
+    <script src="auth.js"></script>
+</body>
+
+</html>

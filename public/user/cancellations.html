@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancellations - Soleverse</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* RESET & VARIABLES */
+        :root {
+            --primary-black: #000000;
+            --primary-white: #ffffff;
+            --text-grey: #757575;
+            --text-grey-light: #999999;
+            --border-color: #e5e5e5;
+            --bg-light: #f9f9f9;
+            --accent-red: #db4444;
+            --primary-blue: #4285F4;
+            /* Matching the blue button from screenshot */
+
+            --font-main: 'Inter', sans-serif;
+            --container-width: 1170px;
+            --padding-x: 20px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--primary-black);
+            background-color: var(--primary-white);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+        }
+
+        input {
+            font-family: inherit;
+            outline: none;
+        }
+
+        .container {
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: 0 var(--padding-x);
+        }
+
+        .mobile-toggle {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+    </style>
+    <link rel="stylesheet" href="header.css">
+    <style>
+        /* 
+        GLOBAL STYLES 
+        */
+
+        /* 3. BREADCRUMB & WELCOME */
+        .breadcrumb-section {
+            padding: 80px 0 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            color: var(--text-grey);
+        }
+
+        .breadcrumb span {
+            color: var(--text-grey-light);
+        }
+
+        .breadcrumb .active {
+            color: var(--primary-black);
+            font-weight: 500;
+            opacity: 1;
+        }
+
+        .welcome-text {
+            font-size: 14px;
+            color: var(--primary-black);
+        }
+
+        .welcome-text span {
+            color: var(--accent-red);
+            font-weight: 500;
+        }
+
+        /* 4. ACCOUNT MAIN SECTION */
+        .account-wrapper {
+            margin-bottom: 140px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 100px;
+        }
+
+        /* Sidebar definition */
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 24px;
+            padding-left: 0;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .sidebar-item {
+            font-size: 16px;
+            color: var(--text-grey);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .sidebar-item:hover {
+            color: var(--accent-red);
+        }
+
+        .sidebar-item.active {
+            color: var(--accent-red);
+            font-weight: 500;
+        }
+
+        .sidebar-item a {
+            color: inherit;
+        }
+
+        /* CANCELLATIONS CONTENT */
+        .cancellations-content {
+            width: 100%;
+        }
+
+        .section-header-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            /* Lowercase 'cancellations' as per screenshot */
+        }
+
+        /* Empty State Card */
+        .empty-cancellations-card {
+            width: 100%;
+            background: #fff;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            /* Rounded corners */
+            padding: 100px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .empty-msg {
+            font-size: 20px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 24px;
+        }
+
+        .btn-go-orders {
+            background: var(--primary-blue);
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 12px 32px;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+
+        .btn-go-orders:hover {
+            opacity: 0.9;
+        }
+
+        /* Cancellation Card Styles */
+        .cancel-card {
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+            padding: 24px;
+            background: #fff;
+        }
+
+        .cancel-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .cancel-order-id {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .cancel-badge {
+            background: #FFE5E5;
+            color: #db4444;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .cancel-date-pill {
+            display: inline-block;
+            background: #f0f0f0;
+            color: #666;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 24px;
+        }
+
+        .cancel-body {
+            display: flex;
+            gap: 20px;
+        }
+
+        .cancel-img-box {
+            width: 80px;
+            height: 80px;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #f9f9f9;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .cancel-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cancel-details {
+            flex-grow: 1;
+        }
+
+        .cancel-product-name {
+            font-size: 15px;
+            margin-bottom: 4px;
+            color: #333;
+        }
+        
+        .cancel-product-name strong {
+            font-weight: 600;
+            color: #000;
+        }
+
+        .cancel-amount {
+            font-size: 15px;
+            margin-bottom: 16px;
+            color: #333;
+        }
+        
+        .cancel-amount strong {
+            font-weight: 600;
+            color: #000;
+        }
+
+        .refund-block {
+            padding: 16px 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .refund-block.cod {
+            background: #FAFAFA;
+            color: #555;
+            border-left: 4px solid #555;
+        }
+        
+        .refund-block.wallet {
+            background: #f0fdf4;
+            border-left: 4px solid #0f7a37;
+        }
+        
+        .refund-block.wallet .wallet-title {
+            font-weight: 700;
+            font-size: 15px;
+            margin-bottom: 6px;
+            color: #0f7a37;
+        }
+        
+        .refund-block.wallet .wallet-desc {
+            font-size: 14px;
+            color: #15803d;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+        
+        .refund-block.wallet .refund-icon {
+            color: #0f7a37;
+        }
+        
+        .refund-icon {
+            font-size: 24px;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .cancel-card-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .btn-outline {
+            border: 1px solid #ddd;
+            background: transparent;
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+        
+        .btn-outline:hover {
+            border-color: #000;
+        }
+
+        .btn-solid {
+            background: #000;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+        
+        .btn-solid:hover {
+            background: #333;
+        }
+
+
+
+        /* RESPONSIVENESS */
+        @media (max-width: 1199px) {
+            .container {
+                max-width: 100%;
+                padding: 0 40px;
+            }
+
+            .top-center-text {
+                white-space: normal;
+                text-align: center;
+                width: 80%;
+            }
+
+            .nav-menu {
+                gap: 20px;
+            }
+
+            .search-box {
+                width: 200px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 40px;
+            }
+
+            .account-wrapper {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .sidebar-menu {
+                flex-direction: row;
+                overflow-x: auto;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #e5e5e5;
+            }
+
+            .sidebar-item {
+                white-space: nowrap;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .container {
+                padding: 0 20px;
+            }
+
+            .top-bar .container {
+                justify-content: center;
+            }
+
+            .top-center-text {
+                position: static;
+                transform: none;
+                flex-direction: column;
+                text-align: center;
+                gap: 5px;
+                width: 100%;
+            }
+
+            .lang-selector {
+                display: none;
+            }
+
+            .nav-menu,
+            .search-box {
+                display: none;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .nav-menu.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background: white;
+                padding: 20px;
+                box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .breadcrumb-section {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 40px 0;
+            }
+
+            .account-wrapper {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .sidebar-menu {
+                flex-direction: column;
+                border-bottom: none;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            /* Cancellations Page Specific Mobile */
+            .empty-cancellations-card {
+                padding: 60px 20px;
+            }
+
+            .btn-go-orders {
+                width: 100%;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="footer.css">
+</head>
+
+<body>
+
+    <!-- TOP BAR -->
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-center-text">
+                Summer Sale For All Free Express Delivery - OFF 50%!
+                <a href="shop.html" class="shop-now-link">ShopNow</a>
+            </div>
+            <div class="lang-selector">
+                English <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <header class="main-header">
+        <div class="container nav-container">
+            <!-- Mobile Toggle (Left) -->
+            <div class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+
+            <!-- Logo (Center on Mobile, Left on Desktop) -->
+            <a href="index.html" class="logo">Soleverse</a>
+
+            <!-- Navigation Links (Center on Desktop) -->
+            <nav class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="shop.html" class="nav-link">Shop</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <a href="about.html" class="nav-link">About</a>
+            </nav>
+
+            <!-- Icons (Right) -->
+            <div class="header-right">
+                <!-- Search Box (Desktop) -->
+                <div class="search-box-container">
+                    <input type="text" class="search-input" placeholder="What are you looking for?">
+                    <i class="fas fa-search search-icon-btn"></i>
+                </div>
+
+                <div class="nav-icons">
+                    <!-- Mobile Search Icon -->
+                    <a href="#" class="mobile-search-icon"><i class="fas fa-search"></i></a>
+
+                    <a href="wishlist.html" class="nav-icon-link"><i class="far fa-heart"></i></a>
+                    <a href="cart.html" class="nav-icon-link"><i class="fas fa-shopping-cart"></i></a>
+
+                    <!-- User Dropdown -->
+                    <div class="user-dropdown-container">
+                        <a href="account.html" class="user-icon-red"><i class="far fa-user"></i></a>
+                        <div class="dropdown-menu">
+                            <a href="account.html"><i class="far fa-user"></i> Manage My Account</a>
+                            <a href="orders.html"><i class="fas fa-box-open"></i> My Order</a>
+                            <a href="cancellations.html"><i class="fas fa-times-circle"></i> My Cancellations</a>
+                            <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 3. BREADCRUMB & WELCOME -->
+    <div class="container breadcrumb-section">
+        <div class="breadcrumb">
+            <span>Home /</span> <span class="active">My Account</span>
+        </div>
+        <div class="welcome-text">
+            Welcome! <span id="welcome-name">Md Rimel</span>
+        </div>
+    </div>
+
+    <!-- 4. MAIN CONTENT -->
+    <div class="container account-wrapper">
+        <!-- Sidebar -->
+        <aside class="account-sidebar">
+            <div class="sidebar-block">
+                <h4 class="sidebar-title">Manage My Account</h4>
+                <div class="sidebar-menu">
+                    <a href="account.html" class="sidebar-item">My Profile</a>
+                    <a href="address-book.html" class="sidebar-item">Address Book</a>
+                    <a href="payment-options.html" class="sidebar-item">My Payment Options</a>
+                </div>
+            </div>
+
+            <div class="sidebar-block" style="margin-top: 24px;">
+                <h4 class="sidebar-title" style="margin-bottom: 16px;">My Orders</h4>
+                <div class="sidebar-menu">
+                    <a href="orders.html" class="sidebar-item">My Orders</a>
+                    <a href="returns.html" class="sidebar-item">My Returns</a>
+                    <a href="cancellations.html" class="sidebar-item">Cancellations</a>
+                </div>
+            </div>
+
+            <div class="sidebar-menu" style="margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px;">
+                <div class="sidebar-item" style="font-weight: 500;">LOG OUT</div>
+            </div>
+            <script src="account-sidebar.js"></script>
+        </aside>
+
+        <!-- Right Content: Cancellations -->
+        <main class="cancellations-content">
+            <h2 class="section-header-title" style="text-transform: uppercase;">MY CANCELLATIONS</h2>
+
+            <div id="cancellations-list" style="display: flex; flex-direction: column; gap: 24px;">
+                <!-- Loading State dynamically replaced -->
+                <div style="padding: 40px; text-align: center; color: #888;">Loading cancellations...</div>
+            </div>
+
+            <div id="empty-cancellations" class="empty-cancellations-card" style="display: none;">
+                <div class="empty-msg">No Cancellations found</div>
+                <button class="btn-go-orders" onclick="window.location.href='shop.html'">Start Shopping</button>
+            </div>
+        </main>
+    </div>
+
+
+    <div id="footer-placeholder"></div>
+
+
+    <script src="header.js"></script>
+    <script>
+        const ORDERS_API = "http://localhost:5000/api/orders";
+
+        async function fetchCancellations() {
+            const listContainer = document.getElementById("cancellations-list");
+            const emptyState = document.getElementById("empty-cancellations");
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                listContainer.innerHTML = `<p>Please <a href="login.html" style="text-decoration:underline;">login</a> to view your cancellations.</p>`;
+                return;
+            }
+
+            try {
+                const res = await fetch(ORDERS_API, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+
+                if (!res.ok) throw new Error("Failed to fetch cancellations");
+
+                const allOrders = await res.json();
+                const cancellations = allOrders.filter(o => o.status.toLowerCase() === 'cancelled');
+
+                if (cancellations.length === 0) {
+                    listContainer.style.display = "none";
+                    emptyState.style.display = "flex";
+                    return;
+                }
+
+                listContainer.innerHTML = cancellations.map(order => {
+                    const date = new Date(order.updatedAt || order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                    
+                    const firstItem = order.items && order.items.length > 0 ? order.items[0] : null;
+                    const productName = firstItem ? firstItem.product.name : "Unknown Product";
+                    let moreItemsText = "";
+                    if (order.items && order.items.length > 1) {
+                        moreItemsText = ` <span style="color:#888; font-size:13px; font-weight:400;">(+${order.items.length - 1} more items)</span>`;
+                    }
+                    
+                    let imgPath = firstItem && firstItem.product.image ? firstItem.product.image : 'https://via.placeholder.com/80';
+                    if (!imgPath.startsWith('http')) {
+                        imgPath = imgPath.startsWith('/') ? `http://localhost:5000${imgPath}` : `http://localhost:5000/${imgPath.replace(/\\/g, '/')}`;
+                    }
+                    
+                    // Refund Status Rendering
+                    let refundBlockHTML = "";
+                    if (order.paymentMethod.toLowerCase() === 'cod' && order.paymentStatus !== 'Paid') {
+                        refundBlockHTML = `
+                            <div class="refund-block cod">
+                                <i class="fas fa-info-circle refund-icon" style="color:#555; background:none; box-shadow:none;"></i>
+                                <div style="font-weight:600; font-size:14px; margin-top:2px; color:#333;">No refund required (COD)</div>
+                            </div>
+                        `;
+                    } else {
+                        refundBlockHTML = `
+                            <div class="refund-block wallet">
+                                <i class="fas fa-wallet refund-icon"></i>
+                                <div>
+                                    <div class="wallet-title">Refund Credited to Wallet</div>
+                                    <div class="wallet-desc">The refund amount has been automatically added to your wallet. Please check your wallet in the Payment Options section.</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    return `
+                        <div class="cancel-card">
+                            <div class="cancel-card-header">
+                                <div class="cancel-order-id">Order #${order._id.slice(-6).toUpperCase()}</div>
+                                <div class="cancel-badge">CANCELLED</div>
+                            </div>
+                            <div class="cancel-date-pill">Cancelled on ${date}</div>
+                            
+                            <div class="cancel-body">
+                                <div class="cancel-img-box">
+                                    <img src="${imgPath}" alt="${productName}">
+                                </div>
+                                <div class="cancel-details">
+                                    <div class="cancel-product-name">
+                                        <strong>Product:</strong> ${productName}${moreItemsText}
+                                    </div>
+                                    <div class="cancel-amount">
+                                        <strong>Amount:</strong> ₹${order.totalAmount.toFixed(2)}
+                                    </div>
+                                    
+                                    ${refundBlockHTML}
+                                </div>
+                            </div>
+
+                            <div class="cancel-card-actions">
+                                <a href="cancellation-details.html?id=${order._id}" class="btn-outline">View Details</a>
+                                <a href="shop.html" class="btn-solid">Start Shopping</a>
+                            </div>
+                        </div>
+                    `;
+                }).join("");
+
+            } catch (error) {
+                console.error("Error fetching cancellations:", error);
+                listContainer.innerHTML = `<p style="color:red">Error loading cancellations. Please try again later.</p>`;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", fetchCancellations);
+    </script>
+    <script src="footer.js"></script>
+    <script src="auth.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,598 @@
+/* Global Reset for Header */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+/* =========================================
+   TOP BAR
+   ========================================= */
+
+.top-bar {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    font-size: 14px !important;
+    padding: 12px 0 !important;
+    position: relative;
+    z-index: 1001;
+    display: block !important;
+}
+
+.top-bar .container {
+    max-width: 1440px !important;
+    /* Match home.html */
+    margin: 0 auto !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    /* Enforce standardized header padding (same as Home) */
+    padding: 0 60px !important;
+    position: relative !important;
+}
+
+.top-center-text {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    text-align: center;
+}
+
+.shop-now-link {
+    color: #ffffff;
+    font-weight: 600;
+    text-decoration: underline;
+    margin-left: 5px;
+}
+
+.lang-selector {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* =========================================
+   MAIN HEADER
+   ========================================= */
+.main-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e5e5e5;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    height: auto;
+    /* Allow auto height */
+    padding: 20px 0;
+    /* Vertical padding */
+    display: flex;
+    align-items: center;
+}
+
+.nav-container {
+    max-width: 1440px !important;
+    /* Match home.html */
+    margin: 0 auto !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    /* Enforce standardized header padding (same as Home) */
+    padding: 0 60px !important;
+}
+
+/* Logo */
+.logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: #000000;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+}
+
+/* Navigation Menu (Desktop) */
+.nav-menu {
+    display: flex;
+    gap: 48px;
+}
+
+/* Navigation Links */
+.nav-link {
+    color: #000000;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 400;
+    text-transform: uppercase;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    /* font-weight: 500; - Optional */
+}
+
+/* Icons Section */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+/* Search Box (Desktop) */
+.search-box-container {
+    position: relative;
+    background: #f5f5f5;
+    border-radius: 4px;
+    padding: 7px 12px;
+    display: flex;
+    align-items: center;
+    width: 243px;
+}
+
+.search-input {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 12px;
+    width: 100%;
+    color: #000;
+}
+
+.search-input::placeholder {
+    color: #7d8184;
+    opacity: 1;
+}
+
+.search-icon-btn {
+    color: #000;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Header Icons */
+.nav-icons {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.nav-icon-link {
+    color: #000000;
+    font-size: 20px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    /* Ensure badge is positioned relative to icon */
+}
+
+.icon-badge {
+    position: absolute;
+    top: -5px;
+    right: -8px;
+    background-color: #db4444;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 50%;
+    min-width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    z-index: 10;
+}
+
+/* Red User Icon */
+.user-icon-red {
+    background-color: #db4444;
+    color: #ffffff !important;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: background-color 0.3s;
+}
+
+.user-icon-red:hover {
+    background-color: #c13e3e;
+}
+
+/* User Icon Button (Reset default button styles) */
+.user-icon-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+}
+
+.user-icon-btn i {
+    font-size: 20px; /* Match other icons */
+    color: #000;
+}
+
+.user-icon-btn:hover i {
+    color: #db4444; /* Match hover effect */
+}
+
+/* Mobile Toggle (Hidden on Desktop) */
+.mobile-toggle {
+    display: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #000;
+}
+
+/* Mobile Search Icon (Hidden on Desktop) */
+.mobile-search-trigger {
+    display: none;
+}
+
+/* User Dropdown */
+.user-dropdown-container {
+    position: relative;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    /* 10px gap below icon */
+    right: 0;
+    background: #fff;
+    /* faint blur black backdrop */
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    min-width: 220px;
+    padding: 10px 0;
+    border-radius: 6px;
+    z-index: 1002;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdown-menu.active {
+    display: block;
+}
+
+.dropdown-menu a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    color: #000;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.2s;
+    cursor: pointer;
+}
+
+.dropdown-menu a:hover {
+    background-color: #f5f5f5;
+}
+
+.dropdown-menu i {
+    font-size: 16px;
+    width: 20px;
+    /* Fixed width for alignment */
+    text-align: center;
+}
+
+/* =========================================
+   RESPONSIVE STYLES
+   ========================================= */
+
+/* Hide mobile search bar by default on desktop */
+.mobile-search-bar {
+    display: none;
+}
+
+/* Tablet (768px - 1199px) */
+@media (max-width: 1200px) {
+
+    .nav-container,
+    .top-bar .container {
+        padding: 0 32px;
+        /* Standard Tablet Padding */
+    }
+}
+
+/* Mobile (max-width: 767px) */
+/* Mobile (max-width: 767px) */
+/* Mobile (max-width: 767px) */
+@media (max-width: 767px) {
+
+    .nav-container,
+    .top-bar .container {
+        padding: 0 12px;
+        /* Standard Mobile Padding - Reduced to 12px */
+    }
+
+    /* Top Bar adjustments */
+    .top-bar {
+        justify-content: center;
+        height: auto !important;
+        /* Allow growing */
+        min-height: 48px;
+    }
+
+    .top-bar .container {
+        justify-content: center;
+        flex-wrap: nowrap;
+        /* Prevent wrapping if possible, or handle overflow */
+    }
+
+    .top-center-text {
+        position: static;
+        transform: none;
+        text-align: center;
+        font-size: 10px;
+        /* Reduced font size for mobile fit */
+        white-space: normal !important;
+        /* Allow wrapping */
+        width: 100%;
+        overflow: visible;
+        text-overflow: clip;
+        height: auto;
+        padding: 4px 0;
+        line-height: 1.4;
+    }
+
+    .lang-selector {
+        display: none;
+    }
+
+    /* Main Header Mobile Layout */
+    .main-header {
+        height: 60px;
+        position: relative;
+        /* Ensure z-index works */
+        overflow: visible;
+        /* Allow dropdowns */
+    }
+
+    .nav-container {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        /* Hamburger Left, Icons Right */
+        position: relative;
+        /* For absolute logo */
+    }
+
+    /* 1. Toggle Left */
+    .mobile-toggle {
+        display: flex;
+        align-items: center;
+        font-size: 20px;
+        /* Reduced size */
+        color: #000;
+        cursor: pointer;
+        z-index: 20;
+        /* Above logo if needed, but should be far left */
+        order: 1;
+    }
+
+    /* 2. Logo Center */
+    .logo {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 20px;
+        /* Reduced from 24px to prevent overlap */
+        font-weight: 700;
+        z-index: 10;
+        white-space: nowrap;
+        order: 2;
+        /* Visual order doesn't matter with absolute, but good for logic */
+    }
+
+    @media (max-width: 360px) {
+        .logo {
+            font-size: 18px;
+            /* Further reduce for very small screens */
+        }
+    }
+
+    /* 3. Icons Right */
+    .header-right {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        order: 3;
+        z-index: 20;
+        /* Ensure clickable */
+    }
+
+    .nav-icons {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        /* Reduced gap to 8px */
+    }
+
+    .nav-icons a,
+    .nav-icons i {
+        font-size: 16px;
+        /* Reduced icon size to 16px */
+        display: flex;
+        align-items: center;
+    }
+
+    /* Ensure User Icon Size */
+    .user-icon-red {
+        width: 24px;
+        /* Reduced to 24px */
+        height: 24px;
+        font-size: 12px;
+    }
+
+    /* Hide Desktop Search and Search Box */
+    .search-box-container {
+        display: none;
+    }
+
+    /* Show Mobile Search Icon */
+    .mobile-search-trigger,
+    .mobile-search-icon {
+        display: block;
+        font-size: 15px;
+        /* Reduced */
+        color: #000;
+        cursor: pointer;
+    }
+
+    /* Hide Wishlist on Mobile to prevent collision */
+    /* Wishlist enabled on Mobile */
+    .nav-icons a[href="wishlist.html"] {
+        display: flex;
+    }
+
+    /* Tighter Mobile Spacing */
+    .nav-icons {
+        gap: 5px;
+        /* Tighter gap */
+    }
+
+    .nav-icons a,
+    .nav-icons i {
+        font-size: 15px;
+        /* Unified reduced size */
+    }
+
+    .logo {
+        max-width: none;
+        /* Prevent wide logo pushing icons */
+        overflow: visible;
+        text-overflow: clip;
+    }
+
+    /* Mobile Navigation Menu */
+    .nav-menu {
+        position: fixed;
+        top: 60px;
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - 60px);
+        background: #ffffff;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
+        gap: 0;
+        transition: left 0.3s ease;
+        border-top: 1px solid #eee;
+        overflow-y: auto;
+        z-index: 999;
+        /* Below header content but above page */
+    }
+
+    .nav-menu.active {
+        left: 0;
+    }
+
+    .nav-link {
+        width: 100%;
+        padding: 20px 0;
+        border-bottom: 1px solid #f9f9f9;
+        text-align: left;
+        font-weight: 600; /* Bolder as per screenshot */
+        font-size: 14px;
+        letter-spacing: 0.5px;
+        color: #000;
+    }
+    
+    .nav-link.active {
+        text-decoration: underline;
+        text-underline-offset: 6px;
+        text-decoration-thickness: 2px;
+    }
+
+    /* 
+     * MOBILE SEARCH BAR STYLES (Injected via JS)
+     */
+    .mobile-search-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        /* Same as header */
+        background: #fff;
+        z-index: 1001;
+        /* Above header */
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        transform: translateY(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .mobile-search-bar.active {
+        transform: translateY(0);
+    }
+
+    .mobile-search-form {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .mobile-search-input {
+        flex: 1;
+        border: none;
+        outline: none;
+        font-size: 14px;
+        padding: 8px 0;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .mobile-search-submit {
+        background: none;
+        border: none;
+        font-size: 16px;
+        color: #000;
+    }
+
+    .mobile-search-close {
+        background: none;
+        border: none;
+        font-size: 18px;
+        color: #666;
+        padding: 5px;
+        cursor: pointer;
+    }
+}
+

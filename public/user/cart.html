@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart - Soleverse</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link rel="stylesheet" href="header.css">
+    <link rel="stylesheet" href="footer.css">
+    <style>
+        /* RESET & VARIABLES */
+        :root {
+            --primary-black: #000000;
+            --primary-white: #ffffff;
+            --text-grey: #757575;
+            --border-color: #e5e5e5;
+            --bg-light: #f9f9f9;
+            --font-main: 'Inter', sans-serif;
+            --container-width: 1170px;
+            --padding-x: 20px;
+            --accent-red: #db4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--primary-black);
+            background-color: var(--primary-white);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+        }
+
+        input {
+            font-family: inherit;
+        }
+
+        .container {
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: 0 var(--padding-x);
+        }
+
+        /* Header CSS removed to use header.css */
+        /* Header CSS removed to use header.css */
+
+        .search-box {
+            background: #f5f5f5;
+            border-radius: 4px;
+            padding: 7px 12px 7px 20px;
+            display: flex;
+            align-items: center;
+            width: 243px;
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 12px;
+            width: 100%;
+            margin-right: 10px;
+        }
+
+        .search-box i {
+            color: #000;
+            font-size: 16px;
+        }
+
+        .header-icons {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 20px;
+        }
+
+        .icon-cart-active {
+            color: var(--accent-red);
+            /* Active color */
+        }
+
+        .mobile-toggle {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* 3. BREADCRUMB */
+        .breadcrumb {
+            padding: 80px 0 40px;
+            font-size: 14px;
+            color: var(--text-grey);
+        }
+
+        .breadcrumb span {
+            color: var(--primary-black);
+            opacity: 0.5;
+        }
+
+        .breadcrumb span:last-child {
+            color: var(--primary-black);
+            font-weight: 500;
+            opacity: 1;
+        }
+
+        /* 4. CART TABLE SECTION */
+        .cart-wrapper {
+            margin-bottom: 80px;
+        }
+
+        .cart-table {
+            width: 100%;
+            margin-bottom: 40px;
+        }
+
+        .cart-header-row {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            padding: 24px 40px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            /* Subtle shadow per screenshot look */
+            border-radius: 4px;
+            /* Rounded corners */
+            font-weight: 500;
+            margin-bottom: 40px;
+        }
+
+        .cart-item-row {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            align-items: center;
+            padding: 24px 40px;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-radius: 4px;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .product-col {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .product-thumb {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            position: relative;
+        }
+
+        .remove-icon-overlay {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            background: var(--accent-red);
+            color: white;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            visibility: hidden;
+            /* Show on hover usually, or always based on UI. Screenshot shows red X. */
+            visibility: visible;
+        }
+
+        .qty-input {
+            width: 60px;
+            padding: 8px;
+            border: 1.5px solid rgba(0, 0, 0, 0.4);
+            border-radius: 4px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .cart-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn-outline {
+            padding: 16px 48px;
+            border: 1px solid rgba(0, 0, 0, 0.5);
+            border-radius: 4px;
+            background: transparent;
+            font-weight: 500;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #f5f5f5;
+        }
+
+        /* 5. COUPON & TOTAL SECTION */
+        .cart-bottom {
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-start;
+            margin-top: 80px;
+            gap: 20px;
+            margin-bottom: 140px;
+        }
+
+        .coupon-box {
+            display: flex;
+            gap: 16px;
+            height: 56px;
+            /* Match button height */
+        }
+
+        .coupon-input {
+            border: 1px solid #000;
+            border-radius: 4px;
+            padding: 0 24px;
+            width: 300px;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background: var(--primary-black);
+            color: white;
+            padding: 0 48px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 16px;
+            transition: 0.3s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.8;
+        }
+
+        .cart-total-box {
+            border: 1.5px solid #000;
+            border-radius: 4px;
+            padding: 32px 24px;
+            width: 470px;
+        }
+
+        .total-title {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 24px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+            font-size: 16px;
+        }
+
+        .total-row:last-of-type {
+            border-bottom: none;
+            margin-bottom: 16px;
+        }
+
+        .checkout-btn {
+            background: var(--primary-black);
+            color: white;
+            width: 100%;
+            /* Screenshot shows centered but typically block */
+            height: 56px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 16px;
+            transition: 0.3s;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .checkout-btn:hover {
+            opacity: 0.8;
+        }
+
+
+        /* 6. FOOTER (Same as other pages) */
+
+
+        /* RESPONSIVENESS */
+
+        /* Tablet: 768px – 1199px */
+        @media (max-width: 1199px) {
+            .container {
+                max-width: 100%;
+                padding: 0 40px;
+            }
+
+            /* Stack bottom section */
+            .cart-bottom {
+                flex-direction: column;
+            }
+
+            .cart-total-box {
+                width: 100%;
+            }
+
+            .coupon-box {
+                width: 100%;
+            }
+
+            /* Compact Header */
+            .nav-menu {
+                gap: 20px;
+            }
+
+            .search-box {
+                width: 200px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 40px;
+            }
+        }
+
+        /* Mobile: ≤767px */
+        @media (max-width: 767px) {
+            .container {
+                padding: 0 20px;
+            }
+
+            .top-bar .container {
+                justify-content: center;
+            }
+
+            .top-center-text {
+                position: static;
+                transform: none;
+                flex-direction: column;
+                text-align: center;
+                gap: 5px;
+            }
+
+            .lang-selector {
+                display: none;
+            }
+
+            /* Nav */
+            .nav-menu,
+            .search-box {
+                display: none;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .nav-menu.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background: white;
+                padding: 20px;
+                box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            /* Cart Table to Cards */
+            .cart-header-row {
+                display: none;
+                /* Hide header */
+            }
+
+            .cart-item-row {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                text-align: center;
+                position: relative;
+            }
+
+            .product-col {
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .remove-icon-overlay {
+                top: 10px;
+                left: 10px;
+            }
+
+            .cart-actions {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .btn-outline {
+                width: 100%;
+            }
+
+            /* Bottom */
+            .cart-bottom {
+                flex-direction: column;
+            }
+
+            .coupon-box {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .coupon-input {
+                width: 100%;
+                height: 48px;
+            }
+
+            .btn-primary {
+                width: 100%;
+                height: 48px;
+            }
+
+            .cart-total-box {
+                width: 100%;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 1. TOP ANNOUNCEMENT BAR -->
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-center-text">
+                Summer Sale For All Free Express Delivery - OFF 50%!
+                <a href="shop.html" class="shop-now-link">ShopNow</a>
+            </div>
+            <div class="lang-selector">
+                English <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <header class="main-header">
+        <div class="container nav-container">
+            <!-- Mobile Toggle (Left) -->
+            <div class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+
+            <!-- Logo (Center on Mobile, Left on Desktop) -->
+            <a href="index.html" class="logo">Soleverse</a>
+
+            <!-- Navigation Links (Center on Desktop) -->
+            <nav class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="shop.html" class="nav-link">Shop</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <a href="about.html" class="nav-link">About</a>
+            </nav>
+
+            <!-- Icons (Right) -->
+            <div class="header-right">
+                <!-- Search Box (Desktop) -->
+                <div class="search-box-container">
+                    <input type="text" class="search-input" placeholder="What are you looking for?">
+                    <i class="fas fa-search search-icon-btn"></i>
+                </div>
+
+                <div class="nav-icons">
+                    <!-- Mobile Search Icon -->
+                    <a href="#" class="mobile-search-icon"><i class="fas fa-search"></i></a>
+
+                    <a href="wishlist.html" class="nav-icon-link"><i class="far fa-heart"></i></a>
+                    <a href="cart.html" class="nav-icon-link"><i class="fas fa-shopping-cart"></i></a>
+
+                    <!-- User Dropdown -->
+                    <div class="user-dropdown-container">
+                        <a href="account.html" class="user-icon-red"><i class="far fa-user"></i></a>
+                        <div class="dropdown-menu">
+                            <a href="account.html"><i class="far fa-user"></i> Manage My Account</a>
+                            <a href="orders.html"><i class="fas fa-box-open"></i> My Order</a>
+                            <a href="cancellations.html"><i class="fas fa-times-circle"></i> My Cancellations</a>
+                            <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 3. BREADCRUMB -->
+    <div class="container breadcrumb">
+        <span>Home</span> / <span>Cart</span>
+    </div>
+
+    <!-- 4. CART CONTENT -->
+    <div class="container cart-wrapper">
+        <div class="cart-table">
+            <!-- Header Row -->
+            <div class="cart-header-row">
+                <div>Product</div>
+                <div>Price</div>
+                <div>Quantity</div>
+                <div>Subtotal</div>
+            </div>
+
+            <!-- Dynamic Cart Items injected here -->
+            <div id="cartItemsContainer"></div>
+        </div>
+
+        <div class="cart-actions">
+            <button class="btn-outline">Return To Shop</button>
+        </div>
+
+        <div class="cart-bottom">
+
+            <div class="cart-total-box">
+                <h3 class="total-title">Cart Total</h3>
+                <div class="total-row">
+                    <span>Subtotal:</span>
+                    <span id="cart-subtotal">₹2420</span>
+                </div>
+                <div class="total-row">
+                    <span>Shipping:</span>
+                    <span>Free</span>
+                </div>
+                <div class="total-row">
+                    <span>Total:</span>
+                    <span id="cart-final-total">₹2420</span>
+                </div>
+                <button class="checkout-btn" onclick="window.location.href='checkout.html'">Process to checkout</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="footer-placeholder"></div>
+
+    <script src="footer.js"></script>
+    <script src="cart.js"></script>
+    <script src="auth.js"></script>
+    <script src="header.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - Orders - Soleverse</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        /* RESET & VARIABLES */
+        :root {
+            --primary-black: #000000;
+            --primary-white: #ffffff;
+            --text-grey: #757575;
+            --text-grey-light: #999999;
+            --border-color: #e5e5e5;
+            --bg-light: #f9f9f9;
+            --bg-secondary: #f5f5f5;
+            --font-main: 'Inter', sans-serif;
+            --container-width: 1170px;
+            --padding-x: 20px;
+            --accent-red: #db4444;
+            --status-green: #00FF66;
+            /* Bright green for status */
+            --status-text-green: #000;
+            /* Usually dark text on bright green/ or green text? Screenshot check: Badges look like buttons or labels. */
+            /* Screenshot check: "Pending" is white text on Green? Or Green text? 
+               Zooming in: "Pending" looks like Green Text or Green BG. 
+               Let's assume standard badge: Light green bg, dark green text OR Solid Green. 
+               Wait, "Pending" in screenshot D6048 is GREEN text. 
+               "Completed" is also text? 
+               Actually, looking closely at "Pending": It might merely be text color. 
+               But "View Details" is a button.
+            */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--primary-black);
+            background-color: var(--primary-white);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+        }
+
+        input {
+            font-family: inherit;
+            outline: none;
+        }
+
+        .container {
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: 0 var(--padding-x);
+        }
+
+        .mobile-toggle {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        */
+    </style>
+    <link rel="stylesheet" href="header.css">
+    <style>
+        /* 
+        GLOBAL STYLES 
+        */
+
+        /* 3. BREADCRUMB & WELCOME */
+        .breadcrumb-section {
+            padding: 80px 0 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            color: var(--text-grey);
+        }
+
+        .breadcrumb span {
+            color: var(--text-grey-light);
+        }
+
+        .breadcrumb .active {
+            color: var(--primary-black);
+            font-weight: 500;
+            opacity: 1;
+        }
+
+        .welcome-text {
+            font-size: 14px;
+            color: var(--primary-black);
+        }
+
+        .welcome-text span {
+            color: var(--accent-red);
+            font-weight: 500;
+        }
+
+
+        /* 4. ACCOUNT MAIN SECTION */
+        .account-wrapper {
+            margin-bottom: 140px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 100px;
+        }
+
+        /* Sidebar */
+
+
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 24px;
+            padding-left: 0;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .sidebar-item {
+            font-size: 16px;
+            color: var(--text-grey);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .sidebar-item:hover {
+            color: var(--accent-red);
+        }
+
+        .sidebar-item.active {
+            color: var(--accent-red);
+            font-weight: 500;
+        }
+
+        .sidebar-item a {
+            /* Ensure link inside list item (if structured that way) inherits or we use 'a' as item */
+            color: inherit;
+        }
+
+
+        /* Main Content: Orders */
+        .orders-content {
+            width: 100%;
+        }
+
+        .section-header {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--primary-black);
+            /* Matches "My Orders" title style */
+        }
+
+        .orders-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Order Card */
+        .order-card {
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            /* Very light border */
+            background: #fff;
+            padding: 24px 40px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .order-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .order-id {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--primary-black);
+        }
+
+        .order-meta {
+            font-size: 14px;
+            color: var(--text-grey);
+            display: flex;
+            gap: 24px;
+            /* Space between date/total/status if inline or stacked? Screenshot shows stacked usually? */
+            /* Screenshot shows: Order #D6048 (Top) Date (Below) Total (Below) Items (Below) */
+            /* Actually screenshot structure:
+               Left: Order #No, Date, Price, Items Count
+               Right: Status Badge or Button
+            */
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .order-price {
+            font-weight: 500;
+            color: var(--primary-black);
+        }
+
+        .order-status-badge {
+            /* Green rounded badge */
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            /* Based on screenshot, Pending is Green? Usually Pending is Orange/Yellow. 
+                Let's use a nice Green for "Pending" as per screenshot request notes (it said Green). */
+            color: #00AA55;
+            /* border: 1px solid #00AA55; or bg? */
+            /* The screenshot: "Pending" is text, maybe inside a pill? */
+            /* Let's style it as simple text with color for now, or light bg pill. */
+            /* Actually, user said: "Status badge: Pending (green)" */
+            color: #28a745;
+        }
+
+        .status-completed {
+            color: #28a745;
+            /* Completed usually green too? */
+            /* Maybe Pending is Orange? */
+            /* Let's stick to Green for "Success"/"Completed". */
+        }
+
+        .status-cancelled {
+            color: #db4444;
+            /* Red for Cancelled */
+        }
+
+        .btn-view-details {
+            border: 1px solid var(--primary-black);
+            /* Or faint border? */
+            border: 1px solid #ddd;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--primary-black);
+            display: inline-block;
+            transition: 0.3s;
+        }
+
+        .btn-view-details:hover {
+            background: #f5f5f5;
+            border-color: #ccc;
+        }
+
+        .btn-cancel-order {
+            background: #db4444;
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-block;
+            transition: 0.3s;
+            margin-left: 10px;
+        }
+
+        .btn-cancel-order:hover {
+            background: #b73030;
+        }
+
+
+
+        /* RESPONSIVENESS */
+
+        @media (max-width: 1199px) {
+            .container {
+                max-width: 100%;
+                padding: 0 40px;
+            }
+
+            .nav-menu {
+                gap: 20px;
+            }
+
+            .search-box {
+                width: 200px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 40px;
+            }
+
+            .account-wrapper {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .sidebar-menu {
+                flex-direction: row;
+                overflow-x: auto;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #e5e5e5;
+            }
+
+            .sidebar-item {
+                white-space: nowrap;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .container {
+                padding: 0 20px;
+            }
+
+            .top-bar .container {
+                justify-content: center;
+            }
+
+            .top-center-text {
+                position: static;
+                transform: none;
+                flex-direction: column;
+                text-align: center;
+                gap: 5px;
+            }
+
+            .lang-selector {
+                display: none;
+            }
+
+            .nav-menu,
+            .search-box {
+                display: none;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .nav-menu.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background: white;
+                padding: 20px;
+                box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .breadcrumb-section {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 40px 0;
+            }
+
+            .account-wrapper {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .sidebar-menu {
+                flex-direction: column;
+                border-bottom: none;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            /* Order Card Responsive */
+            .order-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+                padding: 20px;
+            }
+
+            .btn-view-details {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="footer.css">
+</head>
+
+<body>
+
+    <!-- TOP BAR -->
+        <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-center-text">
+                Summer Sale For All Free Express Delivery - OFF 50%!
+                <a href="shop.html" class="shop-now-link">ShopNow</a>
+            </div>
+            <div class="lang-selector">
+                English <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <header class="main-header">
+        <div class="container nav-container">
+            <!-- Mobile Toggle (Left) -->
+            <div class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+
+            <!-- Logo (Center on Mobile, Left on Desktop) -->
+            <a href="index.html" class="logo">Soleverse</a>
+
+            <!-- Navigation Links (Center on Desktop) -->
+            <nav class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="shop.html" class="nav-link">Shop</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <a href="about.html" class="nav-link">About</a>
+            </nav>
+
+            <!-- Icons (Right) -->
+            <div class="header-right">
+                <!-- Search Box (Desktop) -->
+                <div class="search-box-container">
+                    <input type="text" class="search-input" placeholder="What are you looking for?">
+                    <i class="fas fa-search search-icon-btn"></i>
+                </div>
+
+                <div class="nav-icons">
+                    <!-- Mobile Search Icon -->
+                    <a href="#" class="mobile-search-icon"><i class="fas fa-search"></i></a>
+                    
+                    <a href="wishlist.html" class="nav-icon-link"><i class="far fa-heart"></i></a>
+                    <a href="cart.html" class="nav-icon-link"><i class="fas fa-shopping-cart"></i></a>
+                    
+                    <!-- User Dropdown -->
+                    <div class="user-dropdown-container">
+                        <a href="account.html" class="user-icon-red"><i class="far fa-user"></i></a>
+                        <div class="dropdown-menu">
+                            <a href="account.html"><i class="far fa-user"></i> Manage My Account</a>
+                            <a href="orders.html"><i class="fas fa-box-open"></i> My Order</a>
+                            <a href="cancellations.html"><i class="fas fa-times-circle"></i> My Cancellations</a>
+                            <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 3. BREADCRUMB & WELCOME -->
+    <div class="container breadcrumb-section">
+        <div class="breadcrumb">
+            <span>Home /</span> <span class="active">My Account</span>
+        </div>
+        <div class="welcome-text">
+            Welcome! <span id="welcome-name">Md Rimel</span>
+        </div>
+    </div>
+
+    <!-- 4. MAIN CONTENT -->
+    <div class="container account-wrapper">
+        <!-- Sidebar -->
+        <aside class="account-sidebar">
+            <div class="sidebar-block">
+                <h4 class="sidebar-title">Manage My Account</h4>
+                <div class="sidebar-menu">
+                    <a href="account.html" class="sidebar-item">My Profile</a>
+                    <a href="address-book.html" class="sidebar-item">Address Book</a>
+                    <a href="payment-options.html" class="sidebar-item">My Payment Options</a>
+                </div>
+            </div>
+
+            <div class="sidebar-block" style="margin-top: 24px;">
+                <h4 class="sidebar-title" style="margin-bottom: 16px;">My Orders</h4>
+                <div class="sidebar-menu">
+                    <a href="orders.html" class="sidebar-item">My Orders</a>
+                    <a href="returns.html" class="sidebar-item">My Returns</a>
+                    <a href="cancellations.html" class="sidebar-item">Cancellations</a>
+                </div>
+            </div>
+
+            <div class="sidebar-menu" style="margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px;">
+                <div class="sidebar-item" style="font-weight: 500;">LOG OUT</div>
+            </div>
+            <script src="account-sidebar.js"></script>
+        </aside>
+
+        <!-- Orders Content -->
+        <main class="orders-content">
+            <div class="section-header">
+                <h2 class="section-title">My Orders</h2>
+            </div>
+
+            <div class="orders-list" id="orders-list">
+                <p>Loading your orders...</p>
+            </div>
+
+        </main>
+    </div>
+
+
+    <div id="footer-placeholder"></div>
+
+
+    <script src="footer.js"></script>
+    <script src="auth.js"></script>
+    <script src="header.js"></script>
+    <script>
+        const ORDERS_API = "http://localhost:5000/api/orders";
+
+        async function fetchOrders() {
+            const container = document.getElementById("orders-list");
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                container.innerHTML = `<p>Please <a href="login.html" style="text-decoration: underline;">login</a> to view your orders.</p>`;
+                return;
+            }
+
+            try {
+                const res = await fetch(ORDERS_API, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+
+                if (!res.ok) throw new Error("Failed to fetch orders");
+
+                const orders = await res.json();
+
+                if (orders.length === 0) {
+                    container.innerHTML = `<p>You haven't placed any orders yet. <a href="shop.html" style="text-decoration: underline;">Start shopping!</a></p>`;
+                    return;
+                }
+
+                container.innerHTML = orders.map(order => {
+                    const date = new Date(order.createdAt).toLocaleDateString();
+                    const itemCount = order.items.reduce((acc, item) => acc + item.quantity, 0);
+                    const statusClass = order.status.toLowerCase() === 'pending' ? 'status-pending' : 
+                                      order.status.toLowerCase() === 'cancelled' ? 'status-cancelled' : 
+                                      'status-completed';
+
+                    return `
+                    <div class="order-card">
+                        <div class="order-info">
+                            <div class="order-id">Order #${order._id.slice(-6).toUpperCase()}</div>
+                            <div class="order-meta">
+                                <span>${date}</span>
+                                <span class="order-price">₹${order.totalAmount}</span>
+                                <span>${itemCount} Items</span>
+                            </div>
+                        </div>
+                        <div class="order-actions">
+                            <span class="order-status-badge ${statusClass}">${order.status}</span>
+                            <a href="order-details.html?id=${order._id}" class="btn-view-details" style="margin-left: 16px;">View Details</a>
+                            ${(order.status.toLowerCase() === 'pending' || order.status.toLowerCase() === 'processing') ? `<button onclick="cancelOrder('${order._id}')" class="btn-cancel-order">Cancel</button>` : ''}
+                            ${order.status.toLowerCase() === 'delivered' ? `<button onclick="returnOrder('${order._id}')" class="btn-cancel-order" style="background-color: #000;">Return</button>` : ''}
+                        </div>
+                    </div>
+                    `;
+                }).join("");
+
+            } catch (error) {
+                console.error("Error fetching orders:", error);
+                container.innerHTML = `<p>Error loading orders. Please try again later.</p>`;
+            }
+        }
+
+        async function cancelOrder(id) {
+            const result = await Swal.fire({
+                title: 'Cancel Order?',
+                text: "Please provide a reason for cancelling this order:",
+                input: 'text',
+                inputPlaceholder: 'Reason for cancellation...',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#000',
+                cancelButtonColor: '#fb3434',
+                confirmButtonText: 'Yes, cancel it!',
+                cancelButtonText: 'No, keep it',
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'You need to provide a reason!'
+                    }
+                }
+            });
+
+            if (result.isConfirmed) {
+                const reason = result.value;
+                const token = localStorage.getItem("token");
+                try {
+                    const res = await fetch(`${ORDERS_API}/${id}/cancel`, {
+                        method: 'PUT',
+                        headers: {
+                            "Authorization": `Bearer ${token}`,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ reason })
+                    });
+
+                    if (!res.ok) throw new Error("Failed to cancel order");
+
+                    Swal.fire({
+                        title: 'Cancelled!',
+                        text: 'Your order has been cancelled.',
+                        icon: 'success',
+                        confirmButtonColor: '#000'
+                    });
+
+                    fetchOrders(); // Refresh the list
+                } catch (error) {
+                    console.error("Error cancelling order:", error);
+                    alert("Error cancelling order");
+                }
+            }
+        }
+
+        async function returnOrder(id) {
+            const htmlContent = `
+                <div style="text-align: left; font-family: 'Inter', sans-serif;">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+                        <div style="background: #FFE5E5; color: #FF0000; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <div>
+                            <h3 style="margin: 0; font-size: 20px; font-weight: 800; color: #000;">Return Policy & Rules</h3>
+                            <p style="margin: 5px 0 0; font-size: 13px; color: #666;">Please review our return guidelines</p>
+                        </div>
+                    </div>
+                    
+                    <ul style="list-style: none; padding: 0; margin: 0 0 25px; font-size: 14px; color: #444; line-height: 1.6;">
+                        <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px;">
+                            <i class="fas fa-check-circle" style="color: #00C853; margin-top: 4px;"></i>
+                            <span>Returns are accepted within <strong>7 days</strong> from delivery date.</span>
+                        </li>
+                        <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px;">
+                            <i class="fas fa-check-circle" style="color: #00C853; margin-top: 4px;"></i>
+                            <span>Shoes must be <strong>unused</strong> and in original box and packaging.</span>
+                        </li>
+                        <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px;">
+                            <i class="fas fa-check-circle" style="color: #00C853; margin-top: 4px;"></i>
+                            <span>Product should not have scratches, dirt, or wear marks.</span>
+                        </li>
+                        <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px;">
+                            <i class="fas fa-check-circle" style="color: #00C853; margin-top: 4px;"></i>
+                            <span>Try shoes indoors before requesting return.</span>
+                        </li>
+                        <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px;">
+                            <i class="fas fa-check-circle" style="color: #00C853; margin-top: 4px;"></i>
+                            <span>Return request is subject to admin approval.</span>
+                        </li>
+                        <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px;">
+                            <i class="fas fa-check-circle" style="color: #00C853; margin-top: 4px;"></i>
+                            <span>Refund will be processed after product inspection.</span>
+                        </li>
+                        <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px;">
+                            <i class="fas fa-check-circle" style="color: #00C853; margin-top: 4px;"></i>
+                            <span>Shipping charges are non-refundable.</span>
+                        </li>
+                    </ul>
+
+                    <div style="background: #FFF9E5; padding: 15px; border-radius: 8px; border: 1px solid #FFE8A1; font-size: 13px; color: #B58400; line-height: 1.5;">
+                        <strong style="color: #B58400;">Note:</strong> Shoes showing signs of use will not be accepted for return. Return approval may take 24-48 hours after request.
+                    </div>
+                </div>
+            `;
+
+            const result = await Swal.fire({
+                html: htmlContent,
+                showCancelButton: true,
+                showCloseButton: true,
+                confirmButtonColor: '#000',
+                cancelButtonColor: '#f5f5f5',
+                confirmButtonText: 'I UNDERSTAND & AGREE',
+                cancelButtonText: '<span style="color:#000;">Cancel</span>',
+                width: '600px',
+                padding: '2em',
+                customClass: {
+                    confirmButton: 'swal-agree-btn'
+                }
+            });
+
+            if (result.isConfirmed) {
+                window.location.href = `return.html?id=${id}`;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", fetchOrders);
+    </script>
+</body>
+
+</html>

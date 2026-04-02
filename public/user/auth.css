@@ -1,0 +1,292 @@
+/* auth.css - Shared layout for modern split-screen auth pages */
+
+:root {
+    --bg-left: #e3eff6; /* light bluish-gray */
+    --blob-olive: #6c734b; /* olive green */
+    --blob-beige: #b2b2a2; /* beige */
+    --blob-brown: #4d4d3d; /* dark brown */
+    --bg-right: #ffffff; /* white or very light gray */
+    --btn-black: #000000;
+    --text-main: #000000;
+    --text-fade: #757575;
+    --accent-red: #db4444;
+    --input-bg: #f0f2f5;
+    
+    --font-main: 'Inter', sans-serif;
+    --font-heading: 'Oswald', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-main);
+    color: var(--text-main);
+    background-color: var(--bg-right);
+    overflow: hidden; /* Prevent scrolling if possible on desktop */
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* 
+  =============================
+    SPLIT LAYOUT
+  =============================
+*/
+.split-layout {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* 🎨 LEFT SIDE (DESIGN) */
+.split-left {
+    flex: 1;
+    background-color: var(--bg-left);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Organic Blobs */
+.blob {
+    position: absolute;
+    filter: blur(10px);
+    opacity: 0.8;
+}
+
+.shape-olive {
+    width: 400px;
+    height: 350px;
+    background-color: var(--blob-olive);
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    top: -50px;
+    left: -50px;
+    transform: rotate(25deg);
+}
+
+.shape-beige {
+    width: 350px;
+    height: 450px;
+    background-color: var(--blob-beige);
+    border-radius: 50% 50% 30% 70% / 60% 30% 70% 40%;
+    top: 20%;
+    right: 10%;
+    transform: rotate(-15deg);
+}
+
+.shape-brown {
+    width: 500px;
+    height: 450px;
+    background-color: var(--blob-brown);
+    border-radius: 60% 40% 50% 50% / 40% 40% 60% 60%;
+    bottom: -100px;
+    left: 20%;
+    transform: rotate(10deg);
+}
+
+/* Logo Center */
+.logo-center {
+    position: absolute;
+    z-index: 10;
+    font-size: 4rem;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+    letter-spacing: 2px;
+}
+
+/* 🧾 RIGHT SIDE (FORM) */
+.split-right {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-right);
+    position: relative;
+    overflow-y: auto; /* Allow scroll on smaller heights */
+}
+
+.form-container {
+    width: 100%;
+    max-width: 480px;
+    padding: 50px 40px;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0px 10px 40px rgba(0,0,0,0.06);
+    margin: 40px; /* safety margin if screen gets small */
+}
+
+.form-container h1 {
+    font-size: 32px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 8px;
+    color: var(--text-main);
+}
+
+.form-container p {
+    text-align: center;
+    color: var(--text-fade);
+    margin-bottom: 35px;
+    font-size: 16px;
+}
+
+/* Forms & Inputs */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 16px 24px;
+    border-radius: 50px;
+    background-color: var(--input-bg);
+    border: 2px solid transparent;
+    font-size: 15px;
+    color: var(--text-main);
+    font-family: var(--font-main);
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.form-input::placeholder {
+    color: #999;
+}
+
+.form-input:focus {
+    background-color: #fff;
+    border-color: var(--btn-black);
+    box-shadow: 0 0 0 4px rgba(0,0,0,0.05);
+}
+
+/* Buttons */
+.btn-submit {
+    width: 100%;
+    padding: 16px;
+    border-radius: 50px;
+    background-color: var(--btn-black);
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    margin-top: 10px;
+    margin-bottom: 25px;
+}
+
+.btn-submit:hover {
+    background-color: #222;
+}
+
+.btn-submit:active {
+    transform: scale(0.98);
+}
+
+.btn-submit:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+}
+
+/* Dividers & Extras */
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: var(--text-fade);
+    margin: 20px 0;
+    font-size: 14px;
+}
+.divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #e0e0e0;
+}
+.divider span {
+    padding: 0 10px;
+}
+
+.btn-google {
+    width: 100%;
+    padding: 16px;
+    border-radius: 50px;
+    background-color: #fff;
+    color: var(--text-main);
+    font-size: 15px;
+    font-weight: 500;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    transition: background-color 0.3s ease;
+    margin-bottom: 25px;
+}
+.btn-google:hover {
+    background-color: #fafafa;
+}
+.btn-google img {
+    width: 20px;
+    height: 20px;
+}
+
+/* Links Bottom */
+.form-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    font-size: 15px;
+    color: var(--text-fade);
+}
+
+.link-red {
+    color: var(--accent-red);
+    font-weight: 500;
+    transition: color 0.3s;
+}
+.link-red:hover {
+    text-decoration: underline;
+}
+
+.link-bold {
+    color: var(--text-main);
+    font-weight: 600;
+}
+.link-bold:hover {
+    text-decoration: underline;
+}
+
+/* 
+  =============================
+    RESPONSIVE DESIGN (MOBILE)
+  =============================
+*/
+@media (max-width: 900px) {
+    .split-left {
+        display: none; /* Hide design section on smaller screens */
+    }
+    .split-right {
+        background-color: var(--input-bg); /* slightly different bg for mobile */
+    }
+    .form-container {
+        box-shadow: none;
+        background: transparent;
+        padding: 30px 20px;
+        margin: 0;
+    }
+    .form-input:focus {
+        background-color: #fff;
+    }
+}

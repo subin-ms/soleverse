@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Address Book - Soleverse</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        /* RESET & VARIABLES */
+        :root {
+            --primary-black: #000000;
+            --primary-white: #ffffff;
+            --text-grey: #757575;
+            --text-grey-light: #999999;
+            --border-color: #e5e5e5;
+            --bg-light: #f9f9f9;
+            --bg-secondary: #f5f5f5;
+            --font-main: 'Inter', sans-serif;
+            --container-width: 1170px;
+            --padding-x: 20px;
+            --accent-red: #db4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--primary-black);
+            background-color: var(--primary-white);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+        }
+
+        input {
+            font-family: inherit;
+            outline: none;
+        }
+
+        .container {
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: 0 var(--padding-x);
+        }
+
+        /* Header CSS removed to use header.css */
+
+        .icon-user-active {
+            color: var(--accent-red);
+            background: var(--accent-red);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-toggle {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* 3. BREADCRUMB & WELCOME */
+        .breadcrumb-section {
+            padding: 80px 0 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            color: var(--text-grey);
+        }
+
+        .breadcrumb span {
+            color: var(--text-grey-light);
+        }
+
+        .breadcrumb .active {
+            color: var(--primary-black);
+            font-weight: 500;
+            opacity: 1;
+        }
+
+        .welcome-text {
+            font-size: 14px;
+            color: var(--primary-black);
+        }
+
+        .welcome-text span {
+            color: var(--accent-red);
+            font-weight: 500;
+        }
+
+
+        /* 4. ACCOUNT MAIN SECTION */
+        .account-wrapper {
+            margin-bottom: 140px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 100px;
+        }
+
+        /* Sidebar */
+
+
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 24px;
+            padding-left: 0;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .sidebar-item {
+            font-size: 16px;
+            color: var(--text-grey);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .sidebar-item:hover {
+            color: var(--accent-red);
+        }
+
+        .sidebar-item.active {
+            color: var(--accent-red);
+            font-weight: 500;
+        }
+
+        /* Main Content: Address Book */
+        .address-book-content {
+            position: relative;
+        }
+
+        .section-header {
+            margin-bottom: 40px;
+            text-align: center;
+            /* Centered in Content Area per screenshot? Title is centered in content box usually. */
+            /* Checking screenshot: "Order #D6048" is centered in the RIGHT column content area. */
+            display: flex;
+            justify-content: center;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-black);
+        }
+
+        .address-list {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .address-card {
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.02);
+            position: relative;
+        }
+
+        .address-line {
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--primary-black);
+            display: flex;
+        }
+
+        .addr-label {
+            width: 80px;
+            /* Adjust for alignment "adress:", "pin:", etc */
+            font-weight: 400;
+            color: var(--primary-black);
+        }
+
+        .addr-value {
+            color: var(--primary-black);
+            font-weight: 400;
+        }
+
+        .add-btn-wrapper {
+            margin-top: 40px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn-add-address {
+            /* Looks like plain text or slight button? Screenshot shows "+ Add New Adress" aligned right. */
+            /* It might be a text link */
+            font-size: 16px;
+            color: #000;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .btn-add-address:hover {
+            opacity: 0.6;
+        }
+
+
+
+        /* RESPONSIVENESS */
+
+        @media (max-width: 1199px) {
+            .container {
+                max-width: 100%;
+                padding: 0 40px;
+            }
+
+            .nav-menu {
+                gap: 20px;
+            }
+
+            .search-box {
+                width: 200px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 40px;
+            }
+
+            .account-wrapper {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .sidebar-menu {
+                flex-direction: row;
+                overflow-x: auto;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #e5e5e5;
+            }
+
+            .sidebar-item {
+                white-space: nowrap;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .container {
+                padding: 0 20px;
+            }
+
+            .top-bar .container {
+                justify-content: center;
+            }
+
+            .top-center-text {
+                position: static;
+                transform: none;
+                flex-direction: column;
+                text-align: center;
+                gap: 5px;
+            }
+
+            .lang-selector {
+                display: none;
+            }
+
+            .nav-menu,
+            .search-box {
+                display: none;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .nav-menu.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background: white;
+                padding: 20px;
+                box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .breadcrumb-section {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 40px 0;
+            }
+
+            .account-wrapper {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .sidebar-menu {
+                flex-direction: column;
+                border-bottom: none;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            border-color: #000;
+        }
+
+        .form-input.error {
+            border-color: #ff4d4d;
+        }
+
+        .error-text {
+            color: #ff4d4d;
+            font-size: 11px;
+            margin-top: 4px;
+            display: none;
+        }
+    </style>
+    <link rel="stylesheet" href="header.css">
+    <link rel="stylesheet" href="footer.css">
+</head>
+
+<body>
+
+    <!-- TOP BAR -->
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-center-text">
+                Summer Sale For All Free Express Delivery - OFF 50%!
+                <a href="shop.html" class="shop-now-link">ShopNow</a>
+            </div>
+            <div class="lang-selector">
+                English <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <header class="main-header">
+        <div class="container nav-container">
+            <!-- Mobile Toggle (Left) -->
+            <div class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+
+            <!-- Logo (Center on Mobile, Left on Desktop) -->
+            <a href="index.html" class="logo">Soleverse</a>
+
+            <!-- Navigation Links (Center on Desktop) -->
+            <nav class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="shop.html" class="nav-link">Shop</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <a href="about.html" class="nav-link">About</a>
+            </nav>
+
+            <!-- Icons (Right) -->
+            <div class="header-right">
+                <!-- Search Box (Desktop) -->
+                <div class="search-box-container">
+                    <input type="text" class="search-input" placeholder="What are you looking for?">
+                    <i class="fas fa-search search-icon-btn"></i>
+                </div>
+
+                <div class="nav-icons">
+                    <!-- Mobile Search Icon -->
+                    <a href="#" class="mobile-search-icon"><i class="fas fa-search"></i></a>
+
+                    <a href="wishlist.html" class="nav-icon-link"><i class="far fa-heart"></i></a>
+                    <a href="cart.html" class="nav-icon-link"><i class="fas fa-shopping-cart"></i></a>
+
+                    <!-- User Dropdown -->
+                    <div class="user-dropdown-container">
+                        <a href="account.html" class="user-icon-red"><i class="far fa-user"></i></a>
+                        <div class="dropdown-menu">
+                            <a href="account.html"><i class="far fa-user"></i> Manage My Account</a>
+                            <a href="orders.html"><i class="fas fa-box-open"></i> My Order</a>
+                            <a href="cancellations.html"><i class="fas fa-times-circle"></i> My Cancellations</a>
+                            <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 3. BREADCRUMB & WELCOME -->
+    <div class="container breadcrumb-section">
+        <div class="breadcrumb">
+            <span>Home /</span> <span class="active">My Account</span>
+        </div>
+        <div class="welcome-text">
+            Welcome! <span id="welcome-name">Md Rimel</span>
+        </div>
+    </div>
+
+    <!-- 4. MAIN CONTENT -->
+    <div class="container account-wrapper">
+        <!-- Sidebar -->
+        <aside class="account-sidebar">
+            <div class="sidebar-block">
+                <h4 class="sidebar-title">Manage My Account</h4>
+                <div class="sidebar-menu">
+                    <a href="account.html" class="sidebar-item">My Profile</a>
+                    <a href="address-book.html" class="sidebar-item">Address Book</a>
+                    <a href="payment-options.html" class="sidebar-item">My Payment Options</a>
+                </div>
+            </div>
+
+            <div class="sidebar-block" style="margin-top: 24px;">
+                <h4 class="sidebar-title" style="margin-bottom: 16px;">My Orders</h4>
+                <div class="sidebar-menu">
+                    <a href="orders.html" class="sidebar-item">My Orders</a>
+                    <a href="returns.html" class="sidebar-item">My Returns</a>
+                    <a href="cancellations.html" class="sidebar-item">Cancellations</a>
+                </div>
+            </div>
+
+            <div class="sidebar-menu" style="margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px;">
+                <div class="sidebar-item" style="font-weight: 500;">LOG OUT</div>
+            </div>
+            <script src="account-sidebar.js"></script>
+        </aside>
+
+        <!-- Address Book Content -->
+        <main class="address-book-content">
+            <div class="section-header">
+                <h2 class="section-title">Manage Your Address Book</h2>
+            </div>
+
+            <div id="address-list" class="address-list">
+                <!-- Dynamic cards injected here -->
+            </div>
+
+            <div class="add-btn-wrapper">
+                <button class="btn-add-address" onclick="showAddForm()">+ Add New Address</button>
+            </div>
+
+            <!-- Add/Edit Form (Hidden by default) -->
+            <div id="address-form-container" style="display:none; margin-top: 40px; padding: 40px; border: 1px solid #eee; border-radius: 8px; background: #fafafa;">
+                <h3 id="form-title" style="margin-bottom: 25px;">Add New Address</h3>
+                <form id="address-form" onsubmit="handleAddressSubmit(event)">
+                    <input type="hidden" id="edit-address-id">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+                        <div class="form-group">
+                            <label style="display:block; margin-bottom:8px; font-size:14px;">First Name</label>
+                            <input type="text" name="firstName" id="form-firstName" class="form-input" required oninput="validateField(this, /^[A-Za-z\s]{2,}$/, 'Only letters allowed (min 2)')">
+                            <span class="error-text">Please enter a valid first name</span>
+                        </div>
+                        <div class="form-group">
+                            <label style="display:block; margin-bottom:8px; font-size:14px;">Last Name</label>
+                            <input type="text" name="lastName" id="form-lastName" class="form-input" required oninput="validateField(this, /^[A-Za-z\s]{2,}$/, 'Only letters allowed (min 2)')">
+                            <span class="error-text">Please enter a valid last name</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="display:block; margin-bottom:8px; font-size:14px;">Phone Number (10 digits)</label>
+                        <input type="tel" name="phone" id="form-phone" class="form-input" required oninput="validateField(this, /^\d{10}$/, 'Enter exactly 10 digits')">
+                        <span class="error-text">Please enter a valid 10-digit phone number</span>
+                    </div>
+                    <div class="form-group">
+                        <label style="display:block; margin-bottom:8px; font-size:14px;">Street Address</label>
+                        <input type="text" name="street" id="form-street" class="form-input" required oninput="validateField(this, /.{5,}/, 'Enter at least 5 characters')">
+                        <span class="error-text">Please enter a detailed street address</span>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+                        <div class="form-group">
+                            <label style="display:block; margin-bottom:8px; font-size:14px;">City</label>
+                            <input type="text" name="city" id="form-city" class="form-input" required oninput="validateField(this, /^[A-Za-z\s]{2,}$/, 'Only letters allowed')">
+                            <span class="error-text">Please enter a valid city</span>
+                        </div>
+                        <div class="form-group">
+                            <label style="display:block; margin-bottom:8px; font-size:14px;">Pincode (6 digits)</label>
+                            <input type="text" name="pincode" id="form-pincode" class="form-input" required oninput="validateField(this, /^\d{6}$/, 'Enter exactly 6 digits')">
+                            <span class="error-text">Please enter a 6-digit pincode</span>
+                        </div>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+                        <div class="form-group">
+                            <label style="display:block; margin-bottom:8px; font-size:14px;">State</label>
+                            <input type="text" name="state" id="form-state" class="form-input" required oninput="validateField(this, /^[A-Za-z\s]{2,}$/, 'Only letters allowed')">
+                            <span class="error-text">Please enter a valid state</span>
+                        </div>
+                        <div class="form-group">
+                            <label style="display:block; margin-bottom:8px; font-size:14px;">Apartment (Optional)</label>
+                            <input type="text" name="apartment" id="form-apartment" class="form-input">
+                            <span class="error-text"></span>
+                        </div>
+                    </div>
+                    <div style="margin-bottom:25px; display:flex; align-items:center; gap:10px;">
+                        <input type="checkbox" name="isDefault" id="form-isDefault">
+                        <label for="form-isDefault" style="font-size:14px;">Set as default address</label>
+                    </div>
+                    <div style="display:flex; gap:15px;">
+                        <button type="submit" style="background:#000; color:#fff; padding:12px 30px; border-radius:4px; font-weight:600;">Save Address</button>
+                        <button type="button" onclick="hideForm()" style="background:#eee; color:#333; padding:12px 30px; border-radius:4px; font-weight:600;">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="back-to-checkout" style="display:none; margin-top: 40px; text-align: center;">
+                <a href="checkout.html" style="display:inline-block; border: 2px solid #000; padding:12px 40px; font-weight:800; text-transform:uppercase;">Back to Checkout</a>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="header.js"></script>
+    <script src="footer.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        const API_BASE = "http://localhost:5000/api";
+        const token = localStorage.getItem("token");
+        const urlParams = new URLSearchParams(window.location.search);
+        const fromCheckout = urlParams.get('from') === 'checkout';
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if (!token) {
+                window.location.href = "login.html";
+                return;
+            }
+            fetchAddresses();
+            if (fromCheckout) {
+                document.getElementById('back-to-checkout').style.display = 'block';
+            }
+        });
+
+        async function fetchAddresses() {
+            try {
+                const res = await fetch(`${API_BASE}/address`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                const addresses = await res.json();
+                renderAddresses(addresses);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function renderAddresses(addresses) {
+            const container = document.getElementById('address-list');
+            if (addresses.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#888;">No addresses found. Add your first delivery address!</p>';
+                return;
+            }
+
+            container.innerHTML = addresses.map(addr => `
+                <div class="address-card">
+                    ${addr.isDefault ? '<div style="position:absolute; top:20px; right:20px; background:#000; color:#fff; padding:4px 10px; font-size:10px; font-weight:700; text-transform:uppercase;">Default</div>' : ''}
+                    <div class="address-line">
+                        <span class="addr-label">Name:</span>
+                        <span class="addr-value">${addr.firstName} ${addr.lastName}</span>
+                    </div>
+                    <div class="address-line">
+                        <span class="addr-label">Address:</span>
+                        <span class="addr-value">${addr.street}${addr.apartment ? ', ' + addr.apartment : ''}, ${addr.city}, ${addr.state} ${addr.pincode}</span>
+                    </div>
+                    <div class="address-line">
+                        <span class="addr-label">Phone:</span>
+                        <span class="addr-value">${addr.phone}</span>
+                    </div>
+                    <div style="margin-top:20px; display:flex; gap:20px;">
+                        <button onclick="editAddress('${addr._id}')" style="color:#4a90e2; font-weight:600; font-size:14px;">Edit</button>
+                        <button onclick="deleteAddress('${addr._id}')" style="color:#ff4d4d; font-weight:600; font-size:14px;">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showAddForm() {
+            document.getElementById('form-title').innerText = "Add New Address";
+            document.getElementById('edit-address-id').value = "";
+            document.getElementById('address-form').reset();
+            document.getElementById('address-form-container').style.display = 'block';
+            document.getElementById('address-list').style.display = 'none';
+            document.querySelector('.add-btn-wrapper').style.display = 'none';
+        }
+
+        function hideForm() {
+            document.getElementById('address-form-container').style.display = 'none';
+            document.getElementById('address-list').style.display = 'flex';
+            document.querySelector('.add-btn-wrapper').style.display = 'flex';
+            // Clear errors
+            document.querySelectorAll('.form-input').forEach(i => i.classList.remove('error'));
+            document.querySelectorAll('.error-text').forEach(t => t.style.display = 'none');
+        }
+
+        function validateField(input, regex, errorMsg) {
+            const errorText = input.nextElementSibling;
+            if (!regex.test(input.value)) {
+                input.classList.add('error');
+                if (errorText) {
+                    errorText.innerText = errorMsg;
+                    errorText.style.display = 'block';
+                }
+                return false;
+            } else {
+                input.classList.remove('error');
+                if (errorText) errorText.style.display = 'none';
+                return true;
+            }
+        }
+
+        async function handleAddressSubmit(e) {
+            e.preventDefault();
+            
+            // Manual check all
+            const v1 = validateField(document.getElementById('form-firstName'), /^[A-Za-z\s]{2,}$/, 'Enter at least 2 letters');
+            const v2 = validateField(document.getElementById('form-lastName'), /^[A-Za-z\s]{2,}$/, 'Enter at least 2 letters');
+            const v3 = validateField(document.getElementById('form-phone'), /^\d{10}$/, 'Enter exactly 10 digits');
+            const v4 = validateField(document.getElementById('form-street'), /.{5,}/, 'Enter at least 5 characters');
+            const v5 = validateField(document.getElementById('form-city'), /^[A-Za-z\s]{2,}$/, 'Invalid city name');
+            const v6 = validateField(document.getElementById('form-pincode'), /^\d{6}$/, 'Enter exactly 6 digits');
+            const v7 = validateField(document.getElementById('form-state'), /^[A-Za-z\s]{2,}$/, 'Invalid state name');
+
+            if (!v1 || !v2 || !v3 || !v4 || !v5 || !v6 || !v7) {
+                Swal.fire("Wait", "Please fix the errors in the form", "warning");
+                return;
+            }
+
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            data.isDefault = document.getElementById('form-isDefault').checked;
+            
+            const addressId = document.getElementById('edit-address-id').value;
+            const method = addressId ? 'PUT' : 'POST';
+            const url = addressId ? `${API_BASE}/address/${addressId}` : `${API_BASE}/address`;
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                });
+                if (!res.ok) throw new Error("Failed to save address");
+                
+                Swal.fire("Success", `Address ${addressId ? 'updated' : 'added'} successfully`, "success");
+                hideForm();
+                fetchAddresses();
+            } catch (err) {
+                Swal.fire("Error", err.message, "error");
+            }
+        }
+
+        async function editAddress(id) {
+            try {
+                const res = await fetch(`${API_BASE}/address`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                const addresses = await res.json();
+                const addr = addresses.find(a => a._id === id);
+                
+                if (addr) {
+                    document.getElementById('form-title').innerText = "Edit Address";
+                    document.getElementById('edit-address-id').value = id;
+                    document.getElementById('form-firstName').value = addr.firstName;
+                    document.getElementById('form-lastName').value = addr.lastName;
+                    document.getElementById('form-phone').value = addr.phone;
+                    document.getElementById('form-street').value = addr.street;
+                    document.getElementById('form-city').value = addr.city;
+                    document.getElementById('form-state').value = addr.state;
+                    document.getElementById('form-pincode').value = addr.pincode;
+                    document.getElementById('form-apartment').value = addr.apartment || "";
+                    document.getElementById('form-isDefault').checked = addr.isDefault;
+                    
+                    document.getElementById('address-form-container').style.display = 'block';
+                    document.getElementById('address-list').style.display = 'none';
+                    document.querySelector('.add-btn-wrapper').style.display = 'none';
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function deleteAddress(id) {
+            const result = await Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#000',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    const res = await fetch(`${API_BASE}/address/${id}`, {
+                        method: 'DELETE',
+                        headers: { "Authorization": `Bearer ${token}` }
+                    });
+                    if (!res.ok) throw new Error("Failed to delete");
+                    Swal.fire("Deleted!", "Your address has been deleted.", "success");
+                    fetchAddresses();
+                } catch (err) {
+                    Swal.fire("Error", err.message, "error");
+                }
+            }
+        }
+    </script>
+</body>
+
+
+</html>
