@@ -488,7 +488,7 @@
 
 
         <div class="sidebar-footer">
-            <button class="logout-btn" onclick="localStorage.removeItem('adminToken'); window.location.href='login.html';">
+            <button class="logout-btn" >
                 Logout
                 <svg class="icon" viewBox="0 0 24 24">
                     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -589,7 +589,7 @@
         async function fetchMessages() {
             try {
                 const res = await fetch(`/api/contact/admin/all?page=${currentPage}&limit=${limit}&status=${currentStatus}`, {
-                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('adminToken') }
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
                 });
 
                 if (res.status === 401 || res.status === 403) {
@@ -680,7 +680,7 @@
             try {
                 const res = await fetch(`/api/contact/admin/${id}/read`, { 
                     method: 'PATCH',
-                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('adminToken') }
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
                 });
                 
                 if (res.status === 401 || res.status === 403) {

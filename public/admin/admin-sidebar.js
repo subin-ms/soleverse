@@ -75,8 +75,19 @@ function initSidebar() {
     // Logout Logic
     const logoutBtn = document.querySelector('.logout-btn');
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
-            // Redirect to login or handle logout
+        // Remove individual onclick if it exists (to prevent conflicts)
+        logoutBtn.removeAttribute('onclick');
+        
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Clear all auth data
+            localStorage.removeItem('token');
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('isLoggedIn');
+            // Support legacy keys if any
+            localStorage.removeItem('adminToken');
+            
+            console.log('Admin Sidebar: Auth data cleared. Logging out...');
             window.location.href = '../user/login.html';
         });
     }

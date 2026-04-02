@@ -23,8 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="footer-nav-col">
                             <h4>Contact Us</h4>
                             <div class="contact-info">
-                                <p>+91 8129103435</p>
-                                <p>soleverse@gmail.com</p>
+                                <p>+91 81291 03739</p>
+                                <p>soleverse6@gmail.com</p>
                             </div>
                         </div>
                     </div>

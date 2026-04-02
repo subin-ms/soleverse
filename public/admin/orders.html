@@ -1161,7 +1161,9 @@
                     <div class="payment-info">
                         <span>${order.paymentMethod.toUpperCase()}</span>
                         <span class="divider">•</span>
-                        <span class="payment-status-small ${getPaymentStatusClass(order.paymentStatus)}">${order.paymentStatus}</span>
+                        <span class="payment-status-small ${getPaymentStatusClass(order.paymentMethod.toLowerCase() === 'cod' && order.status === 'Delivered' ? 'Paid' : order.paymentStatus)}">
+                            ${(order.paymentMethod.toLowerCase() === 'cod' && order.status === 'Delivered') ? 'Paid' : order.paymentStatus}
+                        </span>
                     </div>
                 </td>
                 <td>
@@ -1424,7 +1426,11 @@
                     </div>
                     <div class="detail-item">
                         <span class="detail-label">Payment Status:</span>
-                        <span class="detail-value"><span class="status-badge ${getPaymentStatusClass(order.paymentStatus)}">${order.paymentStatus.toUpperCase()}</span></span>
+                        <span class="detail-value">
+                            <span class="status-badge ${getPaymentStatusClass(order.paymentMethod.toLowerCase() === 'cod' && order.status === 'Delivered' ? 'Paid' : order.paymentStatus)}">
+                                ${(order.paymentMethod.toLowerCase() === 'cod' && order.status === 'Delivered') ? 'PAID' : order.paymentStatus.toUpperCase()}
+                            </span>
+                        </span>
                     </div>
                     <div class="detail-item">
                         <span class="detail-label">Order Date:</span>

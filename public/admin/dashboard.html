@@ -363,7 +363,7 @@
         async function fetchStats(range) {
             try {
                 const response = await fetch(`/api/dashboard/stats?range=${range}`, {
-                    headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
                 });
                 const data = await response.json();
                 if (data.success) {
@@ -430,7 +430,7 @@
 
         document.getElementById('dateRange').addEventListener('change', (e) => fetchStats(e.target.value));
         document.getElementById('logoutBtn').addEventListener('click', () => {
-            localStorage.removeItem('adminToken');
+            localStorage.removeItem('token');
             window.location.href = 'login.html';
         });
 

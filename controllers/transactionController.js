@@ -78,6 +78,12 @@ exports.getTransactions = async (req, res) => {
                 return `${name} (x${item.quantity})`;
             }).join(', ');
 
+            // Logic: For COD, status is 'Success' only if order is 'Delivered'
+            let displayStatus = isRefunded ? 'Refunded' : 'Success';
+            if (!isRefunded && order.paymentMethod.toLowerCase() === 'cod' && order.status !== 'Delivered') {
+                displayStatus = 'Pending';
+            }
+
             return {
                 id: order._id,
                 trxDisplayId: `${isRefunded ? 'REF' : 'TRX'}-${shortId}`,
@@ -87,7 +93,7 @@ exports.getTransactions = async (req, res) => {
                 method: order.paymentMethod, // cod, wallet, online, bank
                 type: isRefunded ? 'Debit' : 'Credit',
                 amount: order.totalAmount,
-                status: isRefunded ? 'Refunded' : 'Success'
+                status: displayStatus
             };
         });
 

@@ -378,6 +378,28 @@ exports.updateOrderStatus = async (req, res) => {
         paymentMethod: order.paymentMethod,
         status: "Approved"
       });
+      // If it was already paid, it should be refunded (similar to user-initiated cancel)
+      if (order.paymentStatus === "Paid") {
+        const user = await require("../models/userModel").findById(order.user);
+        if (user) {
+          user.wallet += order.totalAmount;
+          await user.save();
+          order.paymentStatus = "Refunded";
+          
+          await Transaction.create({
+            user: order.user,
+            amount: order.totalAmount,
+            type: "Credit",
+            description: `Refund for Admin-Cancelled Order #${order._id.toString().slice(-6).toUpperCase()}`,
+            orderId: order._id
+          });
+        }
+      }
+    }
+
+    // Logic for COD Payment Status
+    if (status === "Delivered" && order.paymentMethod.toLowerCase() === "cod") {
+      order.paymentStatus = "Paid";
     }
 
     order.status = status;

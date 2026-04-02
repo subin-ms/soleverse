@@ -323,7 +323,7 @@
 
                 const response = await fetch(`/api/customers/admin?search=${search}`, {
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
                 });
                 const data = await response.json();
@@ -400,7 +400,7 @@
                 const response = await fetch(`/api/customers/admin/${userId}/block`, {
                     method: 'PATCH',
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
                 });
                 const data = await response.json();
@@ -431,7 +431,7 @@
 
         // Logout
         document.getElementById('logoutBtn').addEventListener('click', () => {
-            localStorage.removeItem('adminToken');
+            localStorage.removeItem('token');
             window.location.href = 'login.html';
         });
 
