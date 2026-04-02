@@ -1,4 +1,5 @@
 const Cart = require("../models/cartModel");
+const Product = require("../models/productModel");
 
 /* =========================
    ADD TO CART
@@ -8,6 +9,18 @@ exports.addToCart = async (req, res) => {
     const { productId, quantity, size } = req.body;
     const userId = req.user.id;
 
+    const product = await Product.findById(productId);
+    if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+    }
+
+    let availableStock = 0;
+    if (size && product.sizes && product.sizes[size] !== undefined) {
+        availableStock = product.sizes[size];
+    } else {
+        availableStock = product.stock;
+    }
+
     // Check if item already exists in cart for this user and size
     let cartItem = await Cart.findOne({
       user: userId,
@@ -15,16 +28,32 @@ exports.addToCart = async (req, res) => {
       size: size || null
     });
 
+    let currentCartQty = 0;
+    if (cartItem) {
+        currentCartQty = cartItem.quantity;
+    }
+
+    const requestedQty = Number(quantity) || 1;
+    if (currentCartQty + requestedQty > availableStock) {
+        if (availableStock === 0) {
+            return res.status(400).json({ message: "Out of stock" });
+        }
+        if (currentCartQty >= availableStock) {
+            return res.status(400).json({ message: "Stock limit reached. You cannot add more." });
+        }
+        return res.status(400).json({ message: `Only ${availableStock} items left in stock.` });
+    }
+
     if (cartItem) {
       // Increment quantity
-      cartItem.quantity += Number(quantity) || 1;
+      cartItem.quantity += requestedQty;
       await cartItem.save();
     } else {
       // Create new cart item
       cartItem = await Cart.create({
         user: userId,
         product: productId,
-        quantity: Number(quantity) || 1,
+        quantity: requestedQty,
         size: size || null
       });
     }
@@ -70,13 +99,30 @@ exports.updateCartQuantity = async (req, res) => {
     const { productId } = req.params;
     const { quantity, size } = req.body;
 
+    const product = await Product.findById(productId);
+    if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+    }
+
+    let availableStock = 0;
+    if (size && product.sizes && product.sizes[size] !== undefined) {
+        availableStock = product.sizes[size];
+    } else {
+        availableStock = product.stock;
+    }
+
+    const requestedQty = Number(quantity);
+    if (requestedQty > availableStock) {
+        return res.status(400).json({ message: `Only ${availableStock} items left in stock.` });
+    }
+
     const cartItem = await Cart.findOneAndUpdate(
       { 
         user: req.user.id, 
         product: productId,
         size: size || null 
       },
-      { quantity: Number(quantity) },
+      { quantity: requestedQty },
       { new: true }
     );
 

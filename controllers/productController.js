@@ -63,7 +63,7 @@ exports.getProducts = async (req, res) => {
 // 🔍 Get Public Products (only active)
 exports.getPublicProducts = async (req, res) => {
   try {
-    const { category, size, maxPrice, page = 1, limit = 9 } = req.query;
+    const { category, size, maxPrice, sort, page = 1, limit = 9 } = req.query;
     const Category = require("../models/categoryModel");
     const publishedCategories = await Category.find({ status: "Published" }, "_id");
     const publishedCategoryIds = publishedCategories.map(c => c._id);
@@ -115,6 +115,16 @@ exports.getPublicProducts = async (req, res) => {
       }
     }
 
+    // --- Sorting Logic ---
+    let sortOption = { createdAt: -1 }; // Default: Newest first
+    if (sort === "price_asc") {
+      sortOption = { price: 1 };
+    } else if (sort === "price_desc") {
+      sortOption = { price: -1 };
+    } else if (sort === "newest") {
+      sortOption = { createdAt: -1 };
+    }
+
     const pageNum = parseInt(page, 10);
     const limitNum = parseInt(limit, 10);
     const skip = (pageNum - 1) * limitNum;
@@ -122,7 +132,7 @@ exports.getPublicProducts = async (req, res) => {
     const totalProducts = await Product.countDocuments(filter);
     const products = await Product.find(filter)
       .populate("category", "name")
-      .sort({ createdAt: -1 })
+      .sort(sortOption)
       .skip(skip)
       .limit(limitNum);
 

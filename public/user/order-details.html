@@ -1014,10 +1014,21 @@
             statusBadge.className = `status-badge ${order.status.toLowerCase()}`;
 
             // Shipping Info
-            const addr = order.shippingAddress;
-            document.getElementById('ship-name').innerText = `${addr.firstName} ${addr.lastName}`;
-            document.getElementById('ship-address').innerText = `${addr.streetAddress}${addr.apartment ? `, ${addr.apartment}` : ''}, ${addr.city}, ${addr.state} ${addr.pincode}`;
-            document.getElementById('ship-phone').innerText = `+91 ${addr.phone}`;
+            const addr = order.shippingAddress || {};
+            const firstName = addr.firstName || '';
+            const lastName = addr.lastName || '';
+            document.getElementById('ship-name').innerText = `${firstName} ${lastName}`.trim() || 'N/A';
+            
+            const addressParts = [
+                addr.streetAddress,
+                addr.apartment,
+                addr.city,
+                addr.state,
+                addr.pincode
+            ].filter(part => part && part.toString().trim() !== "");
+            
+            document.getElementById('ship-address').innerText = addressParts.join(', ') || 'N/A';
+            document.getElementById('ship-phone').innerText = addr.phone ? `+91 ${addr.phone}` : 'N/A';
 
             // Billing
             let subtotal = 0;

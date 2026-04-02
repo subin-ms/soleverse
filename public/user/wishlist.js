@@ -140,6 +140,11 @@ async function loadWishlist() {
             const p = item.product;
             if (!p) return "";
             
+            const hasDiscount = p.discountValue > 0;
+            const displayPrice = hasDiscount 
+                ? (p.discountType === 'percent' ? p.price - (p.price * p.discountValue / 100) : p.price - p.discountValue)
+                : p.price;
+
             return `
     <div class="product-card">
       <div class="card-image">
@@ -155,7 +160,10 @@ async function loadWishlist() {
       </div>
       <div class="card-details">
         <h3 class="product-name" onclick="window.location.href='product.html?id=${p._id}'" style="cursor: pointer;">${p.name}</h3>
-        <div class="product-price">₹${p.price}</div>
+        <div class="product-price">
+            ₹${displayPrice.toFixed(2)}
+            ${hasDiscount ? `<span class="old-price" style="text-decoration: line-through; color: #999; font-size: 14px; margin-left: 8px;">₹${p.price.toFixed(2)}</span>` : ''}
+        </div>
       </div>
     </div>`;
         }).join("");
@@ -197,6 +205,11 @@ async function loadRecommendations(wishlistItems = []) {
         }
 
         grid.innerHTML = products.map(p => {
+            const hasDiscount = p.discountValue > 0;
+            const displayPrice = hasDiscount 
+                ? (p.discountType === 'percent' ? p.price - (p.price * p.discountValue / 100) : p.price - p.discountValue)
+                : p.price;
+
             return `
     <div class="product-card">
       <div class="card-image">
@@ -212,7 +225,10 @@ async function loadRecommendations(wishlistItems = []) {
       </div>
       <div class="card-details">
         <h3 class="product-name" onclick="window.location.href='product.html?id=${p._id}'" style="cursor: pointer;">${p.name}</h3>
-        <div class="product-price">₹${p.price}</div>
+        <div class="product-price">
+            ₹${displayPrice.toFixed(2)}
+            ${hasDiscount ? `<span class="old-price" style="text-decoration: line-through; color: #999; font-size: 14px; margin-left: 8px;">₹${p.price.toFixed(2)}</span>` : ''}
+        </div>
       </div>
     </div>`;
         }).join("");

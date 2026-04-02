@@ -26,12 +26,17 @@ exports.placeOrder = async (req, res) => {
     // 2. Prepare order items and calculate total
     let totalAmount = 0;
     const orderItems = cartItems.map((item) => {
-      const price = item.product.price;
+      const product = item.product;
+      const hasDiscount = product.discountValue > 0;
+      const price = hasDiscount 
+        ? (product.discountType === 'percent' ? product.price - (product.price * product.discountValue / 100) : product.price - product.discountValue)
+        : product.price;
+
       const subtotal = price * item.quantity;
       totalAmount += subtotal;
 
       return {
-        product: item.product._id,
+        product: product._id,
         quantity: item.quantity,
         size: item.size,
         price: price,
@@ -486,6 +491,9 @@ exports.verifyRazorpayPayment = async (req, res) => {
       // We can reuse the logic from placeOrder but adapted for verified payment
       const { shippingAddress, paymentMethod, coupon, discountAmount, totalAmount, items } = orderData;
 
+      // Note: In a production environment, we should re-verify the prices and totalAmount from the database 
+      // instead of trusting the orderData from the frontend.
+      
       const newOrder = await Order.create({
         user: userId,
         items: items,

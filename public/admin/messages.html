@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KICKSLAB - Contact Messages</title>
+    <script src="admin-guard.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin-sidebar.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --primary-blue: #4e73df;
+            --primary-bg: #f5f7fb;
+            --white: #ffffff;
+            --text-dark: #1f2937;
+            --text-gray: #6b7280;
+            --border-color: #e5e7eb;
+            --success-green: #1cc88a;
+            --danger-red: #e74a3b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-dark);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            position: relative;
+            margin-left: 260px;
+            transition: margin-left 0.3s;
+        }
+
+        @media (max-width: 1199px) {
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        .content-wrapper {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        /* Message Container */
+        .message-container {
+            background-color: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            overflow: hidden;
+        }
+
+        .filter-bar {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fafbfc;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--white);
+            color: var(--text-gray);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .filter-btn.active {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+            box-shadow: 0 4px 12px rgba(78, 115, 223, 0.2);
+        }
+
+        /* Table Styling */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+            transition: background 0.2s;
+        }
+
+        tr:hover td {
+            background-color: #f8faff;
+        }
+
+        .unread-row {
+            background-color: #f0f7ff;
+        }
+
+        .unread-row td {
+            font-weight: 600;
+        }
+
+        .sender-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sender-name {
+            font-size: 0.9375rem;
+            color: var(--text-dark);
+            margin-bottom: 0.125rem;
+        }
+
+        .sender-email {
+            font-size: 0.8125rem;
+            color: var(--text-gray);
+            font-weight: 400;
+        }
+
+        .subject-col {
+            max-width: 400px;
+        }
+
+        .subject-text {
+            font-size: 0.9375rem;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .message-excerpt {
+            font-size: 0.8125rem;
+            color: var(--text-gray);
+            font-weight: 400;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-unread {
+            background-color: #e0e7ff;
+            color: #4338ca;
+        }
+
+        .status-read {
+            background-color: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-view {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .btn-view:hover {
+            background: #bfdbfe;
+        }
+
+        .btn-reply {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .btn-reply:hover {
+            background: #bbf7d0;
+        }
+
+        .btn-read {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .btn-read:hover {
+            background: #e5e7eb;
+        }
+
+        /* Modal Enhancements */
+        .admin-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .admin-modal-overlay.active {
+            display: flex;
+        }
+
+        .admin-modal-container {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-modal-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .message-details-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .message-full-body {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #374151;
+            padding: 1.5rem;
+            background: #f9fafb;
+            border-radius: 12px;
+            white-space: pre-wrap;
+            border: 1px solid #f0f3f6;
+        }
+
+        .reply-section {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn-reply-main {
+            background-color: var(--success-green);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(28, 200, 138, 0.2);
+        }
+
+        .btn-reply-main:hover {
+            background-color: #16a34a;
+            transform: translateY(-2px);
+        }
+
+        /* Pagination */
+        .pagination-footer {
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fafbfc;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .page-info {
+            font-size: 0.875rem;
+            color: var(--text-gray);
+        }
+
+        .page-ctrl {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .ctrl-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ctrl-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .ctrl-btn:not(:disabled):hover {
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <a href="dashboard.html" class="logo">SOLEVERSE</a>
+
+        <div class="menu-category">Main menu</div>
+        <a href="dashboard.html" class="nav-item">
+            <div class="nav-icon">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+            </div>
+            Dashboard
+        </a>
+        <a href="orders.html" class="nav-item">
+            <div class="nav-icon">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+            </div>
+            Orders
+        </a>
+        <a href="customers.html" class="nav-item">
+            <div class="nav-icon">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+            </div>
+            Customers
+        </a>
+        <a href="categories.html" class="nav-item">
+            <div class="nav-icon">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                </svg>
+            </div>
+            Categories
+        </a>
+        <a href="coupons.html" class="nav-item">
+            <div class="nav-icon">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+            </div>
+            Coupons
+        </a>
+        <a href="transactions.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+            Transactions
+        </a>
+<a href="messages.html" class="nav-item active">
+            <div class="nav-icon">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            </div>
+            Messages
+        </a>
+        
+
+        <div class="menu-category">Product</div>
+        <a href="product-list.html" class="nav-item">
+            <div class="nav-icon">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+            </div>
+            Product List
+        </a>
+        <a href="add-product.html" class="nav-item">
+            <div class="nav-icon">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="16"></line>
+                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+            </div>
+            Add Product
+        </a>
+        <a href="reviews.html" class="nav-item">
+            <div class="nav-icon">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z">
+                    </path>
+                </svg>
+            </div>
+            Product Reviews
+        </a>
+        
+        <div class="menu-category">Admin</div>
+        <a href="admin-role.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            Admin Role
+        </a>
+
+
+        <div class="sidebar-footer">
+            <button class="logout-btn" onclick="localStorage.removeItem('adminToken'); window.location.href='login.html';">
+                Logout
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+            <div class="header-section">
+                <h1 class="header-title">Contact Messages</h1>
+            </div>
+
+            <div class="message-container">
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <button class="filter-btn active" onclick="filterMessages('all')">All Messages</button>
+                        <button class="filter-btn" onclick="filterMessages('unread')">Unread</button>
+                        <button class="filter-btn" onclick="filterMessages('read')">Read</button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th style="width: 250px;">Sender</th>
+                                <th>Subject & Message</th>
+                                <th>Date</th>
+                                <th style="text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="messages-body">
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 3rem;">Loading messages...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination-footer">
+                    <div class="page-info" id="pagination-info">Showing 0-0 of 0 results</div>
+                    <div class="page-ctrl">
+                        <button class="ctrl-btn" id="prev-btn" onclick="changePage(-1)">Previous</button>
+                        <button class="ctrl-btn" id="next-btn" onclick="changePage(1)">Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="admin-modal-overlay" id="messageModal">
+        <div class="admin-modal-container" style="max-width: 600px; text-align: left;">
+            <div class="admin-modal-title" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+                <span id="modal-title-text">Message Preview</span>
+                <button class="close-modal" onclick="closeModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-gray);">&times;</button>
+            </div>
+
+            <div class="admin-modal-message" style="margin-bottom: 0;">
+                <div class="message-details-header">
+                    <h4 id="modal-subject" style="font-size: 1.2rem; font-weight: 700; color: var(--text-dark); margin-bottom: 0.5rem;"></h4>
+                    <p style="color: var(--text-gray); font-size: 0.9rem;">
+                        From: <strong id="modal-name" style="color: var(--text-dark);"></strong> (<span id="modal-email"></span>)
+                    </p>
+                    <p style="color: var(--text-gray); font-size: 0.85rem; margin-top: 0.25rem;" id="modal-date"></p>
+                </div>
+
+                <div class="message-full-body" id="modal-content" style="margin-top: 1.5rem;"></div>
+
+                <div class="reply-section" style="margin-top: 2rem;">
+                    <a href="#" class="btn-reply-main" id="modal-reply-btn" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-reply"></i> Reply via Email
+                    </a>
+                </div>
+            </div>
+
+            <div class="admin-modal-footer" style="padding-top: 1.5rem; border-top: 1px solid var(--border-color); margin-top: 1.5rem;">
+                <button class="admin-modal-btn secondary" onclick="closeModal()" style="min-width: 100px;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin-sidebar.js"></script>
+    <script>
+        let currentPage = 1;
+        let currentStatus = 'all';
+        const limit = 10;
+        let messagesData = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchMessages();
+        });
+
+        async function fetchMessages() {
+            try {
+                const res = await fetch(`/api/contact/admin/all?page=${currentPage}&limit=${limit}&status=${currentStatus}`, {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('adminToken') }
+                });
+
+                if (res.status === 401 || res.status === 403) {
+                    window.location.href = '../user/login.html';
+                    return;
+                }
+
+                const result = await res.json();
+                if (result.success) {
+                    messagesData = result.data;
+                    renderMessages(result.data);
+                    updatePagination(result.pagination);
+                }
+            } catch (error) {
+                console.error('Error fetching messages:', error);
+            }
+        }
+
+        function renderMessages(messages) {
+            const tbody = document.getElementById('messages-body');
+            tbody.innerHTML = '';
+
+            if (messages.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 3rem; color: #6b7280;">No messages found.</td></tr>';
+                return;
+            }
+
+            messages.forEach(msg => {
+                const date = new Date(msg.createdAt).toLocaleDateString();
+                const row = document.createElement('tr');
+                if (!msg.isRead) row.className = 'unread-row';
+
+                row.innerHTML = `
+                    <td>
+                        <span class="status-badge ${msg.isRead ? 'status-read' : 'status-unread'}">
+                            ${msg.isRead ? 'Read' : 'New Message'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="sender-info">
+                            <span class="sender-name">${msg.name}</span>
+                            <span class="sender-email">${msg.email}</span>
+                        </div>
+                    </td>
+                    <td class="subject-col">
+                        <div class="subject-text">${msg.subject}</div>
+                        <div class="message-excerpt">${msg.message}</div>
+                    </td>
+                    <td>
+                        <div style="font-size: 0.875rem; color: #374151;">${date}</div>
+                    </td>
+                    <td>
+                        <div class="action-btns" style="justify-content: flex-end;">
+                            <button class="btn-icon btn-view" onclick="viewMessage('${msg._id}')" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <a href="mailto:${msg.email}?subject=Re: ${encodeURIComponent(msg.subject)}" class="btn-icon btn-reply" title="Reply Email">
+                                <i class="fas fa-reply"></i>
+                            </a>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        async function viewMessage(id) {
+            const msg = messagesData.find(m => m._id === id);
+            if (!msg) return;
+
+            document.getElementById('modal-subject').textContent = msg.subject;
+            document.getElementById('modal-name').textContent = msg.name;
+            document.getElementById('modal-email').textContent = msg.email;
+            document.getElementById('modal-date').textContent = new Date(msg.createdAt).toLocaleString();
+            document.getElementById('modal-content').textContent = msg.message;
+
+            const replyBtn = document.getElementById('modal-reply-btn');
+            replyBtn.href = `mailto:${msg.email}?subject=Re: ${encodeURIComponent(msg.subject)}`;
+
+            document.getElementById('messageModal').classList.add('active');
+
+            if (!msg.isRead) {
+                await markAsRead(id);
+            }
+        }
+
+        async function markAsRead(id) {
+            try {
+                const res = await fetch(`/api/contact/admin/${id}/read`, { 
+                    method: 'PATCH',
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('adminToken') }
+                });
+                
+                if (res.status === 401 || res.status === 403) {
+                    window.location.href = '../user/login.html';
+                    return;
+                }
+
+                if (res.ok) {
+                    fetchMessages();
+                }
+            } catch (error) {
+                console.error('Error marking as read:', error);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('messageModal').classList.remove('active');
+        }
+
+        function filterMessages(status) {
+            currentStatus = status;
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            currentPage = 1;
+            fetchMessages();
+        }
+
+        function updatePagination(pagination) {
+            document.getElementById('pagination-info').textContent = `Showing Page ${pagination.currentPage} of ${pagination.totalPages}`;
+            document.getElementById('prev-btn').disabled = pagination.currentPage === 1;
+            document.getElementById('next-btn').disabled = pagination.currentPage === pagination.totalPages || pagination.totalPages === 0;
+        }
+
+        function changePage(delta) {
+            currentPage += delta;
+            fetchMessages();
+        }
+    </script>
+</body>
+
+</html>

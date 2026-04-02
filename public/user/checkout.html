@@ -911,6 +911,12 @@
             cartItems.forEach(item => {
                 const prod = item.product;
                 if (!prod) return;
+
+                const hasDiscount = prod.discountValue > 0;
+                const displayPrice = hasDiscount 
+                    ? (prod.discountType === 'percent' ? prod.price - (prod.price * prod.discountValue / 100) : prod.price - prod.discountValue)
+                    : prod.price;
+
                 const div = document.createElement('div');
                 div.className = 'order-item';
                 div.innerHTML = `
@@ -920,7 +926,8 @@
                         <div class="order-item-meta">Size: ${item.size || 'N/A'} | Qty: ${item.quantity}</div>
                     </div>
                     <div class="order-item-price-row">
-                        <span class="current-price">₹${prod.price}</span>
+                        <span class="current-price">₹${displayPrice.toFixed(2)}</span>
+                        ${hasDiscount ? `<span class="old-price" style="text-decoration: line-through; color: #999; font-size: 12px; margin-left: 8px;">₹${prod.price.toFixed(2)}</span>` : ''}
                     </div>
                 `;
                 container.appendChild(div);
@@ -1020,7 +1027,14 @@
         }
 
         function calculateTotals() {
-            subtotal = cartItems.reduce((acc, item) => acc + (item.product.price * item.quantity), 0);
+            subtotal = cartItems.reduce((acc, item) => {
+                const prod = item.product;
+                const hasDiscount = prod.discountValue > 0;
+                const displayPrice = hasDiscount 
+                    ? (prod.discountType === 'percent' ? prod.price - (prod.price * prod.discountValue / 100) : prod.price - prod.discountValue)
+                    : prod.price;
+                return acc + (displayPrice * item.quantity);
+            }, 0);
             
             // Coupon discount
             discount = appliedCoupon ? appliedCoupon.discount : 0;
@@ -1105,6 +1119,8 @@
                     streetAddress: addr.street,
                     apartment: addr.apartment || "",
                     city: addr.city,
+                    state: addr.state,
+                    pincode: addr.pincode,
                     phone: addr.phone,
                     email: userEmail
                 },
@@ -1218,12 +1234,19 @@
                         orderData: {
                             ...orderData,
                             totalAmount: subtotal - discount + shipping,
-                            items: cartItems.map(item => ({
-                                product: item.product._id,
-                                quantity: item.quantity,
-                                size: item.size,
-                                price: item.product.price
-                            }))
+                            items: cartItems.map(item => {
+                                const prod = item.product;
+                                const hasDiscount = prod.discountValue > 0;
+                                const displayPrice = hasDiscount 
+                                    ? (prod.discountType === 'percent' ? prod.price - (prod.price * prod.discountValue / 100) : prod.price - prod.discountValue)
+                                    : prod.price;
+                                return {
+                                    product: prod._id,
+                                    quantity: item.quantity,
+                                    size: item.size,
+                                    price: displayPrice
+                                };
+                            })
                         }
                     })
                 });

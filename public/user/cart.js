@@ -171,6 +171,9 @@ async function updateCartQuantity(productId, newQty, size = null) {
         } else {
             const data = await res.json();
             Swal.fire({ icon: 'error', title: 'Error', text: data.message || "Failed to update quantity." });
+            if (window.location.pathname.includes('cart.html')) {
+                renderCartPage(); // Reset input value to backend cart value
+            }
         }
     } catch (error) {
         console.error("Error updating quantity:", error);
@@ -203,7 +206,13 @@ async function renderCartPage() {
     container.innerHTML = items.map(item => {
         const p = item.product;
         if (!p) return "";
-        const itemTotal = p.price * item.quantity;
+        
+        const hasDiscount = p.discountValue > 0;
+        const displayPrice = hasDiscount 
+            ? (p.discountType === 'percent' ? p.price - (p.price * p.discountValue / 100) : p.price - p.discountValue)
+            : p.price;
+
+        const itemTotal = displayPrice * item.quantity;
         subtotal += itemTotal;
 
         return `
@@ -217,18 +226,21 @@ async function renderCartPage() {
                     </div>
                     <span>${p.name} ${item.size ? `(${item.size})` : ''}</span>
                 </div>
-                <div>₹${p.price}</div>
+                <div>
+                    ₹${displayPrice.toFixed(2)}
+                    ${hasDiscount ? `<span class="old-price" style="text-decoration: line-through; color: #999; font-size: 14px; margin-left: 8px;">₹${p.price.toFixed(2)}</span>` : ''}
+                </div>
                 <div>
                     <input type="number" class="qty-input" value="${item.quantity}" 
                         onchange="updateCartQuantity('${p._id}', this.value, '${item.size || ""}')" min="1">
                 </div>
-                <div>₹${itemTotal}</div>
+                <div>₹${itemTotal.toFixed(2)}</div>
             </div>
         `;
     }).join("");
 
-    if (subtotalEl) subtotalEl.innerText = `₹${subtotal}`;
-    if (totalEl) totalEl.innerText = `₹${subtotal}`;
+    if (subtotalEl) subtotalEl.innerText = `₹${subtotal.toFixed(2)}`;
+    if (totalEl) totalEl.innerText = `₹${subtotal.toFixed(2)}`;
 }
 
 /* =========================

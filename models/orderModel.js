@@ -35,6 +35,8 @@ const orderSchema = new mongoose.Schema(
       streetAddress: { type: String, required: true },
       apartment: { type: String },
       city: { type: String, required: true },
+      state: { type: String, required: false },
+      pincode: { type: String, required: false },
       phone: { type: String, required: true },
       email: { type: String, required: true },
     },

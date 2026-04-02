@@ -1581,7 +1581,7 @@
                 const stockEl = document.getElementById('stockStatus');
                 if (stockEl) {
                     if (data.stock > 0) {
-                        stockEl.innerText = `In Stock`;
+                        stockEl.innerText = `In Stock (${data.stock} left)`;
                         stockEl.style.color = '#00FF66';
                     } else {
                         stockEl.innerText = "Out of Stock";
@@ -1686,6 +1686,13 @@
                             document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
                             if (!isActive) {
                                 this.classList.add('active');
+                                if (stockEl && count > 0) {
+                                    stockEl.innerText = `In Stock (${count} left in this size)`;
+                                }
+                            } else {
+                                if (stockEl && data.stock > 0) {
+                                    stockEl.innerText = `In Stock (${data.stock} left total)`;
+                                }
                             }
                         });
                         

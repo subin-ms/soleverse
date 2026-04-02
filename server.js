@@ -17,6 +17,7 @@ const dashboardRoutes = require("./routes/dashboardRoutes");
 const customerRoutes = require("./routes/customerRoutes");
 const transactionRoutes = require("./routes/transactionRoutes");
 const couponRoutes = require("./routes/couponRoutes");
+const contactRoutes = require("./routes/contactRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -57,6 +58,7 @@ app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/customers", customerRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/coupons", couponRoutes);
+app.use("/api/contact", contactRoutes);
 
 // Test Route
 app.get("/", (req, res) => {

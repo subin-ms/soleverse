@@ -4,34 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact | Soleverse</title>
+    <title>Contact Us | Soleverse</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <link rel="stylesheet" href="header.css">
     <link rel="stylesheet" href="footer.css">
     <style>
-        /* 
-        GLOBAL STYLES (Copied & Adapted)
-        */
         :root {
+            --primary-blue: #4e73df;
             --primary-black: #000000;
             --primary-white: #ffffff;
-            --grey-light: #f5f5f5;
-            --accent-red: #db4444;
+            --grey-light: #f8fafc;
+            --text-dark: #1f2937;
+            --text-gray: #6b7280;
+            --border-color: #e5e7eb;
             --font-main: 'Inter', sans-serif;
-            --font-heading: 'Oswald', sans-serif;
             --max-width: 1440px;
-            --padding-desktop: 0 60px;
-            /* Standardized */
-            --padding-tablet: 0 40px;
-            --padding-mobile: 0 20px;
         }
 
         * {
@@ -42,414 +37,365 @@
 
         body {
             font-family: var(--font-main);
-            color: var(--primary-black);
+            color: var(--text-dark);
+            background-color: #f3f4f6;
             overflow-x: hidden;
-            background-color: var(--primary-white);
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        ul {
-            list-style: none;
-        }
-
-        img {
-            max-width: 100%;
-            display: block;
         }
 
         .container {
             max-width: var(--max-width);
             margin: 0 auto;
-            padding: var(--padding-desktop);
+            padding: 0 60px;
         }
 
-        /* 
-        BREADCRUMB
-        */
-        .breadcrumb {
-            padding: 40px 0;
-            font-size: 14px;
-            color: #000;
-        }
-
-        .breadcrumb span {
-            color: #000;
-            opacity: 0.5;
-        }
-
-        .breadcrumb span:last-child {
-            opacity: 1;
-            font-weight: 500;
-        }
-
-        /* 
-        CONTACT SECTION
-        */
-        .contact-container {
-            display: grid;
-            grid-template-columns: 340px 1fr;
-            gap: 30px;
-            margin-bottom: 140px;
-        }
-
-        .contact-info-card {
-            /* Left Sidebar */
-            background: #fff;
-            padding: 40px 35px;
-            box-shadow: 0 1px 13px rgba(0, 0, 0, 0.05);
-            border-radius: 4px;
-
-        }
-
-        .contact-info-block {
-            margin-bottom: 32px;
-        }
-
-        .info-header {
+        /* Hero Section */
+        .contact-hero {
+            position: relative;
+            height: 400px;
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../assets/hero_shoes.png');
+            background-size: cover;
+            background-position: center;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 16px;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            margin-bottom: 60px;
+        }
+
+        .contact-hero h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .contact-hero p {
+            font-size: 1.1rem;
+            font-weight: 500;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Title Section */
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .section-header p {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Contact Card Layout */
+        .contact-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            max-width: 1100px;
+            margin: 0 auto 100px;
+            overflow: hidden;
+        }
+
+        /* Left Side: Info */
+        .contact-info-panel {
+            padding: 50px;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .info-icon {
+            color: var(--primary-blue);
+            font-size: 1.5rem;
+            margin-top: 4px;
+        }
+
+        .info-content h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #111827;
+        }
+
+        .info-content p {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Right Side: Form */
+        .contact-form-panel {
+            padding: 50px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
             margin-bottom: 24px;
         }
 
-        .icon-circle {
-            background: var(--accent-red);
-            color: #fff;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+        .form-group {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
+            flex-direction: column;
+            gap: 8px;
         }
 
-        .info-title {
-            font-size: 16px;
-            font-weight: 500;
+        .form-group label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
         }
 
-        .info-details p {
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 16px;
-            color: #000;
-        }
-
-        .info-details p:last-child {
-            margin-bottom: 0;
-        }
-
-        .divider {
-            height: 1px;
-            background: #000;
-            opacity: 0.2;
-            /* Light grey styling for divider */
-            margin: 32px 0;
-        }
-
-        .contact-form-card {
-            /* Right Main */
-            background: #fff;
-            padding: 40px;
-            box-shadow: 0 1px 13px rgba(0, 0, 0, 0.05);
-            border-radius: 4px;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-
-        .input-group input,
-        .input-group textarea {
+        .form-group input, 
+        .form-group textarea {
             width: 100%;
-            background: #f5f5f5;
-            border: none;
-            padding: 13px 16px;
-            border-radius: 4px;
-            font-family: var(--font-main);
-            font-size: 16px;
-            color: #000;
-            outline: none;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            background-color: #f9fafb;
+            transition: all 0.2s;
         }
 
-        .input-group input::placeholder,
-        .input-group textarea::placeholder {
-            color: #999;
+        .form-group input:focus, 
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            background-color: white;
+            box-shadow: 0 0 0 4px rgba(78, 115, 223, 0.1);
         }
 
         .full-width {
-            margin-bottom: 32px;
+            grid-column: 1 / -1;
         }
 
-        .full-width textarea {
-            height: 207px;
+        .form-group textarea {
+            height: 150px;
             resize: none;
         }
 
-        .form-footer {
+        .submit-container {
             display: flex;
             justify-content: flex-end;
+            margin-top: 30px;
         }
 
-        .btn-submit {
-            background-color: var(--accent-red);
-            color: #fff;
-            padding: 16px 48px;
-            border-radius: 4px;
-            font-size: 16px;
-            font-weight: 500;
-            transition: 0.3s;
+        .btn-send {
+            background-color: #000000;
+            color: white;
+            padding: 14px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
         }
 
-        .btn-submit:hover {
-            background-color: #c93e3e;
+        .btn-send:hover {
+            background-color: #333333;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
         }
 
-        .required-star {
-            color: var(--accent-red);
-        }
-
-
-        .copyright {
-            border-top: 1px solid #333;
-            text-align: center;
-            padding-top: 24px;
-            color: #666;
-            font-size: 16px;
-        }
-        /* FOOTER REMOVED - Using global footer.css */
-
-        /* 
-        RESPONSIVE
-        */
-        @media (max-width: 1200px) {
-            :root {
-                --padding-desktop: 0 40px;
-            }
-
-            .contact-container {
-                grid-template-columns: 1fr;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
+        /* Responsive */
         @media (max-width: 992px) {
-
-            .nav-links,
-            .search-container {
-                display: none;
+            .contact-card {
+                grid-template-columns: 1fr;
             }
-
-            .mobile-toggle {
-                display: block;
+            .contact-info-panel {
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding: 40px;
             }
-
-            .nav-icons {
-                margin-left: auto;
-                margin-right: 20px;
-            }
-
-            .nav-links.active {
-                display: flex;
-                flex-direction: column;
-                position: absolute;
-                top: 80px;
-                left: 0;
-                width: 100%;
-                background: #fff;
-                padding: 20px;
-                border-bottom: 1px solid #eee;
+            .container {
+                padding: 0 20px;
             }
         }
 
-        @media (max-width: 768px) {
-            :root {
-                --padding-desktop: 0 20px;
-            }
-
-            .top-text {
-                font-size: 10px;
-                width: 60%;
-                white-space: normal;
-            }
-
-            .footer-grid {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-
-            .footer-input-group {
-                justify-content: center;
-            }
-
-            .social-icons {
-                justify-content: center;
-            }
-
-            .form-row {
+        @media (max-width: 640px) {
+            .form-grid {
                 grid-template-columns: 1fr;
             }
-
-            .btn-submit {
-                width: 100%;
+            .contact-hero h1 {
+                font-size: 2.5rem;
+            }
+            .contact-hero {
+                height: 300px;
             }
         }
     </style>
 </head>
 
 <body>
+    <!-- TOP BAR (Optional, using global header instead) -->
+    <div id="header-placeholder"></div>
 
-    <!-- TOP BAR -->
-        <!-- Top Bar -->
-    <div class="top-bar">
+    <main>
+        <!-- Hero Section -->
+        <section class="contact-hero">
+            <h1>GET IN TOUCH</h1>
+            <p>We’re always here for you</p>
+        </section>
+
         <div class="container">
-            <div class="top-center-text">
-                Summer Sale For All Free Express Delivery - OFF 50%!
-                <a href="shop.html" class="shop-now-link">ShopNow</a>
-            </div>
-            <div class="lang-selector">
-                English <i class="fas fa-chevron-down"></i>
+            <!-- Header Text -->
+            <section class="section-header">
+                <h2>CONTACT US</h2>
+                <p>Have questions about your order or need help with sizing? Send us a message below and our team will get back to you shortly.</p>
+            </section>
+
+            <!-- Contact Card -->
+            <div class="contact-card">
+                <!-- Info Sidebar -->
+                <div class="contact-info-panel">
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-phone-alt"></i></div>
+                        <div class="info-content">
+                            <h3>Phone</h3>
+                            <p>+91 81291 03739</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-envelope"></i></div>
+                        <div class="info-content">
+                            <h3>Email</h3>
+                            <p>soleverse6@gmail.com</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div class="info-content">
+                            <h3>Office</h3>
+                            <p>Soleverse Headquarters<br>Kerala, India</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="contact-form-panel">
+                    <form id="contactForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="name">Full Name</label>
+                                <input type="text" id="name" name="name" placeholder="John Doe" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" name="email" placeholder="john@example.com" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="subject">Subject</label>
+                                <input type="text" id="subject" name="subject" placeholder="Order Inquiry" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="message">Message</label>
+                                <textarea id="message" name="message" placeholder="How can we help you?" required></textarea>
+                            </div>
+                        </div>
+
+                        <div class="submit-container">
+                            <button type="submit" class="btn-send" id="submitBtn">SEND MESSAGE</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-
-    <!-- Main Header -->
-    <header class="main-header">
-        <div class="container nav-container">
-            <!-- Mobile Toggle (Left) -->
-            <div class="mobile-toggle" id="mobileToggle">
-                <i class="fas fa-bars"></i>
-            </div>
-
-            <!-- Logo (Center on Mobile, Left on Desktop) -->
-            <a href="index.html" class="logo">Soleverse</a>
-
-            <!-- Navigation Links (Center on Desktop) -->
-            <nav class="nav-menu" id="navMenu">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="shop.html" class="nav-link">Shop</a>
-                <a href="contact.html" class="nav-link">Contact</a>
-                <a href="about.html" class="nav-link">About</a>
-            </nav>
-
-            <!-- Icons (Right) -->
-            <div class="header-right">
-                <!-- Search Box (Desktop) -->
-                <div class="search-box-container">
-                    <input type="text" class="search-input" placeholder="What are you looking for?">
-                    <i class="fas fa-search search-icon-btn"></i>
-                </div>
-
-                <div class="nav-icons">
-                    <!-- Mobile Search Icon -->
-                    <a href="#" class="mobile-search-icon"><i class="fas fa-search"></i></a>
-                    
-                    <a href="wishlist.html" class="nav-icon-link"><i class="far fa-heart"></i></a>
-                    <a href="cart.html" class="nav-icon-link"><i class="fas fa-shopping-cart"></i></a>
-                    
-                    <!-- User Dropdown -->
-                    <div class="user-dropdown-container">
-                        <a href="account.html" class="user-icon-red"><i class="far fa-user"></i></a>
-                        <div class="dropdown-menu">
-                            <a href="account.html"><i class="far fa-user"></i> Manage My Account</a>
-                            <a href="orders.html"><i class="fas fa-box-open"></i> My Order</a>
-                            <a href="cancellations.html"><i class="fas fa-times-circle"></i> My Cancellations</a>
-                            <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- BREADCRUMB -->
-    <div class="container breadcrumb">
-        <span>Home</span> / <span>Contact</span>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div class="container">
-
-        <div class="contact-container">
-            <!-- Left Info Panel -->
-            <div class="contact-info-card">
-                <div class="contact-info-block">
-                    <div class="info-header">
-                        <div class="icon-circle"><i class="fas fa-phone-alt"></i></div>
-                        <div class="info-title">Call To Us</div>
-                    </div>
-                    <div class="info-details">
-                        <p>We are available 24/7, 7 days a week.</p>
-                        <p>Phone: +8801611112222</p>
-                    </div>
-                </div>
-
-                <div class="divider"></div>
-
-                <div class="contact-info-block">
-                    <div class="info-header">
-                        <div class="icon-circle"><i class="far fa-envelope"></i></div>
-                        <div class="info-title">Write To US</div>
-                    </div>
-                    <div class="info-details">
-                        <p>Fill out our form and we will contact you within 24 hours.</p>
-                        <p>Emails: customer@exclusive.com</p>
-                        <p>Emails: support@exclusive.com</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Form Panel -->
-            <div class="contact-form-card">
-                <form onsubmit="event.preventDefault();">
-                    <div class="form-row">
-                        <div class="input-group">
-                            <input type="text" placeholder="Your Name *" required>
-                        </div>
-                        <div class="input-group">
-                            <input type="email" placeholder="Your Email *" required>
-                        </div>
-                        <div class="input-group">
-                            <input type="tel" placeholder="Your Phone *" required>
-                        </div>
-                    </div>
-
-                    <div class="full-width">
-                        <div class="input-group">
-                            <textarea placeholder="Your Massage"></textarea>
-                            <!-- "Massage" as per screenshot typo, or should I correct? Screenshot says "Massage" but conventionally layout requests want precision. I will stick to "Massage" as per screenshot matching requirement -->
-                        </div>
-                    </div>
-
-                    <div class="form-footer">
-                        <button type="submit" class="btn-submit">Send Massage</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-    </div>
+    </main>
 
     <div id="footer-placeholder"></div>
 
-    <script src="footer.js"></script>
     <script src="header.js"></script>
-    <script src="auth.js"></script>
+    <script src="footer.js"></script>
+    
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'SENDING...';
+
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value
+            };
+
+            try {
+                const response = await fetch('/api/contact', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Your message has been sent successfully. We will get back to you soon!',
+                        confirmButtonColor: '#4e73df'
+                    });
+                    document.getElementById('contactForm').reset();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message || 'Something went wrong. Please try again.',
+                        confirmButtonColor: '#4e73df'
+                    });
+                }
+            } catch (error) {
+                console.error('Error submitting contact form:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Unable to send message. Please check your connection.',
+                    confirmButtonColor: '#4e73df'
+                });
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'SEND MESSAGE';
+            }
+        });
+    </script>
 </body>
 
 </html>
