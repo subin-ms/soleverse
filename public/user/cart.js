@@ -187,13 +187,17 @@ async function renderCartPage() {
     const items = await getBackendCart();
     const subtotalEl = document.getElementById('cart-subtotal');
     const totalEl = document.getElementById('cart-final-total');
+    const headerRow = document.querySelector('.cart-header-row');
 
     if (items.length === 0) {
-        container.innerHTML = '<p style="padding: 40px; text-align: center;">Your cart is empty.</p>';
+        if (headerRow) headerRow.style.display = 'none';
+        container.innerHTML = '<p style="padding: 40px; text-align: center; font-size: 18px; font-weight: 500;">Your cart is empty.</p>';
         if (subtotalEl) subtotalEl.innerText = '₹0';
         if (totalEl) totalEl.innerText = '₹0';
         return;
     }
+    
+    if (headerRow) headerRow.style.display = 'grid';
 
     let subtotal = 0;
     container.innerHTML = items.map(item => {

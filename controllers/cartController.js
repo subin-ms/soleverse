@@ -45,7 +45,17 @@ exports.getCart = async (req, res) => {
       .populate("product")
       .sort({ createdAt: -1 });
 
-    res.json(items);
+    const validItems = [];
+    for (let item of items) {
+      if (item.product) {
+        validItems.push(item);
+      } else {
+        // Remove orphaned cart item if the product was deleted
+        await Cart.findByIdAndDelete(item._id);
+      }
+    }
+
+    res.json(validItems);
 
   } catch (error) {
     res.status(500).json({ message: error.message });
