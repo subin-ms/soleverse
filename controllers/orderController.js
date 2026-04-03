@@ -6,6 +6,7 @@ const Return = require("../models/returnModel");
 const User = require("../models/userModel");
 const Transaction = require("../models/transactionModel");
 const razorpay = require("../utils/razorpay");
+const Product = require("../models/productModel");
 const crypto = require("crypto");
 
 /* =========================
@@ -21,6 +22,13 @@ exports.placeOrder = async (req, res) => {
 
     if (!cartItems || cartItems.length === 0) {
       return res.status(400).json({ message: "Cannot place order with an empty cart" });
+    }
+
+    // 1.5. Stock validation pre-check
+    for (const item of cartItems) {
+      if (item.product.stock < item.quantity) {
+        return res.status(400).json({ message: `Insufficient stock for ${item.product.name}. Available: ${item.product.stock}` });
+      }
     }
 
     // 2. Prepare order items and calculate total
@@ -97,6 +105,26 @@ exports.placeOrder = async (req, res) => {
       status: "Pending",
       paymentStatus: (paymentMethod === "wallet" || paymentMethod === "online") ? "Paid" : "Unpaid",
     });
+
+    // 6. Reduce stock levels
+    for (const item of orderItems) {
+      const updateQuery = { $inc: { stock: -item.quantity } };
+      if (item.size) {
+        updateQuery.$inc[`sizes.${item.size}`] = -item.quantity;
+      }
+
+      const updatedProduct = await Product.findByIdAndUpdate(
+        item.product,
+        updateQuery,
+        { new: true }
+      );
+      
+      // Auto-update status if out of stock
+      if (updatedProduct && updatedProduct.stock <= 0) {
+        updatedProduct.status = "Out of Stock";
+        await updatedProduct.save();
+      }
+    }
 
     // 4. Clear user's cart
     await Cart.deleteMany({ user: userId });
@@ -530,6 +558,25 @@ exports.verifyRazorpayPayment = async (req, res) => {
         razorpayPaymentId: razorpay_payment_id,
         razorpaySignature: razorpay_signature
       });
+
+      // 1.5. Reduce stock levels
+      for (const item of items) {
+        const updateQuery = { $inc: { stock: -item.quantity } };
+        if (item.size) {
+          updateQuery.$inc[`sizes.${item.size}`] = -item.quantity;
+        }
+
+        const updatedProduct = await Product.findByIdAndUpdate(
+          item.product,
+          updateQuery,
+          { new: true }
+        );
+
+        if (updatedProduct && updatedProduct.stock <= 0) {
+          updatedProduct.status = "Out of Stock";
+          await updatedProduct.save();
+        }
+      }
 
       // 2. Clear user's cart
       await Cart.deleteMany({ user: userId });

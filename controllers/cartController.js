@@ -14,6 +14,10 @@ exports.addToCart = async (req, res) => {
         return res.status(404).json({ message: "Product not found" });
     }
 
+    if (product.status === "Out of Stock" || product.stock <= 0) {
+        return res.status(400).json({ message: "Product is currently out of stock." });
+    }
+
     let availableStock = 0;
     if (size && product.sizes && product.sizes[size] !== undefined) {
         availableStock = product.sizes[size];
@@ -102,6 +106,10 @@ exports.updateCartQuantity = async (req, res) => {
     const product = await Product.findById(productId);
     if (!product) {
         return res.status(404).json({ message: "Product not found" });
+    }
+
+    if (product.status === "Out of Stock" || product.stock <= 0) {
+        return res.status(400).json({ message: "Product is currently out of stock." });
     }
 
     let availableStock = 0;

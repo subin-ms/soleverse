@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soleverse - Categories</title>
+    <title>Soleverse - Category Management</title>
     <script src="admin-guard.js"></script>
     <link rel="stylesheet" href="admin-sidebar.css">
     <style>
@@ -16,16 +16,15 @@
             --white: #ffffff;
             --text-dark: #1f2937;
             --text-gray: #6b7280;
-            --sidebar-width: 260px;
             --border-color: #e5e7eb;
             --success-green: #1cc88a;
             --danger-red: #e74a3b;
         }
 
-        /* Global Icon Style for Feather Icons */
-        .icon {
-            width: 24px;
-            height: 24px;
+        /* Generic Icon Style */
+        svg.icon {
+            width: 20px;
+            height: 20px;
             stroke: currentColor;
             fill: none;
             stroke-width: 2;
@@ -48,9 +47,6 @@
             overflow: hidden;
         }
 
-
-
-        /* Main Content */
         /* Main Content */
         .main-content {
             flex: 1;
@@ -59,37 +55,13 @@
             overflow-y: auto;
             position: relative;
             margin-left: 260px;
-            /* Sidebar width */
             transition: margin-left 0.3s;
         }
 
         @media (max-width: 1199px) {
-            .main-content {
-                margin-left: 260px;
-                /* Tablet keeps sidebar */
-            }
+            .main-content { margin-left: 0; }
         }
 
-        @media (max-width: 767px) {
-            .main-content {
-                margin-left: 0;
-            }
-        }
-
-        .hamburger-menu {
-            display: none;
-            cursor: pointer;
-            margin-right: 1rem;
-        }
-
-        @media (max-width: 767px) {
-            .hamburger-menu {
-                display: block;
-            }
-        }
-
-
-        /* Top Navbar */
         .top-navbar {
             background-color: var(--white);
             padding: 1rem 2rem;
@@ -97,15 +69,30 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .page-title {
             font-size: 1.25rem;
             font-weight: 700;
             color: #111827;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
+        .hamburger-menu {
+            display: none;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
 
+        @media (max-width: 1199px) {
+            .hamburger-menu { display: block; }
+        }
 
         /* Content Wrapper */
         .content-wrapper {
@@ -115,26 +102,14 @@
             width: 100%;
         }
 
-        /* CATEGORIES PAGE SPECIFIC STYLES */
-
-        /* Header / Discover Section */
         .page-header-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
-        .section-heading {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #111827;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 1rem;
-        }
+        .section-heading { font-size: 1.5rem; font-weight: 700; color: #111827; }
 
         .btn {
             display: inline-flex;
@@ -143,502 +118,120 @@
             padding: 0.6rem 1.25rem;
             border-radius: 8px;
             font-size: 0.9rem;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
             border: 1px solid transparent;
             transition: all 0.2s;
+            text-decoration: none;
         }
 
-        .btn-primary {
-            background-color: var(--primary-blue);
-            color: var(--white);
-            box-shadow: 0 2px 4px rgba(78, 115, 223, 0.2);
-        }
+        .btn-primary { background-color: var(--primary-blue); color: white; }
+        .btn-primary:hover { background-color: #3b5ecc; }
 
-        .btn-primary:hover {
-            background-color: #3b5ecc;
-        }
-
-        .btn-outline {
-            background-color: var(--white);
-            border-color: var(--border-color);
-            color: #374151;
-        }
-
-        .btn-outline:hover {
-            background-color: #f9fafb;
-        }
-
-        /* Category Cards Grid */
-        .category-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 2.5rem;
-        }
-
-        @media (max-width: 1024px) {
-            .category-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        .category-card {
-            background: var(--white);
-            border-radius: 12px;
-            /* Square-ish */
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            border: 1px solid var(--border-color);
-            transition: all 0.2s;
-            aspect-ratio: 16/10;
-            cursor: pointer;
-        }
-
-        .category-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
-            border-color: var(--primary-blue);
-        }
-
-        .category-icon {
-            width: 48px;
-            height: 48px;
-            color: #111827;
-        }
-
-        .category-name {
-            font-weight: 600;
-            color: #374151;
-            font-size: 0.95rem;
-        }
-
-        /* Filter Toolbar */
-        .filter-toolbar {
-            background: var(--white);
-            padding: 1rem 1.5rem;
-            border-radius: 12px 12px 0 0;
-            /* Rounded top only if attached to table, but image shows separated */
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .filter-tabs {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .tab-pill {
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--text-gray);
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .tab-pill.active {
-            background-color: #e0f2fe;
-            /* Light blue */
-            color: var(--primary-blue);
-        }
-
-        .tab-pill:hover:not(.active) {
-            background-color: #f3f4f6;
-        }
-
-        .table-controls {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .search-sm {
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            background-color: #f9fafb;
-            font-size: 0.85rem;
-            width: 200px;
-        }
-
-        .control-icon {
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-gray);
-            cursor: pointer;
-            background: var(--white);
-        }
-
-        .control-icon:hover {
-            background-color: #f3f4f6;
-            color: var(--text-dark);
-        }
-
-        /* Table */
+        /* Table Container */
         .table-container {
             background: var(--white);
             border-radius: 12px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            overflow-x: auto;
+            overflow: hidden;
         }
 
-        table {
+        .filter-toolbar {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background: #f9fafb;
+        }
+
+        .search-sm {
             width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-        }
-
-        thead {
-            background-color: #eff6ff;
-        }
-
-        th {
-            text-align: left;
-            padding: 1rem 1.5rem;
-            color: #4b5563;
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-
-        td {
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid #f3f4f6;
-            color: #1f2937;
-            vertical-align: middle;
-        }
-
-        tr:hover td {
-            background-color: #f9fafb;
-        }
-
-        .product-cell {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .product-thumb {
-            width: 40px;
-            height: 40px;
-            border-radius: 4px;
-            object-fit: cover;
-            border: 1px solid #eee;
-        }
-
-        .checkbox {
-            width: 16px;
-            height: 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            accent-color: var(--primary-blue);
-        }
-
-        .action-cell {
-            display: flex;
-            gap: 0.75rem;
-            color: var(--text-gray);
-        }
-
-        .action-link {
-            cursor: pointer;
-        }
-
-        .action-link:hover {
-            color: var(--primary-blue);
-        }
-
-        /* Pagination */
-        .pagination {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem;
-            background: var(--white);
-            border-top: 1px solid var(--border-color);
-            border-radius: 0 0 12px 12px;
-        }
-
-        .page-btn {
-            padding: 0.5rem 1rem;
-            border: 1px solid var(--border-color);
+            max-width: 400px;
+            padding: 0.6rem 1rem;
             border-radius: 8px;
-            background: white;
-            cursor: pointer;
-            font-size: 0.9rem;
-            color: #374151;
-            font-weight: 500;
-        }
-
-        .page-numbers {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .page-num {
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             border: 1px solid var(--border-color);
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.85rem;
-        }
-
-        .page-num.active {
-            background-color: #dbeafe;
-            color: var(--primary-blue);
-            border-color: #dbeafe;
-            font-weight: 600;
-        }
-
-        .page-num.dots {
-            border: none;
-        }
-
-        /* Modal Styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            backdrop-filter: blur(4px);
-        }
-
-        .modal-container {
-            background: var(--white);
-            width: 100%;
-            max-width: 500px;
-            border-radius: 16px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            padding: 2rem;
-            position: relative;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .modal-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #111827;
-        }
-
-        .close-modal {
-            background: transparent;
-            border: none;
-            color: var(--text-gray);
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 0.5rem;
-            line-height: 1;
-        }
-
-        .form-group {
-            margin-bottom: 1.25rem;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 0.5rem;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 0.95rem;
-            transition: all 0.2s;
-        }
-
-        .form-input:focus {
             outline: none;
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.1);
+            font-size: 0.9rem;
         }
 
-        .form-select {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 0.95rem;
-            background-color: var(--white);
-            cursor: pointer;
-        }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 1rem 1.5rem; background: #eff6ff; color: #4b5563; font-weight: 600; font-size: 0.85rem; }
+        td { padding: 1rem 1.5rem; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
 
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
+        .cat-name { font-weight: 700; color: #111827; }
+        .cat-description { font-size: 0.85rem; color: #6b7280; }
 
-        .btn-cancel {
-            background: var(--white);
-            border: 1px solid var(--border-color);
-            color: var(--text-gray);
-            padding: 0.6rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 500;
-            cursor: pointer;
-        }
-
-        .btn-save {
-            background: var(--primary-blue);
-            color: var(--white);
-            border: none;
-            padding: 0.6rem 2rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 4px 6px -1px rgba(78, 115, 223, 0.2);
-        }
-
-        .btn-save:hover {
-            background: #3b5ecc;
-        }
-
-        /* Status Badges */
         .status-badge {
             padding: 0.4rem 0.8rem;
-            border-radius: 99px;
+            border-radius: 50px;
             font-size: 0.75rem;
-            font-weight: 600;
-            display: inline-block;
+            font-weight: 700;
         }
 
-        .status-published {
-            background-color: #ecfdf5;
-            color: #10b981;
-        }
+        .status-published { background: #dcfce7; color: #15803d; }
+        .status-draft { background: #f3f4f6; color: #6b7280; }
 
-        .status-draft {
-            background-color: #f3f4f6;
-            color: #6b7280;
-        }
-
-        /* Action Buttons */
+        .action-cell { display: flex; gap: 0.5rem; }
         .btn-action {
             width: 32px;
             height: 32px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 6px;
+            border: none;
             cursor: pointer;
             transition: all 0.2s;
-            border: none;
         }
+        .btn-edit { background: #eff6ff; color: #4e73df; }
+        .btn-delete { background: #fef2f2; color: #e74a3b; }
 
-        .btn-edit {
-            background-color: #fff7ed;
-            color: #f97316;
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(4px);
         }
+        .modal-container {
+            background: white; width: 450px; border-radius: 16px;
+            padding: 2rem; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .modal-header h3 { font-size: 1.25rem; font-weight: 700; }
+        .close-modal { cursor: pointer; font-size: 1.5rem; color: #9ca3af; }
 
-        .btn-edit:hover {
-            background-color: #ffedd5;
-        }
-
-        .btn-delete {
-            background-color: #fef2f2;
-            color: #ef4444;
-        }
-
-        .btn-delete:hover {
-            background-color: #fee2e2;
-        }
-
-        .cat-description {
-            font-size: 0.75rem;
-            color: var(--text-gray);
-            margin-top: 2px;
-        }
-
-        .cat-name {
-            font-weight: 600;
-            color: #111827;
-        }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-label { display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; }
+        .form-input, .form-select { width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; outline: none; }
+        .modal-footer { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem; }
+        .btn-cancel { background: #f3f4f6; color: #4b5563; border: none; padding: 0.6rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        .btn-save { background: var(--primary-blue); color: white; border: none; padding: 0.6rem 2rem; border-radius: 8px; cursor: pointer; font-weight: 600; }
     </style>
 </head>
 
 <body>
-
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <a href="dashboard.html" class="logo">SOLEVERSE</a>
 
         <div class="menu-category">Main menu</div>
         <a href="dashboard.html" class="nav-item">
-            <div class="nav-icon">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                </svg>
-            </div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
             Dashboard
         </a>
         <a href="orders.html" class="nav-item">
-            <div class="nav-icon">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                </svg>
-            </div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
             Orders
         </a>
         <a href="customers.html" class="nav-item">
-            <div class="nav-icon">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="9" cy="7" r="4"></circle>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                </svg>
-            </div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
             Customers
         </a>
         <a href="categories.html" class="nav-item active">
-            <div class="nav-icon">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                </svg>
-            </div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
             Categories
         </a>
         <a href="coupons.html" class="nav-item">
@@ -649,24 +242,18 @@
             <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
             Transactions
         </a>
-<a href="messages.html" class="nav-item">
-            <div class="nav-icon">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-            </div>
+        <a href="returns.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></div>
+            Returns
+        </a>
+        <a href="messages.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
             Messages
         </a>
 
         <div class="menu-category">Product</div>
         <a href="product-list.html" class="nav-item">
-            <div class="nav-icon">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                    <polyline points="14 2 14 8 20 8"></polyline>
-                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                    <line x1="16" y1="17" x2="8" y2="17"></line>
-                    <polyline points="10 9 9 9 8 9"></polyline>
-                </svg>
-            </div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
             Product List
         </a>
         <a href="add-product.html" class="nav-item">
@@ -678,90 +265,61 @@
             Product Reviews
         </a>
 
-        <div class="menu-category">Admin</div>
-        <a href="admin-role.html" class="nav-item">
-            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-            Admin Role
-        </a>
-        
-
         <div class="sidebar-footer">
             <button class="logout-btn" id="logoutBtn">
                 Logout
-                <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                    <polyline points="16 17 21 12 16 7"></polyline>
-                    <line x1="21" y1="12" x2="9" y2="12"></line>
-                </svg>
+                <svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             </button>
         </div>
     </aside>
 
     <main class="main-content">
-        <!-- Navbar -->
         <header class="top-navbar">
-            <div class="hamburger-menu">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
+            <div class="page-title">
+                <button class="hamburger-menu" id="hamburger-btn">
+                    <svg class="icon" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <span>Category Management</span>
             </div>
-            <div class="page-title">Categories</div>
         </header>
 
         <div class="content-wrapper">
-
-            <!-- Page Title -->
             <div class="page-header-row">
-                <h2 class="section-heading">Category Management</h2>
-                <div class="header-actions">
-                    <button class="btn btn-primary" id="addCategoryBtn">
-                        <svg class="icon" style="width:16px;height:16px;" viewBox="0 0 24 24">
-                            <line x1="12" y1="5" x2="12" y2="19"></line>
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                        </svg>
-                        Add Category
-                    </button>
-                </div>
+                <h2 class="section-heading">All Categories</h2>
+                <button class="btn btn-primary" id="addCategoryBtn">
+                    <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    Add Category
+                </button>
             </div>
 
-            <div class="filter-toolbar">
-                <div class="table-controls" style="width: 100%;">
-                    <input type="text" class="search-sm" id="searchCategoryInput" placeholder="Search categories..."
-                        style="flex: 1;">
-                </div>
-            </div>
-
-            <!-- Table -->
-            <!-- Category Table -->
             <div class="table-container">
-                <table class="products-table">
+                <div class="filter-toolbar">
+                    <input type="text" class="search-sm" id="searchCategoryInput" placeholder="Search categories by name or slug...">
+                </div>
+                <table>
                     <thead>
                         <tr>
-                            <th width="40"><input type="checkbox" class="checkbox"></th>
                             <th>Category</th>
                             <th>Slug</th>
-                            <th>Total Products</th>
+                            <th>Products</th>
                             <th>Status</th>
-                            <th>Action</th>
+                            <th style="text-align: center;">Action</th>
                         </tr>
                     </thead>
                     <tbody id="categoryTableBody">
-                        <!-- Dynamic items will be added here -->
+                        <!-- Dynamic content -->
                     </tbody>
                 </table>
             </div>
-
         </div>
     </main>
 
-    <!-- Category Modal -->
+    <!-- Modal -->
     <div class="modal-overlay" id="categoryModal">
         <div class="modal-container">
             <div class="modal-header">
-                <h3 class="modal-title">Add Category</h3>
-                <button class="close-modal" id="closeModalBtn">&times;</button>
+                <h3 id="modalTitle">Add Category</h3>
+                <span class="close-modal" id="closeModalBtn">&times;</span>
             </div>
             <form id="categoryForm">
                 <div class="form-group">
@@ -778,9 +336,8 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Category Image</label>
-                    <input type="file" id="catImage" class="form-input">
+                    <input type="file" id="catImage" class="form-input" accept="image/*">
                 </div>
-
                 <div class="form-group">
                     <label class="form-label">Status</label>
                     <select id="catStatus" class="form-select">
@@ -790,11 +347,12 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn-cancel" id="cancelModalBtn">Cancel</button>
-                    <button type="submit" class="btn-save">Save</button>
+                    <button type="submit" class="btn-save">Save Category</button>
                 </div>
             </form>
         </div>
     </div>
+
     <script src="admin-sidebar.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
@@ -826,196 +384,136 @@
                 cat.slug.toLowerCase().includes(searchVal)
             );
 
-            tbody.innerHTML = filtered.map(cat => `
-            <tr>
-                <td><input type="checkbox" class="checkbox"></td>
-                <td>
-                    <div style="display:flex;align-items:center;gap:10px;">
-                        ${cat.image ?
-                    `<img src="http://localhost:5000${cat.image}" 
-                                  style="width:40px;height:40px;object-fit:cover;border-radius:6px;">`
-                    : ''}
-                        <div>
-                            <div class="cat-name">${cat.name}</div>
-                            <div class="cat-description">${cat.description || ''}</div>
+            tbody.innerHTML = filtered.length ? filtered.map(cat => `
+                <tr>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            ${cat.image ? 
+                                `<img src="http://localhost:5000${cat.image}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;background:#f3f4f6;">` 
+                                : `<div style="width:40px;height:40px;background:#f3f4f6;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#9ca3af;">No IMG</div>`
+                            }
+                            <div>
+                                <div class="cat-name">${cat.name}</div>
+                                <div class="cat-description">${cat.description || 'No description'}</div>
+                            </div>
                         </div>
-                    </div>
-                </td>
-                <td>${cat.slug}</td>
-                <td>${cat.totalProducts || 0}</td>
-                <td>
-                    <span class="status-badge ${cat.status === 'Published' ? 'status-published' : 'status-draft'}">
-                        ${cat.status}
-                    </span>
-                </td>
-                <td>
-                    <div class="action-cell">
-                        <button class="btn-action btn-edit" title="Edit" onclick="editCategory('${cat._id}')">✏️</button>
-                        <button class="btn-action ${cat.status === 'Published' ? 'btn-delete' : 'btn-edit'}" 
-                                style="${cat.status === 'Published' ? '' : 'background-color:#ecfdf5;color:#10b981;'}"
-                                title="${cat.status === 'Published' ? 'Disable' : 'Enable'}"
-                                onclick="toggleCategory('${cat._id}')">
-                            ${cat.status === 'Published' ? '🚫' : '✅'}
-                        </button>
-                    </div>
-                </td>
-            </tr>
-        `).join('');
+                    </td>
+                    <td style="color:#6b7280; font-family:monospace;">${cat.slug}</td>
+                    <td style="font-weight:700;">${cat.totalProducts || 0}</td>
+                    <td>
+                        <span class="status-badge ${cat.status === 'Published' ? 'status-published' : 'status-draft'}">
+                            ${cat.status}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-cell" style="justify-content:center;">
+                            <button class="btn-action btn-edit" title="Edit" onclick="editCategory('${cat._id}')">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4L18.5 2.5z"></path></svg>
+                            </button>
+                            <button class="btn-action btn-delete" style="${cat.status === 'Draft' ? 'background:#ecfdf5;color:#10b981;' : ''}"
+                                    title="${cat.status === 'Published' ? 'Disable' : 'Enable'}"
+                                    onclick="toggleCategory('${cat._id}')">
+                                ${cat.status === 'Published' ? 
+                                    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>' : 
+                                    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>'}
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('') : '<tr><td colspan="5" style="text-align:center; padding:3rem; color:#9ca3af;">No categories found matching your search</td></tr>';
         }
 
         function setupEventListeners() {
-            document.getElementById("searchCategoryInput")
-                .addEventListener("input", renderCategoryTable);
-
+            document.getElementById("searchCategoryInput").oninput = renderCategoryTable;
             const modal = document.getElementById("categoryModal");
             const form = document.getElementById("categoryForm");
 
-            document.getElementById("addCategoryBtn").addEventListener("click", () => {
+            document.getElementById("addCategoryBtn").onclick = () => {
                 editingCategoryId = null;
+                document.getElementById("modalTitle").innerText = "Add Category";
                 form.reset();
                 modal.style.display = "flex";
-            });
+            };
 
             document.getElementById("closeModalBtn").onclick = () => modal.style.display = "none";
             document.getElementById("cancelModalBtn").onclick = () => modal.style.display = "none";
 
             form.addEventListener("submit", async (e) => {
                 e.preventDefault();
-
-                const name = document.getElementById("catName").value;
-                const slug = document.getElementById("catSlug").value;
-                const description = document.getElementById("catDescription").value;
-                const status = document.getElementById("catStatus").value;
-                const imageFile = document.getElementById("catImage").files[0];
+                const formData = new FormData();
+                formData.append("name", document.getElementById("catName").value);
+                formData.append("slug", document.getElementById("catSlug").value);
+                formData.append("description", document.getElementById("catDescription").value);
+                formData.append("status", document.getElementById("catStatus").value);
+                const img = document.getElementById("catImage").files[0];
+                if (img) formData.append("image", img);
 
                 try {
                     const method = editingCategoryId ? "PUT" : "POST";
-                    const url = editingCategoryId
-                        ? `/categories/${editingCategoryId}`
-                        : "/categories";
-
-                    const formData = new FormData();
-                    formData.append("name", name);
-                    formData.append("slug", slug);
-                    formData.append("description", description);
-                    formData.append("status", status);
-                    if (imageFile) {
-                        formData.append("image", imageFile);
-                    }
-
+                    const url = editingCategoryId ? `/categories/${editingCategoryId}` : "/categories";
                     const res = await fetch(`${API_BASE}${url}`, {
                         method: method,
-                        headers: {
-                            Authorization: `Bearer ${localStorage.getItem("token")}`
-                        },
+                        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
                         body: formData
                     });
-
                     const data = await res.json();
                     if (!res.ok) throw new Error(data.message);
 
-                    Swal.fire({
-                        icon: "success",
-                        title: `Category ${editingCategoryId ? 'updated' : 'added'} successfully!`,
-                        timer: 1500,
-                        showConfirmButton: false
-                    });
-
+                    Swal.fire({ icon: "success", title: "Success", text: `Category ${editingCategoryId ? 'updated' : 'added'} successfully!`, timer: 1500, showConfirmButton: false });
                     modal.style.display = "none";
-                    await fetchCategories();
-
+                    fetchCategories();
                 } catch (err) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Error",
-                        text: err.message
-                    });
+                    Swal.fire({ icon: "error", title: "Error", text: err.message });
                 }
             });
 
-            window.addEventListener("click", (e) => {
-                if (e.target === modal) modal.style.display = "none";
-            });
+            window.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
         }
 
         async function toggleCategory(id) {
             const cat = allCategories.find(c => c._id === id);
-            const isPublished = cat.status === 'Published';
-
+            const isPub = cat.status === 'Published';
             const result = await Swal.fire({
-                title: isPublished ? "Disable Category?" : "Enable Category?",
-                text: isPublished ? "Products in this category will be hidden from users." : "Products in this category will be visible to users.",
-                icon: "question",
+                title: `${isPub ? 'Disable' : 'Enable'} Category?`,
+                text: isPub ? "Products in this category will be hidden from the storefront." : "This category and its products will become visible again.",
+                icon: "warning",
                 showCancelButton: true,
-                confirmButtonColor: isPublished ? "#e74a3b" : "#1cc88a",
-                cancelButtonColor: "#6b7280",
-                confirmButtonText: isPublished ? "Yes, disable it!" : "Yes, enable it!"
+                confirmButtonColor: isPub ? "#e74a3b" : "#1cc88a",
+                confirmButtonText: `Yes, ${isPub ? 'disable' : 'enable'} it!`
             });
 
             if (result.isConfirmed) {
                 try {
                     await apiFetch(`/categories/${id}/toggle-status`, { method: "PATCH" });
-
-                    Swal.fire({
-                        icon: "success",
-                        title: isPublished ? "Disabled!" : "Enabled!",
-                        timer: 1500,
-                        showConfirmButton: false
-                    });
-
-                    await fetchCategories();
-                } catch (err) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Action Failed",
-                        text: err.message
-                    });
-                }
+                    Swal.fire({ icon: "success", title: "Status Updated", timer: 1000, showConfirmButton: false });
+                    fetchCategories();
+                } catch (err) { Swal.fire({ icon: "error", title: "Failed", text: err.message }); }
             }
         }
 
         function editCategory(id) {
             const cat = allCategories.find(c => c._id === id);
             if (!cat) return;
-
             editingCategoryId = id;
-
+            document.getElementById("modalTitle").innerText = "Edit Category";
             document.getElementById("catName").value = cat.name;
             document.getElementById("catSlug").value = cat.slug;
             document.getElementById("catDescription").value = cat.description || '';
             document.getElementById("catStatus").value = cat.status;
-
             document.getElementById("categoryModal").style.display = "flex";
         }
 
         async function apiFetch(endpoint, options = {}) {
             const token = localStorage.getItem('token');
-
-            const headers = {
-                'Authorization': token ? `Bearer ${token}` : ''
-            };
-
-            // Only set JSON header if body is NOT FormData
-            if (!(options.body instanceof FormData)) {
-                headers['Content-Type'] = 'application/json';
-            }
-
-            const res = await fetch(`${API_BASE}${endpoint}`, {
-                ...options,
-                headers: {
-                    ...headers,
-                    ...options.headers
-                }
-            });
-
+            const headers = { 'Authorization': token ? `Bearer ${token}` : '' };
+            if (!(options.body instanceof FormData)) headers['Content-Type'] = 'application/json';
+            const res = await fetch(`${API_BASE}${endpoint}`, { ...options, headers: { ...headers, ...options.headers } });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.message || "Request  failed");
+            if (!res.ok) throw new Error(data.message || "Request failed");
             return data;
         }
 
         document.addEventListener("DOMContentLoaded", init);
     </script>
-
 </body>
-
 </html>

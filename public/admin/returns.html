@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soleverse - Returns Management</title>
+    <script src="admin-guard.js"></script>
+    <link rel="stylesheet" href="admin-sidebar.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --primary-blue: #3b82f6;
+            --primary-bg: #f8f9fa;
+            --white: #ffffff;
+            --text-dark: #111827;
+            --text-gray: #6b7280;
+            --border-color: #e5e7eb;
+            --danger-red: #ef4444;
+            --warning-orange: #f59e0b;
+            --success-green: #10b981;
+        }
+
+        /* Generic Icon Style */
+        svg.icon { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--primary-bg); color: var(--text-dark); height: 100vh; display: flex; overflow: hidden; }
+
+        .main-content {
+            flex: 1; display: flex; flex-direction: column; overflow-y: auto;
+            position: relative; margin-left: 260px; transition: margin-left 0.3s;
+        }
+        @media (max-width: 1199px) { .main-content { margin-left: 0; } }
+
+        .top-navbar {
+            background-color: var(--white); padding: 1rem 2rem; display: flex; justify-content: space-between;
+            align-items: center; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100;
+        }
+        .page-title { font-size: 1.25rem; font-weight: 700; color: #111827; display: flex; align-items: center; gap: 10px; }
+        .hamburger-menu { display: none; cursor: pointer; background: none; border: none; }
+        @media (max-width: 1199px) { .hamburger-menu { display: block; } }
+
+        .content-wrapper { padding: 2rem; max-width: 1600px; margin: 0 auto; width: 100%; }
+
+        .page-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .section-heading { font-size: 1.5rem; font-weight: 700; }
+
+        /* Toolbar */
+        .toolbar { background: white; padding: 1.25rem 1.5rem; border-radius: 16px 16px 0 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
+        .filter-group { display: flex; gap: 0.75rem; align-items: center; }
+        .filter-select { padding: 0.6rem 1rem; border-radius: 10px; border: 1px solid var(--border-color); font-size: 0.85rem; font-weight: 600; outline: none; background: white; }
+        .search-input { padding: 0.6rem 1rem; border-radius: 10px; border: 1px solid var(--border-color); width: 280px; outline: none; font-size: 0.85rem; }
+
+        /* Table Area */
+        .table-container { background: white; border-radius: 0 0 16px 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
+        th { text-align: left; padding: 1rem 1.5rem; background: #eff6ff; color: #4b5563; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        td { padding: 1.25rem 1.5rem; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
+        tr:hover { background-color: #f9fafb; cursor: pointer; }
+
+        .status-pill { padding: 4px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+        .status-pending { background: #fff7ed; color: #c2410c; }
+        .status-approved { background: #ecfdf5; color: #059669; }
+        .status-rejected { background: #fef2f2; color: #dc2626; }
+        .status-refunded { background: #eff6ff; color: #2563eb; }
+
+        /* Detail Modal */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);
+            display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(4px);
+        }
+        .modal.active { display: flex; }
+        .modal-content { background: white; width: 680px; max-height: 90vh; overflow-y: auto; border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+        .modal-header { padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; }
+        .modal-body { padding: 2rem; }
+        .modal-footer { padding: 1.5rem; display: flex; gap: 1rem; border-top: 1px solid #f1f5f9; background: #f8fafc; }
+
+        .detail-row { display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 0.9rem; }
+        .detail-label { color: var(--text-gray); font-weight: 500; }
+        .detail-value { font-weight: 700; color: #1e293b; }
+
+        .evidence-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.5rem; }
+        .evidence-img { width: 100%; border-radius: 8px; border: 1px solid #e2e8f0; aspect-ratio: 1; object-fit: cover; cursor: pointer; }
+
+        .action-textarea { width: 100%; height: 100px; padding: 1rem; border-radius: 10px; border: 1px solid #e2e8f0; font-size: 0.9rem; margin-top: 1.5rem; resize: none; }
+        .btn-approve { background: var(--success-green); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 700; flex: 1; cursor: pointer; }
+        .btn-reject { background: var(--danger-red); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 700; flex: 1; cursor: pointer; }
+
+        .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 2rem; }
+        .page-btn { padding: 8px 16px; border-radius: 8px; border: 1px solid #e2e8f0; background: white; font-weight: 700; cursor: pointer; font-size: 0.85rem; }
+        .page-btn.active { background: var(--primary-blue); color: white; border-color: var(--primary-blue); }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <a href="dashboard.html" class="logo">SOLEVERSE</a>
+
+        <div class="menu-category">Main menu</div>
+        <a href="dashboard.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+            Dashboard
+        </a>
+        <a href="orders.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
+            Orders
+        </a>
+        <a href="customers.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            Customers
+        </a>
+        <a href="categories.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+            Categories
+        </a>
+        <a href="coupons.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+            Coupons
+        </a>
+        <a href="transactions.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+            Transactions
+        </a>
+        <a href="returns.html" class="nav-item active">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></div>
+            Returns
+        </a>
+        <a href="messages.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+            Messages
+        </a>
+
+        <div class="menu-category">Product</div>
+        <a href="product-list.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
+            Product List
+        </a>
+        <a href="add-product.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+            Add Product
+        </a>
+        <a href="reviews.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+            Product Reviews
+        </a>
+
+        <div class="sidebar-footer">
+            <button class="logout-btn" id="logoutBtn">
+                Logout
+                <svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-navbar">
+            <div class="page-title">
+                <button class="hamburger-menu" id="hamburger-btn">
+                    <svg class="icon" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <span>Returns Management</span>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <div class="page-header-row">
+                <h2 class="section-heading">Return Requests</h2>
+            </div>
+
+            <div class="toolbar">
+                <div class="filter-group">
+                    <select id="statusFilter" class="filter-select">
+                        <option value="">All Status</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Refunded">Refunded</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
+                </div>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search Order ID / Reason...">
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Customer Identity</th>
+                            <th>Order ID</th>
+                            <th>Reason For Return</th>
+                            <th>Date Requested</th>
+                            <th>Status</th>
+                            <th style="text-align: right;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="returnsTableBody">
+                        <!-- Dynamic items -->
+                    </tbody>
+                </table>
+                <div class="pagination" id="paginationControls"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Detail Modal -->
+    <div class="modal" id="detailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="font-weight:700;">Return Lifecycle Details</h3>
+                <span style="font-size:1.5rem; cursor:pointer;" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="modalBody"></div>
+                <div id="adminActions" style="border-top:1px dashed #e2e8f0; margin-top:2rem; padding-top:1.5rem;">
+                    <h4 style="font-weight:700; margin-bottom:1rem;">Administrator Decision</h4>
+                    <textarea id="adminComment" class="action-textarea" placeholder="Provide reason for approval/rejection decision..."></textarea>
+                    <div style="display:flex; gap:1rem; margin-top:1rem;">
+                        <button class="btn-approve" onclick="updateStatus('Approved')">Approve & Issue Refund</button>
+                        <button class="btn-reject" onclick="updateStatus('Rejected')">Reject Request</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin-sidebar.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const API_BASE = "http://localhost:5000/api/returns/admin";
+        let currentReturns = [];
+        let currentPage = 1;
+        let selectedReturnId = null;
+
+        async function fetchReturns(page = 1) {
+            const search = document.getElementById('searchInput').value;
+            const status = document.getElementById('statusFilter').value;
+            try {
+                const res = await fetch(`${API_BASE}/all?page=${page}&limit=10&search=${search}&status=${status}`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    currentReturns = data.data.returns;
+                    renderTable(data.data.returns);
+                    renderPagination(data.data.totalPages, data.data.currentPage);
+                }
+            } catch (err) { console.error('Returns Sync Fail:', err); }
+        }
+
+        function renderTable(returns) {
+            const tbody = document.getElementById('returnsTableBody');
+            tbody.innerHTML = returns.length ? returns.map(ret => `
+                <tr onclick="openDetails('${ret._id}')">
+                    <td><div style="font-weight:700;">${ret.userId?.name || 'User'}</div><div style="font-size:0.75rem; color:#6b7280;">${ret.userId?.email || ''}</div></td>
+                    <td style="font-weight:700; color:#3b82f6;">#${ret.orderId?._id.slice(-8).toUpperCase() || 'N/A'}</td>
+                    <td style="font-size:0.85rem; font-weight:600;">${ret.reason}</td>
+                    <td style="font-size:0.85rem; color:#64748b;">${new Date(ret.createdAt).toLocaleDateString()}</td>
+                    <td><span class="status-pill status-${ret.status.toLowerCase()}">${ret.status}</span></td>
+                    <td style="text-align: right;"><button class="page-btn" style="padding:4px 12px; font-size:0.75rem;">View Details</button></td>
+                </tr>
+            `).join('') : '<tr><td colspan="6" style="text-align:center; padding:3rem; color:#94a3b8; font-weight:600;">No active return requests found.</td></tr>';
+        }
+
+        function renderPagination(total, current) {
+            const container = document.getElementById('paginationControls');
+            if (total <= 1) { container.innerHTML = ''; return; }
+            let html = '';
+            for (let i = 1; i <= total; i++) html += `<button class="page-btn ${i===current?'active':''}" onclick="fetchReturns(${i})">${i}</button>`;
+            container.innerHTML = html;
+        }
+
+        function openDetails(id) {
+            const ret = currentReturns.find(r => r._id === id);
+            if (!ret) return; selectedReturnId = id;
+            document.getElementById('modalBody').innerHTML = `
+                <div class="detail-row"><span class="detail-label">Return ID</span><span class="detail-value">#${ret._id.slice(-8).toUpperCase()}</span></div>
+                <div class="detail-row"><span class="detail-label">Full Order Ref</span><span class="detail-value" style="font-size:0.8rem;">${ret.orderId?._id || 'N/A'}</span></div>
+                <div class="detail-row"><span class="detail-label">Reported Reason</span><span class="detail-value">${ret.reason}</span></div>
+                <div class="detail-row"><span class="detail-label">Product Condition</span><span class="detail-value">${ret.condition}</span></div>
+                <div class="detail-row"><span class="detail-label">Address Ref</span><span class="detail-value" style="font-size:0.8rem;">${ret.pickupAddress}</span></div>
+                <div class="detail-row"><span class="detail-label">User Notes</span><span class="detail-value">${ret.comments || 'None provided'}</span></div>
+                <div style="margin-top:1.5rem;"><h4 style="font-weight:700; margin-bottom:1rem;">Visual Evidence</h4><div class="evidence-grid">${ret.images?.map(img => `<img src="${img}" class="evidence-img" onclick="window.open('${img}', '_blank')">`).join('') || '<div style="color:#94a3b8; font-size:0.8rem;">No visual evidence attached</div>'}</div></div>
+            `;
+            document.getElementById('adminActions').style.display = ret.status === 'Pending' ? 'block' : 'none';
+            document.getElementById('adminComment').value = ret.adminComment || '';
+            document.getElementById('detailsModal').classList.add('active');
+        }
+
+        function closeModal() { document.getElementById('detailsModal').classList.remove('active'); }
+
+        async function updateStatus(status) {
+            const comment = document.getElementById('adminComment').value;
+            const res = await Swal.fire({ title: 'Confirmation Required', text: `Mark this return as ${status.toUpperCase()}?`, icon: 'warning', showCancelButton: true, confirmButtonColor: status === 'Approved' ? '#10b981' : '#ef4444' });
+            if (res.isConfirmed) {
+                try {
+                    const r = await fetch(`${API_BASE}/${selectedReturnId}/status`, {
+                        method: 'PUT', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+                        body: JSON.stringify({ status, adminComment: comment })
+                    });
+                    const d = await r.json();
+                    if (d.status === 'success') { Swal.fire('Updated!', d.message, 'success'); closeModal(); fetchReturns(currentPage); }
+                } catch (err) { Swal.fire('Error', 'Action failed', 'error'); }
+            }
+        }
+
+        document.getElementById('searchInput').oninput = () => fetchReturns(1);
+        document.getElementById('statusFilter').onchange = () => fetchReturns(1);
+        document.addEventListener('DOMContentLoaded', () => fetchReturns(1));
+    </script>
+</body>
+</html>

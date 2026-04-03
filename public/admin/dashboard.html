@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,234 +12,90 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
         :root {
-            --primary-blue: #4e73df;
-            --primary-bg: #f9fafb;
+            --primary-blue: #3b82f6;
+            --primary-bg: #f8f9fa;
             --white: #ffffff;
             --text-dark: #111827;
             --text-gray: #6b7280;
-            --border-color: #f3f4f6;
+            --border-color: #e5e7eb;
             --success-green: #10b981;
             --danger-red: #ef4444;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
+        /* Generic Icon Style */
+        svg.icon { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-        body {
-            background-color: var(--primary-bg);
-            color: var(--text-dark);
-            height: 100vh;
-            display: flex;
-            overflow: hidden;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--primary-bg); color: var(--text-dark); height: 100vh; display: flex; overflow: hidden; }
 
         .main-content {
-            flex: 1;
-            padding: 0;
-            margin-left: 260px;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
+            flex: 1; display: flex; flex-direction: column; overflow-y: auto;
+            position: relative; margin-left: 260px; transition: margin-left 0.3s;
         }
+        @media (max-width: 1199px) { .main-content { margin-left: 0; } }
 
-        /* Top Navbar */
         .top-navbar {
-            background-color: var(--white);
-            padding: 1.25rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            background-color: var(--white); padding: 1rem 2rem; display: flex; justify-content: space-between;
+            align-items: center; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100;
         }
+        .page-title { font-size: 1.25rem; font-weight: 700; color: #111827; display: flex; align-items: center; gap: 10px; }
+        .hamburger-menu { display: none; cursor: pointer; background: none; border: none; }
+        @media (max-width: 1199px) { .hamburger-menu { display: block; } }
 
-        .page-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #111827;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .header-filter {
-            padding: 0.5rem 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 0.85rem;
-            color: #374151;
-            background: #fff;
-            cursor: pointer;
-            font-weight: 500;
-        }
-
-        .report-btn {
-            background: #111827;
-            color: white;
-            border: none;
-            padding: 0.5rem 1.25rem;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        /* Content Wrapper */
-        .content-wrapper {
-            padding: 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
-        }
+        .content-wrapper { padding: 2rem; max-width: 1600px; margin: 0 auto; width: 100%; }
 
         /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
         .stat-card {
-            background: var(--white);
-            padding: 1.5rem;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
+            background: var(--white); padding: 1.5rem; border-radius: 16px; border: 1px solid var(--border-color);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: transform 0.2s;
         }
-
-        .stat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-title {
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--text-gray);
-        }
-
-        .stat-value {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: #111827;
-            margin-bottom: 1rem;
-        }
-
-        .stat-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .badge-revenue { background-color: #ecfdf5; color: #10b981; }
-        .badge-orders { background-color: #f0f9ff; color: #0284c7; }
-        .badge-customers { background-color: #f5f3ff; color: #7c3aed; }
-
-        .stat-link {
-            font-size: 0.75rem;
-            color: var(--primary-blue);
-            text-decoration: none;
-            font-weight: 500;
-            margin-left: 1rem;
-        }
-
-        .stat-link:hover { text-decoration: underline; }
+        .stat-card:hover { transform: translateY(-3px); }
+        .stat-title { font-size: 0.85rem; font-weight: 600; color: var(--text-gray); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .stat-value { font-size: 1.75rem; font-weight: 700; color: #111827; margin-bottom: 1rem; }
+        .stat-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed #f1f5f9; padding-top: 0.75rem; }
+        .stat-badge { padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; }
+        .badge-sales { background: #dcfce7; color: #15803d; }
+        .badge-orders { background: #dbeafe; color: #1e40af; }
+        .badge-cust { background: #fef9c3; color: #854d0e; }
+        .stat-link { font-size: 0.75rem; color: var(--primary-blue); font-weight: 700; text-decoration: none; }
 
         /* Chart Section */
-        .chart-card {
-            background: var(--white);
-            padding: 2rem;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-        }
+        .chart-section { background: white; padding: 2rem; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .chart-title { font-size: 1.1rem; font-weight: 700; }
+        .chart-legend { display: flex; gap: 1.5rem; font-size: 0.85rem; font-weight: 600; color: var(--text-gray); }
+        .legend-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
+        .dot-main { background: #3b82f6; }
+        .dot-alt { background: #94a3b8; }
+        canvas { width: 100% !important; height: 380px !important; }
 
-        .chart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .chart-header h3 {
-            font-size: 1rem;
-            font-weight: 700;
-        }
-
-        .chart-legend {
-            display: flex;
-            gap: 1.5rem;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.85rem;
-            color: var(--text-gray);
-        }
-
-        .dot { width: 8px; height: 8px; border-radius: 50%; }
-        .dot-blue { background: #3b82f6; }
-        .dot-grey { background: #9ca3af; }
-
-        canvas {
-            width: 100% !important;
-            height: 400px !important;
-        }
-
-        @media (max-width: 1024px) {
-            .main-content { margin-left: 0; }
-            .sidebar { transform: translateX(-100%); }
-            .stats-grid { grid-template-columns: 1fr; }
-        }
+        /* Controls */
+        .header-filter { padding: 0.5rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.85rem; font-weight: 600; color: #374151; background: #fff; cursor: pointer; }
+        .report-btn { background: #111827; color: white; border: none; padding: 0.6rem 1.25rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; }
     </style>
 </head>
-<body>
 
+<body>
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <a href="dashboard.html" class="logo">SOLEVERSE</a>
 
         <div class="menu-category">Main menu</div>
         <a href="dashboard.html" class="nav-item active">
-            <div class="nav-icon">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            </div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
             Dashboard
         </a>
         <a href="orders.html" class="nav-item">
-            <div class="nav-icon">
-                <svg class="icon" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-            </div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
             Orders
         </a>
         <a href="customers.html" class="nav-item">
-            <div class="nav-icon">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            </div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
             Customers
         </a>
         <a href="categories.html" class="nav-item">
-            <div class="nav-icon">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-            </div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
             Categories
         </a>
         <a href="coupons.html" class="nav-item">
@@ -249,18 +106,18 @@
             <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
             Transactions
         </a>
-<a href="messages.html" class="nav-item">
-            <div class="nav-icon">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-            </div>
+        <a href="returns.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></div>
+            Returns
+        </a>
+        <a href="messages.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
             Messages
         </a>
 
         <div class="menu-category">Product</div>
         <a href="product-list.html" class="nav-item">
-            <div class="nav-icon">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-            </div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
             Product List
         </a>
         <a href="add-product.html" class="nav-item">
@@ -272,13 +129,6 @@
             Product Reviews
         </a>
 
-        <div class="menu-category">Admin</div>
-        <a href="admin-role.html" class="nav-item">
-            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-            Admin Role
-        </a>
-        
-
         <div class="sidebar-footer">
             <button class="logout-btn" id="logoutBtn">
                 Logout
@@ -289,67 +139,57 @@
 
     <main class="main-content">
         <header class="top-navbar">
-            <div class="page-title">Dashboard</div>
-            <div class="header-actions">
+            <div class="page-title">
+                <button class="hamburger-menu" id="hamburger-btn">
+                    <svg class="icon" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <span>Dashboard Overview</span>
+            </div>
+            <div style="display:flex; gap:1rem; align-items:center;">
                 <select id="dateRange" class="header-filter">
                     <option value="alltime">All Time</option>
                     <option value="today">Today</option>
                     <option value="7days" selected>Last 7 Days</option>
                     <option value="1month">Last 1 Month</option>
-                    <option value="6months">Last 6 Months</option>
-                    <option value="1year">Last 1 Year</option>
                 </select>
-                <button class="report-btn">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
-                    </svg>
-                    Report
-                </button>
+                <button class="report-btn">Report</button>
             </div>
         </header>
 
         <div class="content-wrapper">
             <section class="stats-grid">
-                <article class="stat-card">
-                    <div class="stat-header">
-                        <span class="stat-title">Net Sales</span>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-title">Net Sales</div>
                     <div class="stat-value" id="netSales">₹0</div>
                     <div class="stat-footer">
-                        <span class="stat-badge badge-revenue">Revenue</span>
-                        <a href="transactions.html" class="stat-link">View Transactions</a>
+                        <span class="stat-badge badge-sales">Revenue</span>
+                        <a href="transactions.html" class="stat-link">Transactions &rarr;</a>
                     </div>
-                </article>
-
-                <article class="stat-card">
-                    <div class="stat-header">
-                        <span class="stat-title">Total Orders</span>
-                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Total Orders</div>
                     <div class="stat-value" id="totalOrders">0</div>
                     <div class="stat-footer">
-                        <span class="stat-badge badge-orders">Received</span>
-                        <a href="orders.html" class="stat-link">View Orders</a>
+                        <span class="stat-badge badge-orders">Recieved</span>
+                        <a href="orders.html" class="stat-link">View Orders &rarr;</a>
                     </div>
-                </article>
-
-                <article class="stat-card">
-                    <div class="stat-header">
-                        <span class="stat-title">New Customers</span>
-                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">New Registrations</div>
                     <div class="stat-value" id="newCustomers">0</div>
                     <div class="stat-footer">
-                        <span class="stat-badge badge-customers">Registered</span>
-                        <a href="customers.html" class="stat-link">View Customers</a>
+                        <span class="stat-badge badge-cust">Customer Base</span>
+                        <a href="customers.html" class="stat-link">Directory &rarr;</a>
                     </div>
-                </article>
+                </div>
             </section>
 
-            <section class="chart-card">
+            <section class="chart-section">
                 <div class="chart-header">
-                    <h3>Item Status Breakdown</h3>
+                    <div class="chart-title">Sales Analytics Breakdown</div>
                     <div class="chart-legend">
-                        <div class="legend-item"><span class="dot dot-blue"></span> Successful Items</div>
-                        <div class="legend-item"><span class="dot dot-grey"></span> Cancelled/Returned Items</div>
+                        <div><span class="legend-dot dot-main"></span> Succesful</div>
+                        <div><span class="legend-dot dot-alt"></span> Returns/Cancel</div>
                     </div>
                 </div>
                 <canvas id="statusChart"></canvas>
@@ -357,85 +197,48 @@
         </div>
     </main>
 
+    <script src="admin-sidebar.js"></script>
     <script>
+        const API_BASE = "http://localhost:5000/api";
         let myChart = null;
 
         async function fetchStats(range) {
             try {
-                const response = await fetch(`/api/dashboard/stats?range=${range}`, {
+                const res = await fetch(`${API_BASE}/dashboard/stats?range=${range}`, {
                     headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
                 });
-                const data = await response.json();
+                const data = await res.json();
                 if (data.success) {
-                    updateDashboard(data.stats);
+                    document.getElementById('netSales').innerText = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(data.stats.netSales);
+                    document.getElementById('totalOrders').innerText = data.stats.totalOrders;
+                    document.getElementById('newCustomers').innerText = data.stats.newCustomers;
                     renderChart(data.chartData);
                 }
-            } catch (error) {
-                console.error('Error fetching dashboard stats:', error);
-            }
+            } catch (err) { console.error('Dashboard Stats Error:', err); }
         }
 
-        function updateDashboard(stats) {
-            document.getElementById('netSales').innerText = new Intl.NumberFormat('en-IN', {
-                style: 'currency', currency: 'INR'
-            }).format(stats.netSales);
-            document.getElementById('totalOrders').innerText = stats.totalOrders;
-            document.getElementById('newCustomers').innerText = stats.newCustomers;
-        }
-
-        function renderChart(chartData) {
+        function renderChart(cData) {
             const ctx = document.getElementById('statusChart').getContext('2d');
-            
             if (myChart) myChart.destroy();
-
             myChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: chartData.labels,
+                    labels: cData.labels,
                     datasets: [
-                        {
-                            label: 'Successful Items',
-                            data: chartData.successful,
-                            borderColor: '#3b82f6',
-                            borderWidth: 3,
-                            tension: 0.4,
-                            pointRadius: 4,
-                            pointBackgroundColor: '#fff',
-                            pointBorderColor: '#3b82f6',
-                            fill: false
-                        },
-                        {
-                            label: 'Cancelled/Returned Items',
-                            data: chartData.cancelled,
-                            borderColor: '#9ca3af',
-                            borderWidth: 2,
-                            borderDash: [5, 5],
-                            tension: 0.4,
-                            pointRadius: 0,
-                            fill: false
-                        }
+                        { label: 'Successful', data: cData.successful, borderColor: '#3b82f6', tension: 0.4, pointRadius: 4, fill: false, borderWidth: 3 },
+                        { label: 'Returns/Cancel', data: cData.cancelled, borderColor: '#94a3b8', borderDash: [5, 5], tension: 0.4, pointRadius: 0, fill: false }
                     ]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
+                    responsive: true, maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true, grid: { color: '#f3f4f6' } },
-                        x: { grid: { display: false } }
-                    }
+                    scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' } }, x: { grid: { display: false } } }
                 }
             });
         }
 
-        document.getElementById('dateRange').addEventListener('change', (e) => fetchStats(e.target.value));
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            localStorage.removeItem('token');
-            window.location.href = 'login.html';
-        });
-
-        // Initial fetch
-        fetchStats('7days');
+        document.getElementById('dateRange').onchange = (e) => fetchStats(e.target.value);
+        document.addEventListener('DOMContentLoaded', () => fetchStats('7days'));
     </script>
 </body>
 </html>

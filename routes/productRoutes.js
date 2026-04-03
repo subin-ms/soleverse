@@ -7,14 +7,16 @@ const {
   getProducts,
   getPublicProducts,
   getPublicProductById,
+  getProductById,
   deleteProduct,
-  updateProduct   // ✅ ADD THIS
+  updateProduct
 } = require("../controllers/productController");
 const upload = require("../middleware/uploadMiddleware");
-router.post("/add-product", protect, adminOnly, addProduct);
-router.get("/", protect, adminOnly, getProducts);
+
 router.get("/public", getPublicProducts);
 router.get("/public/:id", getPublicProductById);
+router.get("/:id", protect, adminOnly, getProductById);
+router.get("/", protect, adminOnly, getProducts);
 router.delete("/:id", protect, adminOnly, deleteProduct);
 router.post(
   "/",
@@ -23,5 +25,12 @@ router.post(
   upload.fields([{ name: "image", maxCount: 1 }, { name: "gallery", maxCount: 10 }]),
   addProduct
 );
-router.put("/:id", updateProduct);
+router.put(
+  "/:id",
+  protect,
+  adminOnly,
+  upload.fields([{ name: "image", maxCount: 1 }, { name: "gallery", maxCount: 10 }]),
+  updateProduct
+);
+
 module.exports = router;

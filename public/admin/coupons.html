@@ -7,490 +7,335 @@
     <title>Soleverse - Coupon Management</title>
     <script src="admin-guard.js"></script>
     <link rel="stylesheet" href="admin-sidebar.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
         :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --bg-main: #f8fafc;
+            --primary-blue: #4f46e5;
+            --primary-bg: #f8f9fa;
             --white: #ffffff;
-            --text-dark: #1e293b;
-            --text-gray: #64748b;
-            --border: #e2e8f0;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --radius-lg: 16px;
-            --radius-md: 12px;
-            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --text-dark: #111827;
+            --text-gray: #6b7280;
+            --border-color: #e5e7eb;
+            --success-green: #10b981;
+            --danger-red: #ef4444;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
+        /* Generic Icon Style */
+        svg.icon { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-dark);
-            height: 100vh;
-            display: flex;
-            overflow: hidden;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--primary-bg); color: var(--text-dark); height: 100vh; display: flex; overflow: hidden; }
 
         .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            position: relative;
-            margin-left: 260px;
-            transition: all 0.3s ease;
+            flex: 1; display: flex; flex-direction: column; overflow-y: auto;
+            position: relative; margin-left: 260px; transition: margin-left 0.3s;
         }
-
-        @media (max-width: 1024px) {
-            .main-content { margin-left: 0; }
-        }
+        @media (max-width: 1199px) { .main-content { margin-left: 0; } }
 
         .top-navbar {
-            background-color: var(--white);
-            padding: 1.25rem 2.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 10;
+            background-color: var(--white); padding: 1rem 2rem; display: flex; justify-content: space-between;
+            align-items: center; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100;
         }
+        .page-title { font-size: 1.25rem; font-weight: 700; color: #111827; display: flex; align-items: center; gap: 10px; }
+        .hamburger-menu { display: none; cursor: pointer; background: none; border: none; }
+        @media (max-width: 1199px) { .hamburger-menu { display: block; } }
 
-        .page-title { font-size: 1.5rem; font-weight: 700; color: #0f172a; }
+        .content-wrapper { padding: 2rem; max-width: 1600px; margin: 0 auto; width: 100%; }
 
-        .content-wrapper { padding: 2.5rem; max-width: 1400px; margin: 0 auto; width: 100%; }
+        .page-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .section-heading { font-size: 1.5rem; font-weight: 700; }
 
-        .premium-card {
-            background: var(--white);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .card-header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .title-group h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem; }
-        .title-group p { font-size: 0.875rem; color: var(--text-gray); }
-
-        .header-actions { display: flex; gap: 1rem; align-items: center; }
-
-        .search-container { position: relative; width: 300px; }
-        .search-input {
-            width: 100%;
-            padding: 0.75rem 1rem 0.75rem 2.5rem;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border);
-            background-color: #f1f5f9;
-            font-size: 0.875rem;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .search-input:focus { border-color: var(--primary); background-color: var(--white); }
-        .search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-gray); pointer-events: none; }
-
-        .btn-create {
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-            color: white; border: none; padding: 0.75rem 1.5rem; border-radius: var(--radius-md);
-            font-weight: 600; font-size: 0.875rem; cursor: pointer; display: flex; align-items: center;
-            gap: 0.5rem; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); transition: all 0.2s;
-        }
-        .btn-create:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4); }
-
-        .table-container { overflow-x: auto; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0 0.75rem; }
-        th { text-align: left; padding: 1rem; color: var(--text-gray); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
-        tbody tr { background: #fff; transition: transform 0.2s; }
-        tbody tr:hover { background: #f8fafc; }
-        td { padding: 1rem; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); font-size: 0.875rem; vertical-align: middle; }
-        td:first-child { border-left: 1px solid var(--border); border-radius: var(--radius-md) 0 0 var(--radius-md); }
-        td:last-child { border-right: 1px solid var(--border); border-radius: 0 var(--radius-md) var(--radius-md) 0; }
-
-        .code-pill { background: #f1f5f9; padding: 0.4rem 0.8rem; border-radius: 8px; font-weight: 700; color: #1e293b; font-size: 0.8rem; }
-        .value-bold { font-weight: 700; color: #0f172a; }
-        .usage-text { color: #475569; font-weight: 500; }
-        .target-text { font-weight: 600; color: var(--text-gray); }
-
-        .status-badge {
-            display: inline-flex; align-items: center; justify-content: space-between;
-            padding: 0.4rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
-            cursor: pointer; width: 100px;
-        }
-        .status-badge.active { background: #dcfce7; color: #15803d; }
-        .status-badge.inactive { background: #fee2e2; color: #b91c1c; }
-
-        .visibility-tag { font-size: 0.7rem; font-weight: 500; display: flex; align-items: center; gap: 0.25rem; color: var(--text-gray); cursor: pointer; }
-        .visibility-tag.visible { color: #10b981; }
-        .visibility-tag.hidden { color: #64748b; }
-
-        .action-group { display: flex; gap: 0.5rem; }
-        .btn-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid var(--border); background: white; cursor: pointer; transition: all 0.2s; }
-        .btn-edit { color: #f59e0b; }
-        .btn-edit:hover { background: #fffbeb; border-color: #f59e0b; }
-        .btn-delete { color: #ef4444; }
-        .btn-delete:hover { background: #fef2f2; border-color: #ef4444; }
-
-        /* PAGINATION */
-        .pagination { display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
-        .pg-info { font-size: 0.875rem; color: var(--text-gray); }
-
-        /* MODAL OVERHAUL */
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); z-index: 1000;
-            justify-content: center; align-items: center; padding: 2rem;
-        }
-        .modal-content {
-            background: white; width: 100%; max-width: 900px; border-radius: var(--radius-lg);
-            display: flex; flex-direction: column;
-            max-height: 90vh;
-            overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            position: relative;
-        }
-        #couponForm {
-            display: grid;
-            grid-template-rows: 1fr auto;
-            flex: 1;
-            overflow: hidden;
-            min-height: 0;
-        }
-        .modal-header {
-            padding: 1.5rem 2rem; border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center; background: #fff;
-            flex-shrink: 0;
-        }
-        .modal-title { font-size: 1.25rem; font-weight: 700; color: #0f172a; }
-        .modal-close { cursor: pointer; color: var(--text-gray); font-size: 1.5rem; transition: color 0.2s; }
-        .modal-close:hover { color: var(--danger); }
-        .modal-body { 
-            padding: 2.5rem; 
-            overflow-y: auto; 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 2.5rem;
-            min-height: 0;
-        }
-        .modal-footer {
-            padding: 1.5rem 2rem; border-top: 1px solid var(--border);
-            display: flex; justify-content: flex-end; gap: 1rem; background: #f8fafc;
-            flex-shrink: 0;
-        }
-
-        @media (max-width: 768px) {
-            .modal-body { 
-                grid-template-columns: 1fr; 
-                padding: 1.5rem; 
-                gap: 1.5rem;
-            }
-        }
-
-        /* Custom Scrollbar for Modal Body */
-        .modal-body::-webkit-scrollbar {
-            width: 6px;
-        }
-        .modal-body::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            border-radius: 10px;
-        }
-        .modal-body::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 10px;
-        }
-        .modal-body::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
+        /* Toolbar */
+        .toolbar { background: white; padding: 1.25rem 1.5rem; border-radius: 16px 16px 0 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
+        .search-box { position: relative; width: 300px; }
+        .search-input { width: 100%; padding: 0.65rem 1rem 0.65rem 2.5rem; border-radius: 10px; border: 1px solid var(--border-color); outline: none; font-size: 0.9rem; }
+        .search-icon { position: absolute; left: 0.9rem; top: 50%; translate: 0 -50%; color: #94a3b8; }
         
-        .modal-section { margin-bottom: 2rem; }
-        .section-title {
-            font-size: 0.75rem; font-weight: 700; color: var(--text-gray);
-            text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.25rem;
-            display: flex; align-items: center; gap: 0.75rem;
+        .btn-primary { background: var(--primary-blue); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+
+        /* Table */
+        .table-container { background: white; border-radius: 0 0 16px 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 1100px; }
+        th { text-align: left; padding: 1rem 1.5rem; background: #eff6ff; color: #4b5563; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        td { padding: 1.25rem 1.5rem; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
+        tr:hover { background-color: #f9fafb; }
+
+        .code-pill { background: #f1f5f9; padding: 0.4rem 0.8rem; border-radius: 8px; font-weight: 700; color: #1e293b; font-size: 0.85rem; }
+        .status-badge { padding: 4px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; cursor: pointer; }
+        .status-active { background: #dcfce7; color: #15803d; }
+        .status-inactive { background: #fee2e2; color: #991b1b; }
+
+        /* Modal */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);
+            display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(8px);
         }
-        .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+        .modal.active { display: flex; }
+        .modal-content { background: white; width: 1000px; height: 90vh; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        .modal-header { padding: 1.25rem 2rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+        #couponForm { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
+        .modal-body { padding: 2.5rem; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; flex: 1; min-height: 0; scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent; }
+        .modal-footer { padding: 1.25rem 2rem; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 1rem; background: #fff; flex-shrink: 0; }
+
+        /* Custom Scrollbar */
+        .modal-body::-webkit-scrollbar { width: 6px; }
+        .modal-body::-webkit-scrollbar-track { background: transparent; }
+        .modal-body::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; border: 3px solid transparent; }
+
+        .section-title {
+            font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;
+            display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;
+        }
+        .section-title::after { content: ""; flex: 1; height: 1px; background: #e2e8f0; }
 
         .form-group { margin-bottom: 1.25rem; }
-        .form-label { display: block; font-size: 0.875rem; font-weight: 600; color: #334155; margin-bottom: 0.5rem; }
-        .form-control {
-            width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--border);
-            font-size: 0.875rem; transition: all 0.2s; outline: none; background: #fff;
-        }
-        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
-        
+        .form-label { display: block; font-size: 0.85rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem; }
+        .form-control { width: 100%; padding: 0.75rem 1rem; border-radius: 10px; border: 1px solid #e2e8f0; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
+        .form-control:focus { border-color: var(--primary-blue); }
+        .form-control::placeholder { color: #94a3b8; }
+
         .checkbox-card {
-            background: #f8fafc; border: 1px solid var(--border); border-radius: 8px;
-            padding: 1rem; display: flex; gap: 1rem; align-items: flex-start; cursor: pointer;
-            transition: all 0.2s;
+            background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; display: flex; gap: 1rem; align-items: flex-start; cursor: pointer; transition: all 0.2s;
         }
-        .checkbox-card:hover { border-color: var(--primary); background: #f5f3ff; }
-        .checkbox-card input { margin-top: 0.25rem; width: 18px; height: 18px; cursor: pointer; }
-        .checkbox-info h4 { font-size: 0.875rem; font-weight: 700; color: #1e293b; margin-bottom: 0.25rem; }
-        .checkbox-info p { font-size: 0.75rem; color: var(--text-gray); line-height: 1.4; }
+        .checkbox-card:hover { border-color: var(--primary-blue); background: #f5f3ff; }
+        .checkbox-card input[type="checkbox"] { width: 18px; height: 18px; margin-top: 3px; cursor: pointer; accent-color: var(--primary-blue); }
+        .checkbox-card h4 { font-size: 0.875rem; font-weight: 700; color: #1e293b; margin-bottom: 0.4rem; }
+        .checkbox-card p { font-size: 0.75rem; color: #64748b; line-height: 1.5; }
 
-        .modal-footer {
-            padding: 1.5rem 2rem; border-top: 1px solid var(--border);
-            display: flex; justify-content: flex-end; gap: 1rem; background: #f8fafc;
-        }
-        .btn-discard {
-            background: white; border: 1px solid var(--border); color: #475569;
-            padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer;
-            transition: all 0.2s;
-        }
-        .btn-discard:hover { background: #f1f5f9; }
-        .btn-confirm {
-            background: var(--primary); color: white; border: none;
-            padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer;
-            transition: all 0.2s;
-        }
-        .btn-confirm:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .btn-discard { background: white; color: #1e293b; border: 1px solid #e2e8f0; padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 600; cursor: pointer; }
+        .btn-confirm { background: var(--primary-blue); color: white; border: none; padding: 0.75rem 2rem; border-radius: 10px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2); }
 
-        .icon { width: 18px; height: 18px; stroke-width: 2; }
+        .modal-close { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #f1f5f9; color: #64748b; cursor: pointer; font-size: 1.25rem; transition: all 0.2s; }
+        .modal-close:hover { background: #e2e8f0; color: #1e293b; }
+
+        .target-chip { background:#eff6ff; color:#3b82f6; padding:0.25rem 0.75rem; border-radius:100px; font-size:0.75rem; font-weight:700; display:inline-flex; align-items:center; gap:6px; border:1px solid #dbeafe; margin:2px; }
     </style>
 </head>
 
 <body>
-    <aside class="sidebar">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
         <a href="dashboard.html" class="logo">SOLEVERSE</a>
+
         <div class="menu-category">Main menu</div>
         <a href="dashboard.html" class="nav-item">
-            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
             Dashboard
         </a>
         <a href="orders.html" class="nav-item">
-            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
             Orders
         </a>
         <a href="customers.html" class="nav-item">
-            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
             Customers
         </a>
         <a href="categories.html" class="nav-item">
-            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
             Categories
         </a>
         <a href="coupons.html" class="nav-item active">
-            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
             Coupons
         </a>
         <a href="transactions.html" class="nav-item">
-            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
             Transactions
         </a>
+        <a href="returns.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></div>
+            Returns
+        </a>
         <a href="messages.html" class="nav-item">
-            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
             Messages
         </a>
+
         <div class="menu-category">Product</div>
         <a href="product-list.html" class="nav-item">
-            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
             Product List
         </a>
         <a href="add-product.html" class="nav-item">
-            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
             Add Product
         </a>
         <a href="reviews.html" class="nav-item">
-            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
             Product Reviews
         </a>
+
         <div class="sidebar-footer">
-            <button class="logout-btn" id="logoutBtn">Logout <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
+            <button class="logout-btn" id="logoutBtn">
+                Logout
+                <svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            </button>
         </div>
     </aside>
 
     <main class="main-content">
         <header class="top-navbar">
-            <div class="page-title">Coupon Management</div>
+            <div class="page-title">
+                <button class="hamburger-menu" id="hamburger-btn">
+                    <svg class="icon" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <span>Coupon Management</span>
+            </div>
         </header>
 
         <div class="content-wrapper">
-            <div class="premium-card">
-                <div class="card-header-row">
-                    <div class="title-group">
-                        <h2>All Coupons</h2>
-                        <p>Manage and track your promotional campaign performance</p>
-                    </div>
-                    <div class="header-actions">
-                        <div class="search-container">
-                            <svg class="search-icon icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                            <input type="text" class="search-input" id="searchCoupon" placeholder="Search campaign code...">
-                        </div>
-                        <button class="btn-create" onclick="openModal()">
-                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Create New Coupon
-                        </button>
-                    </div>
-                </div>
+            <div class="page-header-row">
+                <h2 class="section-heading">All Campaigns</h2>
+                <button class="btn-primary" onclick="openModal()">
+                    <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    New Coupon
+                </button>
+            </div>
 
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Code</th>
-                                <th>Type</th>
-                                <th>Value</th>
-                                <th>Usage</th>
-                                <th>Min Purchase</th>
-                                <th>Target</th>
-                                <th>Expiry</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="couponTableBody"></tbody>
-                    </table>
+            <div class="toolbar">
+                <div class="search-box">
+                    <svg class="icon search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" id="searchCoupon" class="search-input" placeholder="Search campaign code...">
                 </div>
-                <div class="pagination">
-                    <div class="pg-info" id="paginationInfo">Showing 0 of 0 campaigns</div>
-                </div>
+                <div style="font-size:0.85rem; font-weight:700; color:#64748b;" id="paginationInfo">Showing 0 of 0 campaigns</div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Type</th>
+                            <th>Value</th>
+                            <th>Usage</th>
+                            <th>Min Purchase</th>
+                            <th>Target</th>
+                            <th>Expiry Range</th>
+                            <th>Status</th>
+                            <th style="text-align: right;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="couponTableBody">
+                        <!-- Dynamic items -->
+                    </tbody>
+                </table>
             </div>
         </div>
     </main>
 
-    <!-- NEW MODAL STRUCTURE -->
+    <!-- Modal -->
     <div class="modal" id="couponModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title" id="modalTitle">Create New Campaign</h3>
+                <h3 style="font-weight:800; font-size:1.15rem; color:#1e293b;" id="modalTitle">Create New Campaign</h3>
                 <span class="modal-close" onclick="closeModal()">&times;</span>
             </div>
             <form id="couponForm">
                 <input type="hidden" id="couponId">
                 <div class="modal-body">
                     <!-- Left Column -->
-                    <div class="modal-column">
-                        <div class="modal-section">
-                            <div class="section-title">General Information</div>
-                            <div class="form-group">
-                                <label class="form-label">Coupon Title</label>
-                                <input type="text" id="title" class="form-control" placeholder="E.g. Summer Kick-off Sale" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Coupon Code</label>
-                                <input type="text" id="code" class="form-control" placeholder="E.G. SUMMER2024" style="text-transform:uppercase;" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Campaign Description</label>
-                                <textarea id="description" class="form-control" placeholder="Briefly describe this campaign..." style="height: 100px; resize: none;"></textarea>
-                            </div>
+                    <div>
+                        <div class="section-title">General Information</div>
+                        <div class="form-group">
+                            <label class="form-label">Coupon Title</label>
+                            <input type="text" id="title" class="form-control" placeholder="E.g. Summer Kick-off Sale" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Coupon Code</label>
+                            <input type="text" id="code" class="form-control" placeholder="E.G. SUMMER2024" style="text-transform:uppercase;" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Campaign Description</label>
+                            <textarea id="description" class="form-control" placeholder="Briefly describe this campaign for internal tracking and user visibility..." style="height:120px; resize:none;"></textarea>
                         </div>
 
-                        <div class="modal-section" style="margin-bottom: 0;">
-                            <div class="section-title">Targeting & Visibility</div>
-                            <div class="form-group">
-                                <label class="form-label">Applicable On</label>
-                                <select id="applicableOn" class="form-control" onchange="handleTargetingChange()">
-                                    <option value="Everywhere">Everywhere</option>
-                                    <option value="Specific Products">Specific Products</option>
-                                    <option value="Specific Categories">Specific Categories</option>
-                                </select>
-                            </div>
-                            <!-- Selection Display -->
-                            <div id="targetingContainer" style="display:none; margin-bottom:1.25rem;">
-                                <label class="form-label" id="targetingLabel">Select Targets</label>
-                                <div style="display:flex; gap:0.5rem; margin-bottom:0.5rem;">
-                                    <select id="targetPicker" class="form-control" style="flex:1;">
-                                        <option value="">Choose item...</option>
-                                    </select>
-                                    <button type="button" class="btn-confirm" onclick="addTargetItem()" style="padding:0 1rem;">Add</button>
-                                </div>
-                                <div id="selectedItems" style="display:flex; flex-wrap:wrap; gap:0.5rem; background:#fff; border:1px solid var(--border); border-radius:8px; padding:0.75rem; min-height:45px;">
-                                    <!-- Chips here -->
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Status</label>
-                                <select id="status" class="form-control">
-                                    <option value="Active">Active</option>
-                                    <option value="Inactive">Inactive</option>
-                                </select>
-                            </div>
-                            <label class="checkbox-card">
-                                <input type="checkbox" id="isVisible" checked>
-                                <div class="checkbox-info">
-                                    <h4>Visible to Users?</h4>
-                                    <p>If enabled, this coupon will appear in the "Available Coupons" list in User Account & Checkout.</p>
-                                </div>
-                            </label>
+                        <div class="section-title" style="margin-top:2.5rem;">Targeting & Visibility</div>
+                        <div class="form-group">
+                            <label class="form-label">Applicable On</label>
+                            <select id="applicableOn" class="form-control" onchange="handleTargetingChange()">
+                                <option value="Everywhere">Everywhere</option>
+                                <option value="Specific Products">Specific Products</option>
+                                <option value="Specific Categories">Specific Categories</option>
+                            </select>
                         </div>
+                        <div id="targetingContainer" style="display:none; margin-bottom:1.25rem;">
+                            <label class="form-label">Select Targets</label>
+                            <div style="display:flex; gap:0.5rem; margin-bottom:0.5rem;">
+                                <select id="targetPicker" class="form-control" style="flex:1;"><option value="">Choose item...</option></select>
+                                <button type="button" class="btn-primary" onclick="addTargetItem()" style="padding:0 1rem; border-radius:10px;">Add</button>
+                            </div>
+                            <div id="selectedItems" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:0.75rem; min-height:50px;"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Status</label>
+                            <select id="status" class="form-control">
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
+                        <label class="checkbox-card">
+                            <input type="checkbox" id="isVisible" checked>
+                            <div>
+                                <h4>Visible to Users?</h4>
+                                <p>If enabled, this coupon will appear in the "Available Coupons" list in User Account & Checkout.</p>
+                            </div>
+                        </label>
                     </div>
 
                     <!-- Right Column -->
-                    <div class="modal-column">
-                        <div class="modal-section">
-                            <div class="section-title">Reward Rules</div>
-                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                                <div class="form-group">
-                                    <label class="form-label">Value Type</label>
-                                    <select id="type" class="form-control">
-                                        <option value="Percentage">Percentage (%)</option>
-                                        <option value="Fixed">Fixed Amount (₹)</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Discount Value</label>
-                                    <input type="number" id="value" class="form-control" placeholder="0" min="1" required>
-                                </div>
+                    <div>
+                        <div class="section-title">Reward Rules</div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem;">
+                            <div class="form-group">
+                                <label class="form-label">Value Type</label>
+                                <select id="type" class="form-control">
+                                    <option value="Percentage">Percentage (%)</option>
+                                    <option value="Fixed">Fixed Amount (₹)</option>
+                                </select>
                             </div>
-                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                                <div class="form-group">
-                                    <label class="form-label">Min. Purchase (₹)</label>
-                                    <input type="number" id="minPurchase" class="form-control" value="0" min="0">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Max. Cap (₹)</label>
-                                    <input type="number" id="maxCap" class="form-control" placeholder="Optional" min="0">
-                                </div>
+                            <div class="form-group">
+                                <label class="form-label">Discount Value</label>
+                                <input type="number" id="value" class="form-control" placeholder="0" required>
                             </div>
-                            <label class="checkbox-card">
-                                <input type="checkbox" id="allowOnSale">
-                                <div class="checkbox-info">
-                                    <h4>Allow on sale products?</h4>
-                                    <p>If enabled, this coupon can be stacked on items already carrying a product discount.</p>
-                                </div>
-                            </label>
                         </div>
-
-                        <div class="modal-section" style="margin-bottom: 0;">
-                            <div class="section-title">Usage Limits & Schedule</div>
-                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                                <div class="form-group">
-                                    <label class="form-label">Total Limit</label>
-                                    <input type="number" id="usageLimit" class="form-control" value="100" min="1">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Per User Limit</label>
-                                    <input type="number" id="perUserLimit" class="form-control" value="1" min="1">
-                                </div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem;">
+                            <div class="form-group">
+                                <label class="form-label">Min. Purchase (₹)</label>
+                                <input type="number" id="minPurchase" class="form-control" value="0">
                             </div>
-                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                                <div class="form-group">
-                                    <label class="form-label">Start Date</label>
-                                    <input type="date" id="startDate" class="form-control" required>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Expiry Date</label>
-                                    <input type="date" id="expiryDate" class="form-control" required>
-                                </div>
+                            <div class="form-group">
+                                <label class="form-label">Max. Cap (₹)</label>
+                                <input type="number" id="maxCap" class="form-control" placeholder="Optional">
+                            </div>
+                        </div>
+                        <label class="checkbox-card">
+                            <input type="checkbox" id="allowOnSale">
+                            <div>
+                                <h4>Allow on sale products?</h4>
+                                <p>If enabled, this coupon can be stacked on items already carrying a product discount.</p>
+                            </div>
+                        </label>
+
+                        <div class="section-title" style="margin-top:2.5rem;">Usage Limits & Schedule</div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem;">
+                            <div class="form-group">
+                                <label class="form-label">Total Limit</label>
+                                <input type="number" id="usageLimit" class="form-control" value="100">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Per User Limit</label>
+                                <input type="number" id="perUserLimit" class="form-control" value="1">
+                            </div>
+                        </div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem;">
+                            <div class="form-group">
+                                <label class="form-label">Start Date</label>
+                                <input type="date" id="startDate" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Expiry Date</label>
+                                <input type="date" id="expiryDate" class="form-control" required>
                             </div>
                         </div>
                     </div>
@@ -504,8 +349,9 @@
     </div>
 
     <script src="admin-sidebar.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        const API_BASE = "/api/coupons";
+        const API_BASE = "http://localhost:5000/api/coupons";
         let coupons = [];
         let editingId = null;
         let selectedTargetIds = [];
@@ -513,8 +359,7 @@
 
         async function fetchCoupons() {
             try {
-                const res = await fetch(API_BASE);
-                const data = await res.json();
+                const res = await fetch(API_BASE); const data = await res.json();
                 if (data.success) { coupons = data.data; renderTable(); }
             } catch (err) { console.error(err); }
         }
@@ -523,187 +368,94 @@
             const type = document.getElementById("applicableOn").value;
             const container = document.getElementById("targetingContainer");
             const picker = document.getElementById("targetPicker");
-            const label = document.getElementById("targetingLabel");
-
-            if (type === "Everywhere") {
-                container.style.display = "none";
-                selectedTargetIds = [];
-                renderTargetChips();
-                return;
-            }
-
-            container.style.display = "block";
-            label.innerText = type === "Specific Products" ? "Select Products" : "Select Categories";
-            picker.innerHTML = '<option value="">Loading...</option>';
-
+            if (type === "Everywhere") { container.style.display = "none"; selectedTargetIds = []; renderTargetChips(); return; }
+            container.style.display = "block"; picker.innerHTML = '<option value="">Loading...</option>';
             try {
-                const url = type === "Specific Products" ? "/api/products" : "/api/categories";
-                const res = await fetch(url);
-                const data = await res.json();
-                
-                // The API returns the array directly, not wrapped in { success, data }
+                const url = type === "Specific Products" ? "http://localhost:5000/api/products" : "http://localhost:5000/api/categories";
+                const res = await fetch(url); const data = await res.json();
                 availableTargets = Array.isArray(data) ? data : (data.data || []);
-                
-                if (availableTargets.length > 0) {
-                    picker.innerHTML = '<option value="">Choose item...</option>' + 
-                        availableTargets
-                            .filter(t => !selectedTargetIds.includes(t._id))
-                            .map(t => `<option value="${t._id}">${t.name || t.title}</option>`).join("");
-                } else {
-                    picker.innerHTML = '<option value="">No items found</option>';
-                }
-            } catch (err) {
-                console.error(err);
-                picker.innerHTML = '<option value="">Error loading data</option>';
-            }
+                picker.innerHTML = '<option value="">Choose item...</option>' + availableTargets.filter(t => !selectedTargetIds.includes(t._id)).map(t => `<option value="${t._id}">${t.name || t.title}</option>`).join("");
+            } catch (err) { picker.innerHTML = '<option value="">Error</option>'; }
         }
 
         function addTargetItem() {
-            const picker = document.getElementById("targetPicker");
-            const id = picker.value;
-            if (!id || selectedTargetIds.includes(id)) return;
-            
-            selectedTargetIds.push(id);
-            renderTargetChips();
-            handleTargetingChange(); // Refresh list to remove selected
+            const id = document.getElementById("targetPicker").value;
+            if (id && !selectedTargetIds.includes(id)) { selectedTargetIds.push(id); renderTargetChips(); handleTargetingChange(); }
         }
 
-        function removeTargetItem(id) {
-            selectedTargetIds = selectedTargetIds.filter(x => x !== id);
-            renderTargetChips();
-            handleTargetingChange(); // Refresh list to add back
-        }
+        function removeTargetItem(id) { selectedTargetIds = selectedTargetIds.filter(x => x !== id); renderTargetChips(); handleTargetingChange(); }
 
         function renderTargetChips() {
-            const container = document.getElementById("selectedItems");
-            if (selectedTargetIds.length === 0) {
-                container.innerHTML = '<span style="color:var(--text-gray); font-size:0.75rem;">No items selected</span>';
-                return;
-            }
-
-            container.innerHTML = selectedTargetIds.map(id => {
+            document.getElementById("selectedItems").innerHTML = selectedTargetIds.length ? selectedTargetIds.map(id => {
                 const item = availableTargets.find(t => t._id === id);
-                const name = item ? (item.name || item.title) : 'Unknown';
-                return `
-                    <div style="background:#eef2ff; color:#4f46e5; padding:0.25rem 0.75rem; border-radius:100px; font-size:0.75rem; font-weight:600; display:flex; align-items:center; gap:0.5rem; border:1px solid #c7d2fe;">
-                        ${name}
-                        <span onclick="removeTargetItem('${id}')" style="cursor:pointer; font-size:1rem; line-height:1;">&times;</span>
-                    </div>
-                `;
-            }).join("");
+                return `<div class="target-chip">${item ? (item.name || item.title) : '???'}<span onclick="removeTargetItem('${id}')" style="cursor:pointer;">&times;</span></div>`;
+            }).join("") : '<span style="color:#94a3b8; font-size:0.8rem;">No targets selected</span>';
         }
 
         function renderTable() {
-            const tbody = document.getElementById("couponTableBody");
-            const searchTerm = document.getElementById("searchCoupon").value.toLowerCase();
-            const filtered = coupons.filter(c => c.code.toLowerCase().includes(searchTerm) || c.title.toLowerCase().includes(searchTerm));
-            
-            tbody.innerHTML = filtered.map(c => `
+            const search = document.getElementById("searchCoupon").value.toLowerCase();
+            const filt = coupons.filter(c => c.code.toLowerCase().includes(search) || c.title.toLowerCase().includes(search));
+            document.getElementById("couponTableBody").innerHTML = filt.length ? filt.map(c => `
                 <tr>
-                    <td><span class="code-pill">${c.code}</span><div style="font-size:0.7rem; color:var(--text-gray); margin-top:2px;">${c.title}</div></td>
+                    <td><span class="code-pill">${c.code}</span><div style="font-size:0.7rem; margin-top:4px;">${c.title}</div></td>
                     <td>${c.type}</td>
-                    <td class="value-bold">${c.type === 'Percentage' ? c.value + '%' : '₹ ' + c.value}</td>
-                    <td class="usage-text">${c.usedCount} / ${c.usageLimit}</td>
-                    <td>₹ ${c.minPurchase}</td>
-                    <td class="target-text">${c.applicableOn}</td>
-                    <td style="font-size:0.75rem;">${new Date(c.startDate).toLocaleDateString()} - ${new Date(c.expiryDate).toLocaleDateString()}</td>
-                    <td>
-                        <div class="status-group">
-                            <div class="status-badge ${c.status.toLowerCase()}" onclick="toggleStatus('${c._id}')">${c.status} <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg></div>
-                            <div class="visibility-tag ${c.isVisible ? 'visible' : 'hidden'}" onclick="toggleVisibility('${c._id}')">
-                                <svg class="icon" style="width:12px;height:12px;" viewBox="0 0 24 24" fill="none" stroke="currentColor">${c.isVisible ? '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>' : '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>'}</svg>
-                                ${c.isVisible ? 'Visible' : 'Hidden'}
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="action-group">
-                            <button class="btn-icon btn-edit" onclick="editCoupon('${c._id}')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-                            <button class="btn-icon btn-delete" onclick="deleteCoupon('${c._id}')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
-                        </div>
+                    <td style="font-weight:700;">${c.type==='Percentage' ? c.value+'%' : '₹ '+c.value}</td>
+                    <td style="font-size:0.85rem; font-weight:600;">${c.usedCount} / ${c.usageLimit}</td>
+                    <td style="font-weight:700; color:#3b82f6;">₹ ${c.minPurchase}</td>
+                    <td style="font-size:0.8rem; font-weight:700; color:#64748b;">${c.applicableOn}</td>
+                    <td style="font-size:0.75rem; color:#64748b;">${new Date(c.startDate).toLocaleDateString()} - ${new Date(c.expiryDate).toLocaleDateString()}</td>
+                    <td><span class="status-badge ${c.status === 'Active' ? 'status-active' : 'status-inactive'}" onclick="toggleStatus('${c._id}')">${c.status}</span></td>
+                    <td style="text-align: right;">
+                        <span style="color:#3b82f6; cursor:pointer; font-weight:700; font-size:0.85rem; margin-right:1rem;" onclick="editCoupon('${c._id}')">Edit</span>
+                        <span style="color:#ef4444; cursor:pointer; font-weight:700; font-size:0.85rem;" onclick="deleteCoupon('${c._id}')">Delete</span>
                     </td>
                 </tr>
-            `).join("");
-            document.getElementById("paginationInfo").innerText = `Showing ${filtered.length} of ${coupons.length} campaigns`;
+            `).join("") : '<tr><td colspan="9" style="text-align:center; padding:3rem; color:#94a3b8;">No coupons found.</td></tr>';
+            document.getElementById("paginationInfo").innerText = `Showing ${filt.length} of ${coupons.length} campaigns`;
         }
 
-        document.getElementById("searchCoupon").addEventListener("input", renderTable);
-
         async function openModal(id = null) {
-            editingId = id;
-            document.getElementById("couponForm").reset();
-            const modal = document.getElementById("couponModal");
-            
+            editingId = id; document.getElementById("couponForm").reset();
+            document.getElementById("modalTitle").innerText = id ? "Edit Campaign" : "Create New Campaign";
             if (id) {
-                document.getElementById("modalTitle").innerText = "Edit Campaign";
                 const c = coupons.find(x => x._id === id);
-                document.getElementById("title").value = c.title || "";
-                document.getElementById("code").value = c.code || "";
-                document.getElementById("description").value = c.description || "";
-                document.getElementById("applicableOn").value = c.applicableOn || "Everywhere";
-                
-                // Targeted IDs
+                document.getElementById("title").value = c.title || '';
+                document.getElementById("code").value = c.code || '';
+                document.getElementById("description").value = c.description || '';
+                document.getElementById("applicableOn").value = c.applicableOn || 'Everywhere';
                 selectedTargetIds = c.applicableIds || [];
-                await handleTargetingChange(); // Fetch and show container
-                renderTargetChips();
-                
-                document.getElementById("status").value = c.status || "Active";
+                await handleTargetingChange(); renderTargetChips();
+                document.getElementById("status").value = c.status || 'Active';
                 document.getElementById("isVisible").checked = c.isVisible !== false;
-                document.getElementById("type").value = c.type || "Percentage";
+                document.getElementById("type").value = c.type || 'Percentage';
                 document.getElementById("value").value = c.value || 0;
                 document.getElementById("minPurchase").value = c.minPurchase || 0;
-                document.getElementById("maxCap").value = c.maxCap || "";
+                document.getElementById("maxCap").value = c.maxCap || '';
                 document.getElementById("allowOnSale").checked = c.allowOnSale === true;
                 document.getElementById("usageLimit").value = c.usageLimit || 100;
                 document.getElementById("perUserLimit").value = c.perUserLimit || 1;
-                document.getElementById("startDate").value = c.startDate ? c.startDate.split('T')[0] : "";
-                document.getElementById("expiryDate").value = c.expiryDate ? c.expiryDate.split('T')[0] : "";
-            } else {
-                document.getElementById("modalTitle").innerText = "Create New Campaign";
-                const today = new Date().toISOString().split('T')[0];
-                document.getElementById("startDate").value = today;
-                selectedTargetIds = [];
-                handleTargetingChange();
+                document.getElementById("startDate").value = c.startDate ? c.startDate.split('T')[0] : '';
+                document.getElementById("expiryDate").value = c.expiryDate ? c.expiryDate.split('T')[0] : '';
+            } else { 
+                selectedTargetIds = []; handleTargetingChange(); 
+                document.getElementById("startDate").value = new Date().toISOString().split('T')[0]; 
             }
-            modal.style.display = "flex";
+            document.getElementById("couponModal").classList.add("active");
         }
 
-        function closeModal() { document.getElementById("couponModal").style.display = "none"; }
-
+        function closeModal() { document.getElementById("couponModal").classList.remove("active"); }
         function editCoupon(id) { openModal(id); }
 
-        async function toggleStatus(id) {
-            try { await fetch(`${API_BASE}/${id}/status`, { method: "PATCH" }); fetchCoupons(); } catch (err) { console.error(err); }
-        }
-
-        async function toggleVisibility(id) {
-            try { await fetch(`${API_BASE}/${id}/visibility`, { method: "PATCH" }); fetchCoupons(); } catch (err) { console.error(err); }
-        }
+        async function toggleStatus(id) { try { await fetch(`${API_BASE}/${id}/status`, { method: "PATCH" }); fetchCoupons(); } catch (err) {} }
 
         async function deleteCoupon(id) {
-            const res = await Swal.fire({ title: 'Delete Coupon?', text: "This action cannot be undone.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', confirmButtonText: 'Delete' });
-            if (res.isConfirmed) {
-                try { await fetch(`${API_BASE}/${id}`, { method: "DELETE" }); fetchCoupons(); Swal.fire('Deleted!', '', 'success'); } catch (err) { console.error(err); }
-            }
+            const res = await Swal.fire({ title: 'Delete Coupon?', text: "Permanent action.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444' });
+            if (res.isConfirmed) { try { await fetch(`${API_BASE}/${id}`, { method: "DELETE" }); fetchCoupons(); } catch (err) {} }
         }
 
-        document.getElementById("couponForm").addEventListener("submit", async (e) => {
+        document.getElementById("couponForm").onsubmit = async (e) => {
             e.preventDefault();
-            
-            // Proper Validation
-            const startDate = new Date(document.getElementById("startDate").value);
-            const expiryDate = new Date(document.getElementById("expiryDate").value);
-            const value = parseFloat(document.getElementById("value").value);
-            const type = document.getElementById("type").value;
-
-            if (expiryDate <= startDate) {
-                return Swal.fire('Error', 'Expiry date must be after start date', 'error');
-            }
-            if (type === 'Percentage' && value > 100) {
-                return Swal.fire('Error', 'Percentage cannot exceed 100%', 'error');
-            }
-
-            const formData = {
+            const payload = {
                 title: document.getElementById("title").value,
                 code: document.getElementById("code").value.toUpperCase(),
                 description: document.getElementById("description").value,
@@ -711,9 +463,9 @@
                 applicableIds: selectedTargetIds,
                 status: document.getElementById("status").value,
                 isVisible: document.getElementById("isVisible").checked,
-                type: type,
-                value: value,
-                minPurchase: parseFloat(document.getElementById("minPurchase").value || 0),
+                type: document.getElementById("type").value,
+                value: parseFloat(document.getElementById("value").value),
+                minPurchase: parseFloat(document.getElementById("minPurchase").value),
                 maxCap: document.getElementById("maxCap").value ? parseFloat(document.getElementById("maxCap").value) : null,
                 allowOnSale: document.getElementById("allowOnSale").checked,
                 usageLimit: parseInt(document.getElementById("usageLimit").value),
@@ -721,28 +473,18 @@
                 startDate: document.getElementById("startDate").value,
                 expiryDate: document.getElementById("expiryDate").value
             };
-
             try {
                 const url = editingId ? `${API_BASE}/${editingId}` : API_BASE;
                 const method = editingId ? "PUT" : "POST";
-                const res = await fetch(url, {
-                    method,
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(formData)
-                });
+                const res = await fetch(url, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
                 const data = await res.json();
-                if (data.success) {
-                    Swal.fire('Success', `Campaign ${editingId ? 'updated' : 'created'}!`, 'success');
-                    closeModal();
-                    fetchCoupons();
-                } else {
-                    Swal.fire('Error', data.message, 'error');
-                }
-            } catch (err) { console.error(err); Swal.fire('Error', 'Connection failed', 'error'); }
-        });
+                if (data.success) { closeModal(); fetchCoupons(); Swal.fire('Success', `Campaign ${editingId ? 'updated' : 'created'}!`, 'success'); } 
+                else { Swal.fire('Error', data.message, 'error'); }
+            } catch (err) { Swal.fire('Error', 'Connection failed', 'error'); }
+        };
 
-        fetchCoupons();
+        document.getElementById("searchCoupon").oninput = renderTable;
+        document.addEventListener('DOMContentLoaded', fetchCoupons);
     </script>
 </body>
-
 </html>

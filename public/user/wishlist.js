@@ -145,12 +145,14 @@ async function loadWishlist() {
                 ? (p.discountType === 'percent' ? p.price - (p.price * p.discountValue / 100) : p.price - p.discountValue)
                 : p.price;
 
+            const isOutOfStock = p.status === 'Out of Stock' || p.stock <= 0;
+            
             return `
-    <div class="product-card">
+    <div class="product-card ${isOutOfStock ? 'status-out-of-stock' : ''}">
       <div class="card-image">
-        <img src="${p.image}" alt="${p.name}" onclick="window.location.href='product.html?id=${p._id}'" style="cursor: pointer;">
-        <button class="add-to-cart-btn" onclick="addToCart('${p._id}')">
-            <i class="fas fa-shopping-cart"></i> Add To Cart
+        <img src="${p.image}" alt="${p.name}" onclick="window.location.href='product.html?id=${p._id}'" style="cursor: pointer; ${isOutOfStock ? 'filter: grayscale(0.5); opacity: 0.6;' : ''}">
+        <button class="add-to-cart-btn" ${isOutOfStock ? 'disabled' : ''} onclick="addToCart('${p._id}')" ${isOutOfStock ? 'style="background: #ccc; cursor: not-allowed;"' : ''}>
+            <i class="fas fa-shopping-cart"></i> ${isOutOfStock ? 'Out of Stock' : 'Add To Cart'}
         </button>
         <div class="card-actions-top">
             <div class="icon-action" onclick="removeFromWishlist('${p._id}', event)">
@@ -210,12 +212,14 @@ async function loadRecommendations(wishlistItems = []) {
                 ? (p.discountType === 'percent' ? p.price - (p.price * p.discountValue / 100) : p.price - p.discountValue)
                 : p.price;
 
+            const isOutOfStock = p.status === 'Out of Stock' || p.stock <= 0;
+
             return `
-    <div class="product-card">
+    <div class="product-card ${isOutOfStock ? 'status-out-of-stock' : ''}">
       <div class="card-image">
-        <img src="${p.image}" alt="${p.name}" onclick="window.location.href='product.html?id=${p._id}'" style="cursor: pointer;">
-        <button class="add-to-cart-btn" onclick="addToCart('${p._id}')">
-            <i class="fas fa-shopping-cart"></i> Add To Cart
+        <img src="${p.image}" alt="${p.name}" onclick="window.location.href='product.html?id=${p._id}'" style="cursor: pointer; ${isOutOfStock ? 'filter: grayscale(0.5); opacity: 0.6;' : ''}">
+        <button class="add-to-cart-btn" ${isOutOfStock ? 'disabled' : ''} onclick="addToCart('${p._id}')" ${isOutOfStock ? 'style="background: #ccc; cursor: not-allowed;"' : ''}>
+            <i class="fas fa-shopping-cart"></i> ${isOutOfStock ? 'Out of Stock' : 'Add To Cart'}
         </button>
         <div class="card-actions-top">
             <div class="icon-action" onclick="addToWishlist('${p._id}', event)">

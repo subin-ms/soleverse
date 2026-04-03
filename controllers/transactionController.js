@@ -79,8 +79,13 @@ exports.getTransactions = async (req, res) => {
             }).join(', ');
 
             // Logic: For COD, status is 'Success' only if order is 'Delivered'
-            let displayStatus = isRefunded ? 'Refunded' : 'Success';
-            if (!isRefunded && order.paymentMethod.toLowerCase() === 'cod' && order.status !== 'Delivered') {
+            // Logic: Handle Cancelled orders first, then Refunded, then Success/Pending
+            let displayStatus = 'Success';
+            if (order.status === 'Cancelled') {
+                displayStatus = 'Cancelled';
+            } else if (isRefunded) {
+                displayStatus = 'Refunded';
+            } else if (order.paymentMethod.toLowerCase() === 'cod' && order.status !== 'Delivered') {
                 displayStatus = 'Pending';
             }
 

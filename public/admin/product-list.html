@@ -4,438 +4,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soleverse - Product List</title>
+    <title>Soleverse - All Products</title>
     <script src="admin-guard.js"></script>
-    <!-- New Sidebar CSS -->
     <link rel="stylesheet" href="admin-sidebar.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
         :root {
-            --primary-blue: #4e73df;
-            --primary-bg: #f5f7fb;
+            --primary-blue: #3b82f6;
+            --primary-bg: #f8f9fa;
             --white: #ffffff;
-            --text-dark: #1f2937;
+            --text-dark: #111827;
             --text-gray: #6b7280;
             --border-color: #e5e7eb;
-            --success-green: #1cc88a;
-            --danger-red: #e74a3b;
-            --border-color: #e5e7eb;
+            --success-green: #10b981;
+            --warning-orange: #f59e0b;
+            --danger-red: #ef4444;
         }
 
-        /* Global Icon Style for Feather Icons */
-        .icon {
-            width: 24px;
-            height: 24px;
-            stroke: currentColor;
-            fill: none;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
+        /* Generic Icon Style */
+        svg.icon { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--primary-bg); color: var(--text-dark); height: 100vh; display: flex; overflow: hidden; }
 
-        body {
-            background-color: var(--primary-bg);
-            color: var(--text-dark);
-            height: 100vh;
-            display: flex;
-            overflow: hidden;
-        }
-
-        /* Sidebar container handled by CSS, no inline styles needed */
-
-        /* Main Content */
         .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            position: relative;
-            margin-left: 260px;
-            /* Sidebar width */
-            transition: margin-left 0.3s;
+            flex: 1; display: flex; flex-direction: column; overflow-y: auto;
+            position: relative; margin-left: 260px; transition: margin-left 0.3s;
         }
+        @media (max-width: 1199px) { .main-content { margin-left: 0; } }
 
-        @media (max-width: 1199px) {
-            .main-content {
-                margin-left: 260px;
-                /* Tablet keeps sidebar */
-            }
-        }
-
-        @media (max-width: 767px) {
-            .main-content {
-                margin-left: 0;
-            }
-        }
-
-        /* Top Navbar */
         .top-navbar {
-            background-color: var(--white);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
+            background-color: var(--white); padding: 1rem 2rem; display: flex; justify-content: space-between;
+            align-items: center; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100;
         }
+        .page-title { font-size: 1.25rem; font-weight: 700; color: #111827; display: flex; align-items: center; gap: 10px; }
+        .hamburger-menu { display: none; cursor: pointer; background: none; border: none; }
+        @media (max-width: 1199px) { .hamburger-menu { display: block; } }
 
-        .hamburger-menu {
-            display: none;
-            cursor: pointer;
-            margin-right: 1rem;
-        }
+        .content-wrapper { padding: 2rem; max-width: 1600px; margin: 0 auto; width: 100%; }
 
-        @media (max-width: 767px) {
-            .hamburger-menu {
-                display: block;
-            }
-        }
-
-        .page-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #111827;
-        }
-
-
-
-
-        /* Content Wrapper */
-        .content-wrapper {
-            padding: 2rem;
-            max-width: 1600px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        /* PRODUCT LIST PAGE Styles (Reusing Categories styles) */
-
-        /* Header / Discover Section */
-        .page-header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .section-heading {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #111827;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 1rem;
-        }
-
+        /* Product Controls */
+        .page-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .section-heading { font-size: 1.5rem; font-weight: 700; }
+        
         .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.6rem 1.25rem;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: all 0.2s;
-            text-decoration: none;
+            display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.25rem; border-radius: 8px;
+            font-size: 0.9rem; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: all 0.2s; text-decoration: none;
         }
-
-        .btn-primary {
-            background-color: var(--primary-blue);
-            color: var(--white);
-            box-shadow: 0 2px 4px rgba(78, 115, 223, 0.2);
-        }
-
-        .btn-primary:hover {
-            background-color: #3b5ecc;
-        }
-
-        .btn-outline {
-            background-color: var(--white);
-            border-color: var(--border-color);
-            color: #374151;
-        }
-
-        .btn-outline:hover {
-            background-color: #f9fafb;
-        }
+        .btn-primary { background: var(--primary-blue); color: white; }
+        .btn-outline { background: white; border: 1px solid var(--border-color); color: var(--text-dark); }
+        .btn-outline:hover { background: #f9fafb; }
 
         /* Filter Toolbar */
         .filter-toolbar {
-            background: var(--white);
-            padding: 1rem 1.5rem;
-            border-radius: 12px 12px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0;
-            /* Connected to table */
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            flex-wrap: wrap;
-            gap: 1rem;
-            border-bottom: 1px solid #f3f4f6;
+            background: white; padding: 1rem 1.5rem; border-radius: 12px 12px 0 0;
+            display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color);
         }
-
-        .filter-tabs {
-            display: flex;
-            gap: 0.5rem;
-        }
-
+        .filter-tabs { display: flex; gap: 0.5rem; }
         .tab-pill {
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--text-gray);
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
+            padding: 0.5rem 1rem; border-radius: 50px; font-size: 0.85rem; font-weight: 600;
+            color: var(--text-gray); background: transparent; border: none; cursor: pointer; transition: all 0.2s;
         }
-
-        .tab-pill.active {
-            background-color: #e0f2fe;
-            color: var(--primary-blue);
-        }
-
-        .tab-pill:hover:not(.active) {
-            background-color: #f3f4f6;
-        }
-
-        .table-controls {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .search-sm {
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            background-color: #f9fafb;
-            font-size: 0.85rem;
-            width: 200px;
-        }
-
-        .control-icon {
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-gray);
-            cursor: pointer;
-            background: var(--white);
-        }
-
-        .control-icon:hover {
-            background-color: #f3f4f6;
-            color: var(--text-dark);
-        }
+        .tab-pill.active { background: #e0f2fe; color: var(--primary-blue); }
 
         /* Table */
-        .table-container {
-            background: var(--white);
-            border-radius: 0 0 12px 12px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            overflow-x: auto;
-        }
+        .table-container { background: white; border-radius: 0 0 12px 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 900px; }
+        th { text-align: left; padding: 1rem 1.5rem; background: #eff6ff; color: #4b5563; font-weight: 600; font-size: 0.85rem; }
+        td { padding: 1rem 1.5rem; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-        }
+        .product-cell { display: flex; align-items: center; gap: 1rem; }
+        .product-thumb { width: 45px; height: 45px; object-fit: cover; border-radius: 6px; border: 1px solid #eee; background: #f3f4f6; }
+        .no-image-placeholder { display: flex; align-items: center; justify-content: center; font-size: 9px; color: #9ca3af; text-align: center; }
 
-        thead {
-            background-color: #eff6ff;
-        }
-
-        th {
-            text-align: left;
-            padding: 1rem 1.5rem;
-            color: #4b5563;
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-
-        td {
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid #f3f4f6;
-            color: #1f2937;
-            vertical-align: middle;
-        }
-
-        tr:hover td {
-            background-color: #f9fafb;
-        }
-
-        .product-cell {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .product-thumb {
-            width: 50px;
-            height: 50px;
-            border-radius: 4px;
-            object-fit: cover;
-            border: 1px solid #eee;
-        }
-
-        .no-image-placeholder {
-            background-color: #f3f4f6;
-            color: #6b7280;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            text-align: center;
-            line-height: 1.2;
-            word-break: break-word;
-            padding: 2px;
-        }
-
-        .checkbox {
-            width: 16px;
-            height: 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            accent-color: var(--primary-blue);
-        }
-
-        .action-cell {
-            display: flex;
-            gap: 0.75rem;
-            color: var(--text-gray);
-        }
-
-        .action-link {
-            cursor: pointer;
-        }
-
-        .action-link:hover {
-            color: var(--primary-blue);
-        }
+        .status-badge { font-weight: 700; font-size: 0.85rem; }
+        .action-link { cursor: pointer; font-weight: 700; font-size: 0.85rem; }
 
         /* Pagination */
-        .pagination {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem;
-            background: var(--white);
-            border-top: 1px solid var(--border-color);
-        }
-
-        .page-btn {
-            padding: 0.5rem 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background: white;
-            cursor: pointer;
-            font-size: 0.9rem;
-            color: #374151;
-            font-weight: 500;
-        }
-
-        .page-numbers {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .page-num {
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.85rem;
-        }
-
-        .page-num.active {
-            background-color: #dbeafe;
-            color: var(--primary-blue);
-            border-color: #dbeafe;
-            font-weight: 600;
-        }
-
-        .page-num.dots {
-            border: none;
-        }
-
-        /* Icons */
-        .icon {
-            width: 20px;
-            height: 20px;
-            stroke: currentColor;
-            fill: none;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
+        .pagination { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; border-top: 1px solid #f3f4f6; }
+        .page-numbers { display: flex; gap: 0.5rem; align-items: center; }
+        .page-btn { padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid #e5e7eb; background: white; font-weight: 600; cursor: pointer; font-size: 0.85rem; }
+        .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .page-num { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 1px solid #e5e7eb; font-weight: 600; cursor: pointer; font-size: 0.85rem; }
+        .page-num.active { background: #dbeafe; color: var(--primary-blue); border-color: #dbeafe; }
     </style>
 </head>
 
 <body>
-
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <a href="dashboard.html" class="logo">SOLEVERSE</a>
 
         <div class="menu-category">Main menu</div>
         <a href="dashboard.html" class="nav-item">
-            <div class="nav-icon">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                </svg>
-            </div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
             Dashboard
         </a>
         <a href="orders.html" class="nav-item">
-            <div class="nav-icon">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                </svg>
-            </div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
             Orders
         </a>
         <a href="customers.html" class="nav-item">
-            <div class="nav-icon">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="9" cy="7" r="4"></circle>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                </svg>
-            </div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
             Customers
         </a>
         <a href="categories.html" class="nav-item">
-            <div class="nav-icon">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                </svg>
-            </div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
             Categories
         </a>
         <a href="coupons.html" class="nav-item">
@@ -446,24 +121,18 @@
             <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
             Transactions
         </a>
-<a href="messages.html" class="nav-item">
-            <div class="nav-icon">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-            </div>
+        <a href="returns.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></div>
+            Returns
+        </a>
+        <a href="messages.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
             Messages
         </a>
 
         <div class="menu-category">Product</div>
         <a href="product-list.html" class="nav-item active">
-            <div class="nav-icon">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                    <polyline points="14 2 14 8 20 8"></polyline>
-                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                    <line x1="16" y1="17" x2="8" y2="17"></line>
-                    <polyline points="10 9 9 9 8 9"></polyline>
-                </svg>
-            </div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
             Product List
         </a>
         <a href="add-product.html" class="nav-item">
@@ -475,375 +144,246 @@
             Product Reviews
         </a>
 
-        <div class="menu-category">Admin</div>
-        <a href="admin-role.html" class="nav-item">
-            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-            Admin Role
-        </a>
-        
-
         <div class="sidebar-footer">
             <button class="logout-btn" id="logoutBtn">
                 Logout
-                <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                    <polyline points="16 17 21 12 16 7"></polyline>
-                    <line x1="21" y1="12" x2="9" y2="12"></line>
-                </svg>
+                <svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             </button>
         </div>
     </aside>
 
     <main class="main-content">
-        <!-- Navbar -->
         <header class="top-navbar">
-            <div class="hamburger-menu">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
+            <div class="page-title">
+                <button class="hamburger-menu" id="hamburger-btn">
+                    <svg class="icon" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <span>Product Inventory</span>
             </div>
-            <div class="page-title">Product List</div>
         </header>
 
         <div class="content-wrapper">
-
-            <!-- Discover Section -->
             <div class="page-header-row">
                 <h2 class="section-heading">All Products</h2>
                 <div class="header-actions">
                     <a href="add-product.html" class="btn btn-primary">
-                        <svg class="icon" style="width:16px;height:16px;" viewBox="0 0 24 24">
-                            <line x1="12" y1="5" x2="12" y2="19"></line>
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                        </svg>
-                        Add Product
+                        <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Add New
                     </a>
-                    <button class="btn btn-outline">
-                        Export
-                        <svg class="icon" style="width:16px;height:16px;" viewBox="0 0 24 24">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="7 10 12 15 17 10"></polyline>
-                            <line x1="12" y1="15" x2="12" y2="3"></line>
-                        </svg>
-                    </button>
                 </div>
             </div>
 
-            <!-- Filter Toolbar -->
             <div class="filter-toolbar">
                 <div class="filter-tabs">
-                    <button class="tab-pill active">All Product</button>
+                    <button class="tab-pill active">All Products</button>
                     <button class="tab-pill">Published</button>
                     <button class="tab-pill">Draft</button>
                 </div>
-                <!-- Controls same as categories -->
+                <div style="font-size:0.85rem; color:var(--text-gray); font-weight:600;" id="totalCountDisplay">Showing products</div>
             </div>
 
-            <!-- Table -->
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 50px;"><input type="checkbox" class="checkbox"></th>
-                            <th>No.</th>
-                            <th>Product</th>
+                            <th style="width: 40px; padding-right:0;"><input type="checkbox" style="accent-color:var(--primary-blue);"></th>
+                            <th style="width: 50px;">No.</th>
+                            <th>Product Details</th>
                             <th>Category</th>
                             <th>Price</th>
                             <th>Stock</th>
                             <th>Status</th>
-                            <th>Action</th>
+                            <th style="text-align: center;">Actions</th>
                         </tr>
                     </thead>
-
                     <tbody id="productTableBody">
-
+                        <!-- Dynamic items -->
                     </tbody>
                 </table>
+                <div id="noProductsFound" style="display:none; text-align:center; padding:5rem; color:#94a3b8; font-weight:600;">
+                    <div style="font-size:3rem; margin-bottom:1rem;">🔍</div>
+                    No products matching your search criteria.
+                </div>
+                
                 <div class="pagination">
-                    <span style="color: #6b7280; font-size: 0.9rem;">Showing 1-10 from 46</span>
-                    <div class="page-numbers">
-                        <button class="page-btn">Prev</button>
-                        <div class="page-num active">1</div>
-                        <div class="page-num">2</div>
-                        <div class="page-num">3</div>
-                        <div class="page-num">4</div>
-                        <div class="page-num dots">...</div>
-                        <button class="page-btn">Next</button>
-                    </div>
+                    <div id="paginationInfo" style="color:#6b7280; font-size: 0.9rem; font-weight:600;"></div>
+                    <div class="page-numbers" id="paginationControls"></div>
                 </div>
             </div>
-
         </div>
     </main>
 
-    <!-- Global JS -->
     <script src="admin-sidebar.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         const API_BASE = "http://localhost:5000/api";
+        let allProducts = [];
+        let filteredProducts = [];
         let currentPage = 1;
-        const productsPerPage = 5;
-        async function loadProducts() {
+        const productsPerPage = 8;
 
+        async function loadProducts() {
             Swal.fire({
-                title: 'Loading Products...',
+                title: 'Syncing Inventory...',
                 allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
+                didOpen: () => { Swal.showLoading(); }
             });
 
             try {
-                const res = await fetch(`${API_BASE}/products`);
-                allProducts = await res.json();
+                const res = await fetch(`${API_BASE}/products`, {
+                    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+                });
+                const data = await res.json();
+                allProducts = data;
+                filteredProducts = [...allProducts];
                 currentPage = 1;
-                renderProducts(allProducts);
+                renderProducts();
                 Swal.close();
             } catch (err) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Failed to load products'
-                });
+                console.error("Load Error:", err);
+                Swal.fire({ icon: 'error', title: 'Fetch Failed', text: 'Ensure server is running or check console.' });
             }
         }
-        function renderProducts(products) {
 
+        function renderProducts() {
             const tableBody = document.getElementById("productTableBody");
             tableBody.innerHTML = "";
 
-            if (products.length === 0) {
-                tableBody.innerHTML = `
-            <tr>
-                <td colspan="8" style="text-align:center;padding:2rem;">
-                    No products found
-                </td>
-            </tr>
-        `;
+            const startIndex = (currentPage - 1) * productsPerPage;
+            const endIndex = startIndex + productsPerPage;
+            const paginatedItems = filteredProducts.slice(startIndex, endIndex);
+
+            if (paginatedItems.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:3rem; color:#9ca3af; font-weight:600;">No products found in this category</td></tr>';
                 return;
             }
 
-            const startIndex = (currentPage - 1) * productsPerPage;
-            const endIndex = startIndex + productsPerPage;
-            const paginatedProducts = products.slice(startIndex, endIndex);
-
-            paginatedProducts.forEach((product, index) => {
-
-                const actionButton = product.status === "Draft"
-                    ? `<span style="cursor:pointer;color:#1cc88a;font-weight:600;"
-                    onclick="publishProduct('${product._id}')">
-                    Publish
-               </span>`
-                    : `<span style="cursor:pointer;color:#f59e0b;font-weight:600;"
-                    onclick="unpublishProduct('${product._id}')">
-                    Unpublish
-               </span>`;
-
-                let currentImage = product.image || '';
-                if(currentImage && !currentImage.startsWith('/uploads/products/') && currentImage.includes('/uploads/')){
-                    // Clean legacy paths (e.g. `/uploads/123.png` -> `/uploads/products/123.png`)
-                    const baseFile = currentImage.split('/').pop();
-                    currentImage = `/uploads/products/${baseFile}`;
+            paginatedItems.forEach((p, idx) => {
+                const isDraft = p.status === "Draft";
+                const rowNo = startIndex + idx + 1;
+                
+                let curImg = p.image || '';
+                if (curImg && !curImg.startsWith('/uploads/products/') && curImg.includes('/uploads/')) {
+                    curImg = `/uploads/products/${curImg.split('/').pop()}`;
                 }
-
-                const imageUrl = currentImage ? `http://localhost:5000${currentImage}` : '';
-                const imageHtml = imageUrl 
-                    ? `<img src="${imageUrl}" class="product-thumb" onerror="this.onerror=null; this.outerHTML='<div class=\\'product-thumb no-image-placeholder\\'>No Image</div>';">`
-                    : `<div class="product-thumb no-image-placeholder">No Image</div>`;
+                const imgUrl = curImg ? `http://localhost:5000${curImg}` : '';
 
                 const row = `
-            <tr>
-                <td><input type="checkbox" class="checkbox"></td>
-                <td>${startIndex + index + 1}</td>
-                <td>
-                    <div class="product-cell">
-                        ${imageHtml}
-                        <span>${product.name}</span>
-                    </div>
-                </td>
-                <td>${product.category?.name || "N/A"}</td>
-                <td>₹ ${product.price}</td>
-                <td>${product.stock !== undefined && product.stock !== null && product.stock !== '' ? product.stock : ''}</td>
-                <td>
-                    <span style="color:${product.status === 'Active' ? '#1cc88a' : '#f59e0b'};font-weight:600;">
-                        ${product.status}
-                    </span>
-                </td>
-                <td>
-                    <div style="display:flex;gap:10px;">
-                        ${actionButton}
-                        <span style="cursor:pointer;color:#e74a3b;font-weight:600;"
-                            onclick="deleteProduct('${product._id}')">
-                            Delete
-                        </span>
-                    </div>
-                </td>
-            </tr>
-        `;
-
-                tableBody.innerHTML += row;
+                    <tr>
+                        <td style="padding-right:0;"><input type="checkbox" style="accent-color:var(--primary-blue);"></td>
+                        <td style="color:#6b7280; font-weight:700;">${rowNo}</td>
+                        <td>
+                            <div class="product-cell">
+                                ${imgUrl ? `<img src="${imgUrl}" class="product-thumb" onerror="this.outerHTML='<div class=\\'product-thumb no-image-placeholder\\'>No IMG</div>';">` : `<div class="product-thumb no-image-placeholder">No IMG</div>`}
+                                <span style="font-weight:700; color:#111827;">${p.name}</span>
+                            </div>
+                        </td>
+                        <td><span style="font-size:0.85rem; font-weight:600; color:#4b5563;">${p.category?.name || "Uncategorized"}</span></td>
+                        <td style="font-weight:700; color:#111827;">₹ ${p.price}</td>
+                        <td style="font-weight:700; color:${p.stock > 10 ? '#10b981' : (p.stock > 0 ? '#f59e0b' : '#ef4444')}">${p.stock || 0}</td>
+                        <td>
+                            <div class="status-badge" style="color:${isDraft ? '#f59e0b' : '#10b981'}">
+                                ${p.status}
+                            </div>
+                        </td>
+                        <td>
+                            <div style="display:flex; gap:12px; justify-content:center;">
+                                <div class="btn-icon" style="background:#fff7ed; color:#f59e0b; padding:8px; border-radius:8px; cursor:pointer;" onclick="window.location.href='add-product.html?id=${p._id}'">
+                                    <svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                </div>
+                                <div class="btn-icon" style="background:#fef2f2; color:#ef4444; padding:8px; border-radius:8px; cursor:pointer;" onclick="deleteProduct('${p._id}')">
+                                    <svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                tableBody.insertAdjacentHTML('beforeend', row);
             });
 
-            renderPagination(products.length);
+            renderPagination();
         }
-        function renderPagination(totalItems) {
 
-            const totalPages = Math.ceil(totalItems / productsPerPage);
-            const paginationContainer = document.querySelector(".page-numbers");
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+            const controls = document.getElementById("paginationControls");
+            const info = document.getElementById("paginationInfo");
 
-            paginationContainer.innerHTML = "";
+            info.innerText = `Showing ${filteredProducts.length === 0 ? 0 : (currentPage-1)*productsPerPage + 1} - ${Math.min(currentPage*productsPerPage, filteredProducts.length)} from ${filteredProducts.length}`;
+            document.getElementById('totalCountDisplay').innerText = `Catalog: ${filteredProducts.length} Items`;
 
-            // Prev Button
-            const prevBtn = document.createElement("button");
-            prevBtn.className = "page-btn";
-            prevBtn.innerText = "Prev";
-            prevBtn.disabled = currentPage === 1;
-            prevBtn.onclick = () => {
-                if (currentPage > 1) {
-                    currentPage--;
-                    renderProducts(allProducts);
-                }
-            };
-            paginationContainer.appendChild(prevBtn);
+            controls.innerHTML = "";
+            
+            const prev = document.createElement("button");
+            prev.className = "page-btn";
+            prev.innerText = "Prev";
+            prev.disabled = currentPage === 1;
+            prev.onclick = () => { if (currentPage > 1) { currentPage--; renderProducts(); } };
+            controls.appendChild(prev);
 
-            // Page Numbers
             for (let i = 1; i <= totalPages; i++) {
-                const page = document.createElement("div");
-                page.className = "page-num";
-                if (i === currentPage) page.classList.add("active");
-                page.innerText = i;
-
-                page.onclick = () => {
-                    currentPage = i;
-                    renderProducts(allProducts);
-                };
-
-                paginationContainer.appendChild(page);
+                const btn = document.createElement("div");
+                btn.className = `page-num ${i === currentPage ? 'active' : ''}`;
+                btn.innerText = i;
+                btn.onclick = () => { currentPage = i; renderProducts(); };
+                controls.appendChild(btn);
             }
 
-            // Next Button
-            const nextBtn = document.createElement("button");
-            nextBtn.className = "page-btn";
-            nextBtn.innerText = "Next";
-            nextBtn.disabled = currentPage === totalPages;
-            nextBtn.onclick = () => {
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    renderProducts(allProducts);
-                }
-            };
-            paginationContainer.appendChild(nextBtn);
-        }
-        // 🔥 PUBLISH PRODUCT
-        async function publishProduct(id) {
-            await updateStatus(id, "Active");
+            const next = document.createElement("button");
+            next.className = "page-btn";
+            next.innerText = "Next";
+            next.disabled = currentPage === totalPages || totalPages === 0;
+            next.onclick = () => { if (currentPage < totalPages) { currentPage++; renderProducts(); } };
+            controls.appendChild(next);
         }
 
-        // 🔥 UNPUBLISH PRODUCT
-        async function unpublishProduct(id) {
-            await updateStatus(id, "Draft");
-        }
-
-        // 🔥 UPDATE STATUS FUNCTION
-        async function updateStatus(id, newStatus) {
-
-            const result = await Swal.fire({
-                title: `Are you sure?`,
-                text: `Change product status to ${newStatus}?`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, update it!'
-            });
-
+        async function updateStatus(id, status) {
+            const result = await Swal.fire({ title: 'Confirmation', text: `Set product to ${status}?`, icon: 'question', showCancelButton: true });
             if (!result.isConfirmed) return;
 
             try {
-                await fetch(`${API_BASE}/products/${id}`, {
+                const res = await fetch(`${API_BASE}/products/${id}`, {
                     method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ status: newStatus })
+                    headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` },
+                    body: JSON.stringify({ status })
                 });
-
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Updated!',
-                    text: 'Product status updated successfully.'
-                });
-
+                if (!res.ok) throw new Error("Update failed");
+                Swal.fire({ icon: 'success', title: 'Inventory Updated', timer: 1000, showConfirmButton: false });
                 loadProducts();
-
-            } catch (err) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Failed to update status.'
-                });
-            }
+            } catch (err) { Swal.fire('Error', 'Update failed', 'error'); }
         }
 
-        // DELETE WITH SWEET ALERT
         async function deleteProduct(id) {
-
-            const result = await Swal.fire({
-                title: 'Are you sure?',
-                text: "This product will be deleted permanently!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#e74a3b',
-                confirmButtonText: 'Yes, delete it!'
-            });
-
+            const result = await Swal.fire({ title: 'Delete Product?', text: "This action cannot be undone!", icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444' });
             if (result.isConfirmed) {
                 try {
-                    await fetch(`${API_BASE}/products/${id}`, {
-                        method: "DELETE"
+                    const res = await fetch(`${API_BASE}/products/${id}`, {
+                        method: "DELETE",
+                        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
                     });
-
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Deleted!',
-                        text: 'Product deleted successfully.'
-                    });
-
+                    if (!res.ok) throw new Error("Delete failed");
+                    Swal.fire('Deleted', 'Record removed from catalog', 'success');
                     loadProducts();
-                } catch (err) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Failed to delete product.'
-                    });
-                }
+                } catch (err) { Swal.fire('Error', 'Deletetion failed', 'error'); }
             }
         }
 
-        // TAB FILTERING
         document.querySelectorAll(".tab-pill").forEach(tab => {
-            tab.addEventListener("click", function () {
-
-                document.querySelectorAll(".tab-pill")
-                    .forEach(t => t.classList.remove("active"));
-
+            tab.onclick = function() {
+                document.querySelectorAll(".tab-pill").forEach(t => t.classList.remove("active"));
                 this.classList.add("active");
+                const filter = this.innerText;
+                
+                if (filter.includes("All")) filteredProducts = [...allProducts];
+                else if (filter === "Published") filteredProducts = allProducts.filter(p => p.status === "Active");
+                else if (filter === "Draft") filteredProducts = allProducts.filter(p => p.status === "Draft");
 
-                const text = this.textContent.trim();
-
-                if (text.includes("All")) {
-                    renderProducts(allProducts);
-                }
-                else if (text === "Published") {
-                    renderProducts(allProducts.filter(p => p.status === "Active"));
-                }
-                else if (text === "Draft") {
-                    renderProducts(allProducts.filter(p => p.status === "Draft"));
-                }
-            });
+                currentPage = 1;
+                renderProducts();
+            };
         });
 
         document.addEventListener("DOMContentLoaded", loadProducts);
     </script>
-
 </body>
-
 </html>

@@ -352,6 +352,26 @@
             color: #fff;
         }
 
+        .badge.out-of-stock {
+            background: #757575;
+            color: #fff;
+        }
+
+        .product-card.out-of-stock {
+            opacity: 0.8;
+        }
+
+        .product-card.out-of-stock img {
+            filter: grayscale(0.5);
+        }
+
+        .add-to-cart-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
         .card-details {
             flex-grow: 1;
             display: flex;
@@ -420,20 +440,24 @@
             background: #000;
             color: #fff;
             border: none;
-            padding: 12px 0;
+            height: 48px; /* Fixed height for perfect centering */
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
             transform: translateY(100%);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            opacity: 0;
-            z-index: 5;
+            transition: 0.3s ease;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            line-height: 1;
+            padding: 0; /* Remove padding to rely on height + flex centering */
+        }
+
+        .add-to-cart-btn i {
+            font-size: 16px;
+            margin-top: -2px; /* Micro-adjustment for icon baseline */
         }
 
         .img-container:hover .add-to-cart-btn {
@@ -658,6 +682,336 @@
         .btn-apply-filter:hover {
             background: #333;
         }
+
+        /* 
+         * =========================================
+         *  QUICK VIEW MODAL STYLES
+         * =========================================
+         */
+        #quickViewModal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        #quickViewModal.active {
+            display: flex;
+        }
+
+        .qv-modal-content {
+            background: #fff;
+            width: 100%;
+            max-width: 1100px;
+            max-height: 90vh;
+            border-radius: 8px;
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .qv-close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 10;
+            color: #757575;
+            transition: 0.3s;
+        }
+
+        .qv-close-btn:hover {
+            color: #000;
+        }
+
+        /* Left Column: Gallery */
+        .qv-gallery {
+            padding: 40px;
+            background: #f6f6f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .qv-main-img {
+            max-width: 90%;
+            mix-blend-mode: multiply;
+        }
+
+        /* Right Column: Info */
+        .qv-info {
+            padding: 60px 40px;
+            overflow-y: auto;
+        }
+
+        .qv-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-transform: capitalize;
+        }
+
+        .qv-rating-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .qv-stars {
+            color: #FFAD33;
+        }
+
+        .qv-status-red {
+            color: #db4444;
+            font-weight: 500;
+            padding-left: 12px;
+            border-left: 1px solid #ddd;
+        }
+        
+        .qv-status-green {
+            color: #00FF66;
+            font-weight: 500;
+            padding-left: 12px;
+            border-left: 1px solid #ddd;
+        }
+
+        .qv-price-row {
+            font-size: 24px;
+            font-weight: 700;
+            color: #4a90e2; /* Blue current price from screenshot */
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .qv-old-price {
+            color: #757575;
+            text-decoration: line-through;
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        .qv-discount-badge {
+            background: #db4444;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .qv-desc {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* Size Selection */
+        .qv-label {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .qv-sizes {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .qv-size-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            background: transparent;
+            transition: 0.2s;
+        }
+
+        .qv-size-btn.active {
+            border-color: #000;
+            background: #fff;
+        }
+
+        .qv-size-btn:disabled {
+            background: #f1f1f1;
+            color: #ccc;
+            cursor: not-allowed;
+            border-color: #eee;
+        }
+
+        /* Quantity and Actions */
+        .qv-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 40px;
+        }
+
+        .qv-qty-selector {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            height: 44px;
+            overflow: hidden;
+        }
+
+        .qv-qty-btn {
+            width: 44px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .qv-plus-btn {
+            background: #db4444;
+            color: #fff;
+        }
+
+        .qv-plus-btn:hover {
+            background: #c93d3d;
+        }
+
+        .qv-qty-input {
+            width: 60px;
+            text-align: center;
+            border: none;
+            font-size: 18px;
+            font-weight: 600;
+            outline: none;
+        }
+
+        .qv-add-btn {
+            flex: 1;
+            height: 44px;
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .qv-add-btn:hover {
+            background: #333;
+        }
+        
+        .qv-add-btn:disabled {
+            background: #ddd;
+            cursor: not-allowed;
+        }
+
+        .qv-wishlist-btn {
+            width: 44px;
+            height: 44px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .qv-wishlist-btn:hover {
+            border-color: #db4444;
+            color: #db4444;
+        }
+
+        /* Delivery Boxes */
+        .qv-delivery-info {
+            margin-top: 40px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+        }
+
+        .qv-delivery-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+        }
+
+        .qv-delivery-item:first-child {
+            border-bottom: 1px solid #eee;
+        }
+
+        .qv-delivery-item i {
+            font-size: 20px;
+        }
+
+        .qv-delivery-text h5 {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .qv-delivery-text p {
+            font-size: 12px;
+            color: #757575;
+            text-decoration: underline;
+        }
+
+        /* QUICK VIEW ICON TRIGGER on Cards */
+        .quick-view-trigger {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 34px;
+            height: 34px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            cursor: pointer;
+            z-index: 10;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .product-card:hover .quick-view-trigger {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .quick-view-trigger:hover {
+            background: #ff9900;
+            color: #fff;
+        }
     </style>
 </head>
 
@@ -787,6 +1141,71 @@
                 <!-- PAGINATION -->
                 <div class="pagination"></div>
             </main>
+        </div>
+    </div>
+
+    <!-- QUICK VIEW MODAL BODY -->
+    <div id="quickViewModal">
+        <div class="qv-modal-content">
+            <span class="qv-close-btn" onclick="closeQuickView()"><i class="fas fa-times"></i></span>
+            <div class="qv-gallery">
+                <img id="qvMainImg" src="" alt="" class="qv-main-img">
+            </div>
+            <div class="qv-info">
+                <h2 id="qvTitle" class="qv-title">Product Name</h2>
+                <div class="qv-rating-row">
+                    <div class="qv-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <span id="qvStatus" class="qv-status-red">Out of Stock</span>
+                </div>
+
+                <div id="qvPriceRow" class="qv-price-row">
+                    ₹0.00
+                </div>
+
+                <p id="qvDesc" class="qv-desc">Description goes here.</p>
+
+                <div id="qvSizesSection">
+                    <span class="qv-label">Size:</span>
+                    <div id="qvSizesList" class="qv-sizes">
+                        <!-- Sizes injected here -->
+                    </div>
+                </div>
+
+                <div class="qv-actions">
+                    <div class="qv-qty-selector">
+                        <div class="qv-qty-btn" onclick="updateQVQty(-1)"><i class="fas fa-minus"></i></div>
+                        <input type="text" id="qvQty" value="1" readonly class="qv-qty-input">
+                        <div class="qv-qty-btn qv-plus-btn" onclick="updateQVQty(1)"><i class="fas fa-plus"></i></div>
+                    </div>
+                    <button id="qvAddBtn" class="qv-add-btn">Add To Cart</button>
+                    <div class="qv-wishlist-btn" id="qvWishBtn">
+                        <i class="far fa-heart"></i>
+                    </div>
+                </div>
+
+                <div class="qv-delivery-info">
+                    <div class="qv-delivery-item">
+                        <i class="fas fa-truck"></i>
+                        <div class="qv-delivery-text">
+                            <h5>Free Delivery</h5>
+                            <p>Enter your postal code for Delivery Availability</p>
+                        </div>
+                    </div>
+                    <div class="qv-delivery-item">
+                        <i class="fas fa-undo-alt"></i>
+                        <div class="qv-delivery-text">
+                            <h5>Return Delivery</h5>
+                            <p>Free 30 Days Delivery Returns. Details</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -951,18 +1370,24 @@
                     ? (p.discountType === 'percent' ? p.price - (p.price * p.discountValue / 100) : p.price - p.discountValue)
                     : p.price;
                 
-                const badge = hasDiscount ? `<span class="badge sale">-${p.discountValue}${p.discountType === 'percent' ? '%' : ' OFF'}</span>` : '';
+                const isOutOfStock = p.status === 'Out of Stock' || p.stock <= 0;
+                const badge = isOutOfStock 
+                    ? `<span class="badge out-of-stock">Out of Stock</span>`
+                    : (hasDiscount ? `<span class="badge sale">-${p.discountValue}${p.discountType === 'percent' ? '%' : ' OFF'}</span>` : '');
                 
                 return `
-                <div class="product-card" onclick="window.location.href='product.html?id=${p._id}'">
+                <div class="product-card ${isOutOfStock ? 'out-of-stock' : ''}" onclick="window.location.href='product.html?id=${p._id}'">
                     <div class="img-container">
                         ${badge}
+                        <div class="quick-view-trigger" onclick="event.stopPropagation(); openQuickView('${p._id}')">
+                            <i class="fas fa-eye"></i>
+                        </div>
                         <img src="${imgSrc}" alt="${p.name}" onerror="this.src='../img/logo.png'">
                         <span class="wishlist-btn" onclick="event.stopPropagation(); addToWishlist('${p._id}')">
                             <i class="far fa-heart"></i>
                         </span>
-                        <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart('${p._id}')">
-                            <i class="fas fa-shopping-cart"></i> Add To Cart
+                        <button class="add-to-cart-btn" ${isOutOfStock ? 'disabled' : ''} onclick="event.stopPropagation(); addToCart('${p._id}')">
+                            <i class="fas fa-shopping-cart"></i> ${isOutOfStock ? 'Unavailable' : 'Add To Cart'}
                         </button>
                     </div>
                     <div class="card-details">
@@ -1037,6 +1462,115 @@
         }
 
         loadCategories();
+
+        /* 
+         * =========================================
+         *  QUICK VIEW MODAL LOGIC
+         * =========================================
+         */
+        let currentQVProduct = null;
+
+        async function openQuickView(productId) {
+            try {
+                const res = await fetch(`http://localhost:5000/api/products/public/${productId}`);
+                const product = await res.json();
+                currentQVProduct = product;
+
+                // Basic Info
+                document.getElementById('qvMainImg').src = product.image ? `http://localhost:5000${product.image}` : '../img/logo.png';
+                document.getElementById('qvTitle').innerText = product.name;
+                document.getElementById('qvDesc').innerText = product.description || "Premium Converse sneakers designed for style and comfort.";
+                
+                // Status
+                const statusEl = document.getElementById('qvStatus');
+                if (product.status === 'Out of Stock') {
+                    statusEl.innerText = 'Out of Stock';
+                    statusEl.className = 'qv-status-red';
+                } else {
+                    statusEl.innerText = 'In Stock';
+                    statusEl.className = 'qv-status-green';
+                }
+
+                // Price
+                const hasDiscount = product.discountValue > 0;
+                const displayPrice = hasDiscount 
+                    ? (product.discountType === 'percent' ? product.price - (product.price * product.discountValue / 100) : product.price - product.discountValue)
+                    : product.price;
+
+                document.getElementById('qvPriceRow').innerHTML = `
+                    ₹${displayPrice.toFixed(2)}
+                    ${hasDiscount ? `<span class="qv-old-price">₹${product.price.toFixed(2)}</span>` : ''}
+                    ${hasDiscount ? `<span class="qv-discount-badge">-${product.discountValue}${product.discountType === 'percent' ? '%' : ' OFF'}</span>` : ''}
+                `;
+
+                // Sizes
+                const sizeList = document.getElementById('qvSizesList');
+                sizeList.innerHTML = '';
+                const sizeKeys = Object.keys(product.sizes || {}).sort((a,b) => Number(a) - Number(b));
+                
+                sizeKeys.forEach(size => {
+                    const qty = product.sizes[size];
+                    const btn = document.createElement('button');
+                    btn.className = 'qv-size-btn';
+                    btn.innerText = size;
+                    if (qty <= 0) btn.disabled = true;
+                    btn.onclick = () => {
+                        document.querySelectorAll('.qv-size-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                    };
+                    sizeList.appendChild(btn);
+                });
+
+                if (sizeList.innerHTML === '') document.getElementById('qvSizesSection').style.display = 'none';
+                else document.getElementById('qvSizesSection').style.display = 'block';
+
+                // Reset Action Row
+                document.getElementById('qvQty').value = 1;
+                const addBtn = document.getElementById('qvAddBtn');
+                if (product.status === 'Out of Stock') {
+                    addBtn.innerText = 'Unavailable';
+                    addBtn.disabled = true;
+                } else {
+                    addBtn.innerText = 'Add To Cart';
+                    addBtn.disabled = false;
+                    addBtn.onclick = () => {
+                        const activeSize = document.querySelector('.qv-size-btn.active');
+                        if (!activeSize && sizeKeys.length > 0) {
+                            alert("Please select a size first!");
+                            return;
+                        }
+                        addToCart(product._id, parseInt(document.getElementById('qvQty').value), activeSize ? activeSize.innerText : null);
+                        closeQuickView();
+                    };
+                }
+
+                document.getElementById('qvWishBtn').onclick = () => addToWishlist(product._id);
+
+                // Show Modal
+                document.getElementById('quickViewModal').classList.add('active');
+
+            } catch (error) {
+                console.error("Error opening Quick View:", error);
+            }
+        }
+
+        function closeQuickView() {
+            document.getElementById('quickViewModal').classList.remove('active');
+        }
+
+        function updateQVQty(step) {
+            const input = document.getElementById('qvQty');
+            let val = parseInt(input.value) + step;
+            if (val < 1) val = 1;
+            if (val > 10) val = 10; // Cap
+            input.value = val;
+        }
+
+        // Close on escape or outside click
+        window.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeQuickView(); });
+        document.getElementById('quickViewModal').onclick = (e) => {
+            if(e.target.id === 'quickViewModal') closeQuickView();
+        };
 
     </script>
     <script src="footer.js"></script>

@@ -9,10 +9,18 @@ document.addEventListener('DOMContentLoaded', function () {
   let filename = currentPath.substring(currentPath.lastIndexOf('/') + 1);
   if (!filename) filename = 'index.html';
 
+  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+
   document.querySelectorAll('.nav-link').forEach(link => {
     link.classList.remove('active');
-    if (link.getAttribute('href') === filename) {
+    const href = link.getAttribute('href');
+    if (href === filename) {
       link.classList.add('active');
+    }
+
+    // Hide Signup/Login links if already logged in
+    if (isLoggedIn && (href === 'signup.html' || href === 'login.html')) {
+      link.style.display = 'none';
     }
   });
 

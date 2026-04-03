@@ -246,17 +246,24 @@
             background: #000;
             color: #fff;
             border: none;
-            padding: 10px 0;
-            font-size: 12px;
-            font-weight: 500;
+            height: 48px; /* Fixed height for perfect centering */
+            font-size: 13px;
+            font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
             transform: translateY(100%);
             /* Hidden by default */
             transition: transform 0.3s ease-in-out;
+            text-transform: uppercase;
+            line-height: 1;
+        }
+
+        .add-to-cart-btn i {
+            font-size: 16px;
+            margin-top: -2px; /* Micro-adjustment for icon baseline */
         }
 
         .card-image:hover .add-to-cart-btn {

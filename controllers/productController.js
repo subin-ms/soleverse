@@ -69,7 +69,7 @@ exports.getPublicProducts = async (req, res) => {
     const publishedCategoryIds = publishedCategories.map(c => c._id);
 
     const filter = { 
-        status: "Active",
+        status: { $in: ["Active", "Out of Stock"] },
         category: { $in: publishedCategoryIds } 
     };
     
@@ -150,8 +150,10 @@ exports.getPublicProducts = async (req, res) => {
 // 🔍 Get Single Public Product
 exports.getPublicProductById = async (req, res) => {
   try {
-    const product = await Product.findOne({ _id: req.params.id, status: "Active" })
-      .populate("category");
+    const product = await Product.findOne({ 
+      _id: req.params.id, 
+      status: { $in: ["Active", "Out of Stock"] } 
+    }).populate("category");
       
     if (!product) {
       return res.status(404).json({ message: "Product not found or not active" });
@@ -162,6 +164,24 @@ exports.getPublicProductById = async (req, res) => {
         return res.status(404).json({ message: "Product category is not active" });
     }
     
+    res.json(product);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// 🔍 Get Single Product (Admin)
+exports.getProductById = async (req, res) => {
+  try {
+    const mongoose = require("mongoose");
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: "Invalid Product ID format" });
+    }
+
+    const product = await Product.findById(req.params.id).populate("category");
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
     res.json(product);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -184,22 +204,66 @@ exports.deleteProduct = async (req, res) => {
 // ✏️ UPDATE PRODUCT
 exports.updateProduct = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const { name, sku, price, description, category, discountType, discountValue, stock, status, sizes } = req.body;
+    
+    // ✅ Prepare update data
+    const updateData = {};
+    if (name) updateData.name = name;
+    if (sku) updateData.sku = sku;
+    if (price !== undefined) updateData.price = Number(price);
+    if (description !== undefined) updateData.description = description;
+    if (category) updateData.category = category;
+    if (discountType) updateData.discountType = discountType;
+    if (discountValue !== undefined) updateData.discountValue = Number(discountValue);
+    if (stock !== undefined) updateData.stock = Number(stock);
+    if (status) updateData.status = status;
+    
+    // ✅ Enforce stock status consistency
+    const finalStock = stock !== undefined ? Number(stock) : undefined;
+    if (finalStock !== undefined && finalStock <= 0 && updateData.status === "Active") {
+      updateData.status = "Out of Stock";
+    } else if (finalStock !== undefined && finalStock > 0 && updateData.status === "Out of Stock") {
+      updateData.status = "Active";
+    }
 
-    if (!product) {
+    // ✅ Update sizes
+    if (sizes) {
+      try { updateData.sizes = JSON.parse(sizes); } catch (e) {}
+    }
+
+    // ✅ Handle Main Image
+    const imageFile = req.files && req.files['image'] ? req.files['image'][0] : null;
+    if (imageFile) {
+      updateData.image = `/${imageFile.destination.replace(/\\/g, '/')}/${imageFile.filename}`;
+    }
+
+    // ✅ Handle Gallery Images
+    const galleryFiles = req.files && req.files['gallery'] ? req.files['gallery'] : [];
+    if (galleryFiles.length > 0) {
+      const newGallery = galleryFiles.map(f => `/${f.destination.replace(/\\/g, '/')}/${f.filename}`);
+      // Find current product to append to gallery
+      const currentProduct = await Product.findById(req.params.id);
+      if (currentProduct) {
+        updateData.gallery = [...currentProduct.gallery, ...newGallery];
+      }
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      req.params.id,
+      { $set: updateData },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedProduct) {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    product.status = req.body.status || product.status;
-
-    await product.save();
-
     res.json({
       message: "Product updated successfully",
-      product
+      product: updatedProduct
     });
 
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-};
+};

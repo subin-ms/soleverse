@@ -7,7 +7,6 @@
     <title>Soleverse - Product Reviews</title>
     <script src="admin-guard.js"></script>
     <link rel="stylesheet" href="admin-sidebar.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -17,199 +16,89 @@
             --white: #ffffff;
             --text-dark: #1f2937;
             --text-gray: #6b7280;
-            --sidebar-width: 260px;
             --border-color: #e5e7eb;
-            --success-green: #10b981;
-            --success-bg: #ecfdf5;
+            --success-green: #1cc88a;
+            --warning-orange: #f6c23e;
             --danger-red: #e74a3b;
-            --warning-yellow: #f59e0b;
         }
 
-        /* Base and Layout Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
+        /* Generic Icon Style */
+        svg.icon { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-        body {
-            background-color: var(--primary-bg);
-            color: var(--text-dark);
-            height: 100vh;
-            display: flex;
-            overflow: hidden;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--primary-bg); color: var(--text-dark); height: 100vh; display: flex; overflow: hidden; }
 
         .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            position: relative;
-            margin-left: 260px;
-            transition: margin-left 0.3s;
+            flex: 1; display: flex; flex-direction: column; overflow-y: auto;
+            position: relative; margin-left: 260px; transition: margin-left 0.3s;
         }
+        @media (max-width: 1199px) { .main-content { margin-left: 0; } }
 
-        @media (max-width: 1199px) { .main-content { margin-left: 260px; } }
-        @media (max-width: 767px) { .main-content { margin-left: 0; } }
-
-        /* Top Navbar */
         .top-navbar {
-            background-color: var(--white);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
+            background-color: var(--white); padding: 1rem 2rem; display: flex; justify-content: space-between;
+            align-items: center; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100;
         }
+        .page-title { font-size: 1.25rem; font-weight: 700; color: #111827; display: flex; align-items: center; gap: 10px; }
+        .hamburger-menu { display: none; cursor: pointer; background: none; border: none; }
+        @media (max-width: 1199px) { .hamburger-menu { display: block; } }
 
-        .hamburger-menu {
-            display: none;
-            cursor: pointer;
-            margin-right: 1rem;
-        }
+        .content-wrapper { padding: 2rem; max-width: 1600px; margin: 0 auto; width: 100%; }
 
-        @media (max-width: 767px) { .hamburger-menu { display: block; } }
-
-        /* Page Headers */
-        .page-header-block { padding: 2rem 2rem 1rem 2rem; }
-        .page-title-large { font-size: 1.5rem; font-weight: 700; color: #111827; }
-        .page-subtitle { font-size: 0.9rem; font-weight: 600; color: #111827; margin: 0.5rem 0 1rem; }
-        .breadcrumb { font-size: 0.8rem; color: var(--text-gray); margin-bottom: 0.5rem; }
-
-        /* Content Wrapper */
-        .content-wrapper {
-            padding: 0 2rem 2rem 2rem;
-            max-width: 1600px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        /* Reviews Table */
-        .table-card {
-            background: var(--white);
-            border-radius: 0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-        }
-
-        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-        thead { background-color: #e0f2fe; }
-        th { text-align: left; padding: 1rem 1.5rem; color: #374151; font-weight: 600; font-size: 0.85rem; }
-        td { padding: 1.25rem 1.5rem; border-bottom: 1px solid #f3f4f6; color: #1f2937; vertical-align: middle; }
-
-        .rating-cell { display: flex; align-items: center; gap: 0.25rem; font-weight: 600; }
-        .star-icon { color: #fbbf24; fill: #fbbf24; width: 16px; height: 16px; }
-        .comment-text { color: #4b5563; }
-        .status-badge {
-            background-color: var(--success-bg);
-            color: var(--success-green);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            display: inline-block;
-        }
-        .status-badge.pending { background-color: #fef3c7; color: #d97706; }
-        .status-badge.rejected { background-color: #fee2e2; color: #dc2626; }
-
-        .action-row { display: flex; gap: 0.75rem; }
-        .action-btn { background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.1s; }
-        .action-btn:hover { transform: scale(1.1); }
-        .btn-approve { color: var(--success-green); border: 2px solid var(--success-green); border-radius: 50%; width: 22px; height: 22px; }
-        .btn-reject { color: var(--danger-red); font-weight: bold; font-size: 1.4rem; line-height: 1; }
-        .btn-delete { color: #9ca3af; }
-
-        /* Modal Styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            backdrop-filter: blur(4px);
-        }
-
-        .modal-content {
-            background: var(--white);
-            width: 90%;
-            max-width: 600px;
-            border-radius: 12px;
-            padding: 2rem;
-            position: relative;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--text-gray);
-        }
-
-        .modal-header { margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
-        .modal-review-text { font-size: 1rem; line-height: 1.6; color: var(--text-dark); margin-bottom: 1.5rem; }
-        .modal-photos { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 1.5rem; }
-        .modal-photo { width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-color); cursor: pointer; }
+        /* Review Table Styles */
+        .table-container { background: var(--white); border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); overflow: hidden; }
+        .table-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
         
-        .review-row:hover { cursor: pointer; background-color: #f9fafb; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 1rem 1.5rem; background: #eff6ff; color: #4b5563; font-weight: 600; font-size: 0.85rem; border-bottom: 1px solid var(--border-color); }
+        td { padding: 1.25rem 1.5rem; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
+        tr:hover { background-color: #f9fafb; }
+
+        .star-rating { color: #f6c23e; font-size: 1.1rem; }
+        .prod-title { font-weight: 700; color: #111827; display: block; margin-bottom: 2px; }
+        .user-name { font-weight: 700; color: #111827; }
+        .review-text { font-size: 0.9rem; color: #4b5563; max-width: 400px; line-height: 1.5; margin-top: 5px; }
+        
+        .status-badge { padding: 0.4rem 0.8rem; border-radius: 50px; font-size: 0.75rem; font-weight: 700; text-transform: capitalize; }
+        .status-pending { background: #fef9c3; color: #854d0e; }
+        .status-approved { background: #dcfce7; color: #15803d; }
+        .status-rejected { background: #fee2e2; color: #991b1b; }
+
+        .review-photos { display: flex; gap: 8px; margin-top: 8px; }
+        .rev-img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 1px solid #eee; }
+
+        .action-cell { display: flex; gap: 0.5rem; }
+        .btn-action { width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: all 0.2s; }
+        .btn-approve { background: #dcfce7; color: #15803d; }
+        .btn-reject { background: #fee2e2; color: #991b1b; }
+        .btn-delete { background: #f3f4f6; color: #6b7280; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
+        .stat-card { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .stat-label { font-size: 0.8rem; color: #6b7280; margin-bottom: 5px; font-weight: 600; text-transform: uppercase; }
+        .stat-val { font-size: 1.5rem; font-weight: 700; color: #111827; }
     </style>
 </head>
 
 <body>
-
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <a href="dashboard.html" class="logo">SOLEVERSE</a>
 
         <div class="menu-category">Main menu</div>
         <a href="dashboard.html" class="nav-item">
-            <div class="nav-icon">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                </svg>
-            </div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
             Dashboard
         </a>
         <a href="orders.html" class="nav-item">
-            <div class="nav-icon">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                </svg>
-            </div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
             Orders
         </a>
         <a href="customers.html" class="nav-item">
-            <div class="nav-icon">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="9" cy="7" r="4"></circle>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                </svg>
-            </div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
             Customers
         </a>
         <a href="categories.html" class="nav-item">
-            <div class="nav-icon">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                </svg>
-            </div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
             Categories
         </a>
         <a href="coupons.html" class="nav-item">
@@ -220,24 +109,18 @@
             <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
             Transactions
         </a>
-<a href="messages.html" class="nav-item">
-            <div class="nav-icon">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-            </div>
+        <a href="returns.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></div>
+            Returns
+        </a>
+        <a href="messages.html" class="nav-item">
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
             Messages
         </a>
 
         <div class="menu-category">Product</div>
         <a href="product-list.html" class="nav-item">
-            <div class="nav-icon">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                    <polyline points="14 2 14 8 20 8"></polyline>
-                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                    <line x1="16" y1="17" x2="8" y2="17"></line>
-                    <polyline points="10 9 9 9 8 9"></polyline>
-                </svg>
-            </div>
+            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
             Product List
         </a>
         <a href="add-product.html" class="nav-item">
@@ -249,13 +132,6 @@
             Product Reviews
         </a>
 
-        <div class="menu-category">Admin</div>
-        <a href="admin-role.html" class="nav-item">
-            <div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-            Admin Role
-        </a>
-        
-
         <div class="sidebar-footer">
             <button class="logout-btn" id="logoutBtn">
                 Logout
@@ -266,246 +142,204 @@
 
     <main class="main-content">
         <header class="top-navbar">
-            <div class="hamburger-menu">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
+            <div class="page-title">
+                <button class="hamburger-menu" id="hamburger-btn">
+                    <svg class="icon" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <span>Product Reviews</span>
             </div>
         </header>
 
-        <div class="page-header-block">
-            <h1 class="page-title-large">Product</h1>
-            <div class="page-subtitle">Product Reviews</div>
-        </div>
-
         <div class="content-wrapper">
-            <div class="table-card">
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Reviews</div>
+                    <div class="stat-val" id="totalReviews">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Pending Approval</div>
+                    <div class="stat-val" id="pendingReviews" style="color:var(--warning-orange);">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Average Rating</div>
+                    <div class="stat-val" id="avgRating">0.0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Response Rate</div>
+                    <div class="stat-val">100%</div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-container">
+                <div class="table-header">
+                    <h2 style="font-size:1.1rem; font-weight:700;">Recent Feedback</h2>
+                    <input type="text" id="reviewSearch" placeholder="Search product or user..." style="padding:0.6rem 1rem; border-radius:8px; border:1px solid #e5e7eb; outline:none; font-size:0.9rem; width:250px;">
+                </div>
                 <table>
                     <thead>
                         <tr>
-                            <th>Reviewer</th>
                             <th>Product</th>
-                            <th>Rating</th>
-                            <th>Comment</th>
+                            <th>Customer</th>
+                            <th>Review</th>
+                            <th>Date</th>
                             <th>Status</th>
-                            <th>Action</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="reviewsTableBody">
-                        <!-- Reviews generated digitally -->
+                    <tbody id="reviewTableBody">
+                        <!-- Content -->
                     </tbody>
                 </table>
-            </div>
-        </div>
-
-        <!-- Review Details Modal -->
-        <div class="modal-overlay" id="reviewModal">
-            <div class="modal-content">
-                <span class="modal-close" onclick="closeModal()">&times;</span>
-                <div class="modal-header">
-                    <h2 id="modalReviewerName">Review Details</h2>
-                    <p id="modalProductName" style="color: var(--primary-blue); font-weight: 500;"></p>
-                </div>
-                <div class="rating-cell" id="modalRating" style="margin-bottom: 1rem; font-size: 1.2rem;"></div>
-                <div class="modal-review-text" id="modalReviewText"></div>
-                <div class="modal-photos" id="modalPhotos"></div>
             </div>
         </div>
     </main>
 
     <script src="admin-sidebar.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            fetchAdminReviews();
-        });
+        const API_BASE = "http://localhost:5000/api";
+        let allReviews = [];
 
-        let allReviews = []; // Store reviews globally
+        async function init() {
+            await fetchReviews();
+            setupSearch();
+        }
 
-        async function fetchAdminReviews() {
-            const token = localStorage.getItem('token');
-            if (!token) return window.location.href = '../user/login.html';
-
+        async function fetchReviews() {
             try {
-                const res = await fetch('http://localhost:5000/api/reviews/admin', {
-                    headers: { 'Authorization': `Bearer ${token}` }
+                const res = await fetch(`${API_BASE}/reviews/admin`, {
+                    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
                 });
-                
-                if (!res.ok) throw new Error("Failed to load reviews");
-                
                 const data = await res.json();
-                allReviews = data.reviews; // Save to global
-                renderReviewsTable(allReviews);
+                if (!res.ok) throw new Error(data.message);
                 
+                allReviews = data.reviews;
+                updateStats();
+                renderTable(allReviews);
             } catch (err) {
                 console.error("Fetch reviews error:", err);
-                Swal.fire('Error', 'Could not load reviews from the database', 'error');
+                Swal.fire("Error", "Could not load reviews. " + err.message, "error");
             }
         }
 
-        function renderReviewsTable(reviews) {
-            const tbody = document.getElementById("reviewsTableBody");
-            tbody.innerHTML = '';
+        function updateStats() {
+            document.getElementById('totalReviews').innerText = allReviews.length;
+            document.getElementById('pendingReviews').innerText = allReviews.filter(r => r.status === 'pending').length;
+            const avg = allReviews.length ? (allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length).toFixed(1) : 0.0;
+            document.getElementById('avgRating').innerText = avg;
+        }
 
-            if (reviews.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #9ca3af;">No reviews found.</td></tr>';
-                return;
-            }
-
-            reviews.forEach(review => {
-                const userName = review.user?.name || 'Unknown User';
-                const productName = review.product?.name || 'Unknown Product';
-                
-                const statusClass = review.status === 'approved' ? 'status-badge' :
-                                    review.status === 'rejected' ? 'status-badge rejected' :
-                                    'status-badge pending';
-
-                tbody.innerHTML += `
-                    <tr class="review-row" onclick="openModal('${review._id}')">
-                        <td>${userName}</td>
-                        <td>${productName}</td>
-                        <td>
-                            <div class="rating-cell">
-                                <svg class="icon star-icon" viewBox="0 0 24 24">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                </svg>
-                                ${review.rating.toFixed(1)}
+        function renderTable(reviews) {
+            const tbody = document.getElementById('reviewTableBody');
+            tbody.innerHTML = reviews.length ? reviews.map(r => `
+                <tr>
+                    <td>
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            ${r.product ? `<img src="http://localhost:5000${r.product.image}" class="rev-img" style="cursor:default;">` : ''}
+                            <span class="prod-title">${r.product ? r.product.name : 'Unknown Product'}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="user-name">${r.user ? r.user.name : 'Deleted User'}</div>
+                        <div style="font-size:0.8rem; color:#6b7280;">${r.user ? r.user.email : 'N/A'}</div>
+                    </td>
+                    <td>
+                        <div class="star-rating">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+                        <div class="review-text">${r.reviewText}</div>
+                        ${r.photos && r.photos.length ? `
+                            <div class="review-photos">
+                                ${r.photos.map(p => `<img src="http://localhost:5000${p}" class="rev-img" onclick="viewPhoto('http://localhost:5000${p}')">`).join('')}
                             </div>
-                        </td>
-                        <td class="comment-text">"${review.reviewText.substring(0, 50)}${review.reviewText.length > 50 ? '...' : ''}"</td>
-                        <td><span class="${statusClass}">${review.status.toUpperCase()}</span></td>
-                        <td>
-                            <div class="action-row" onclick="event.stopPropagation()">
-                                <button class="action-btn btn-approve" onclick="updateReviewStatus('${review._id}', 'approved')" title="Approve">
-                                    <svg style="width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:3" viewBox="0 0 24 24">
-                                        <polyline points="20 6 9 17 4 12"></polyline>
-                                    </svg>
+                        ` : ''}
+                    </td>
+                    <td style="font-size:0.85rem; color:#6b7280;">${new Date(r.createdAt).toLocaleDateString()}</td>
+                    <td>
+                        <span class="status-badge status-${r.status}">${r.status}</span>
+                    </td>
+                    <td>
+                        <div class="action-cell">
+                            ${r.status !== 'approved' ? `
+                                <button class="btn-action btn-approve" title="Approve" onclick="updateStatus('${r._id}', 'approved')">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </button>
-                                <button class="action-btn btn-reject" onclick="updateReviewStatus('${review._id}', 'rejected')" title="Reject">×</button>
-                                <button class="action-btn btn-delete" onclick="deleteReview('${review._id}')" title="Delete">
-                                    <svg class="icon" style="width:16px;height:16px;" viewBox="0 0 24 24">
-                                        <polyline points="3 6 5 6 21 6"></polyline>
-                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                    </svg>
+                            ` : ''}
+                            ${r.status !== 'rejected' ? `
+                                <button class="btn-action btn-reject" title="Reject" onclick="updateStatus('${r._id}', 'rejected')">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                                 </button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            });
+                            ` : ''}
+                            <button class="btn-action btn-delete" title="Delete Permanent" onclick="deleteReview('${r._id}')">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18m-2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('') : '<tr><td colspan="6" style="text-align:center; padding:3rem; color:#9ca3af;">No reviews found.</td></tr>';
         }
 
-        function openModal(id) {
-            const review = allReviews.find(r => r._id === id);
-            if (!review) return;
-
-            document.getElementById('modalReviewerName').innerText = review.user?.name || 'Anonymous';
-            document.getElementById('modalProductName').innerText = review.product?.name || 'Unknown Product';
-            document.getElementById('modalReviewText').innerText = review.reviewText;
-            
-            // Rating
-            document.getElementById('modalRating').innerHTML = `
-                <svg class="icon star-icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                ${review.rating.toFixed(1)}
-            `;
-
-            // Photos
-            const photoContainer = document.getElementById('modalPhotos');
-            photoContainer.innerHTML = '';
-            if (review.photos && review.photos.length > 0) {
-                review.photos.forEach(p => {
-                    const img = document.createElement('img');
-                    img.src = `http://localhost:5000${p}`;
-                    img.className = 'modal-photo';
-                    img.onclick = () => window.open(img.src);
-                    photoContainer.appendChild(img);
-                });
-            }
-
-            document.getElementById('reviewModal').style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('reviewModal').style.display = 'none';
-        }
-
-        // Close on overlay click
-        window.onclick = function(event) {
-            const modal = document.getElementById('reviewModal');
-            if (event.target == modal) {
-                closeModal();
-            }
-        }
-
-        async function updateReviewStatus(id, newStatus) {
-            const token = localStorage.getItem('token');
+        async function updateStatus(id, status) {
             try {
-                const res = await fetch(`http://localhost:5000/api/reviews/${id}/status`, {
-                    method: 'PUT',
+                const res = await fetch(`${API_BASE}/reviews/${id}/status`, {
+                    method: "PUT",
                     headers: { 
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("token")}` 
                     },
-                    body: JSON.stringify({ status: newStatus })
+                    body: JSON.stringify({ status })
                 });
-
-                if (!res.ok) throw new Error("Failed to update status");
-                
-                const result = await res.json();
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Status Updated',
-                    text: result.message,
-                    timer: 1500,
-                    showConfirmButton: false
-                });
-                
-                fetchAdminReviews(); // Refresh the table
-            } catch (err) {
-                console.error("Status update error", err);
-                Swal.fire('Error', 'Failed to update review status', 'error');
-            }
+                if (!res.ok) throw new Error("Update failed");
+                Swal.fire({ icon: "success", title: "Review " + status, timer: 1000, showConfirmButton: false });
+                fetchReviews();
+            } catch (err) { Swal.fire("Error", err.message, "error"); }
         }
 
         async function deleteReview(id) {
-            const token = localStorage.getItem('token');
-            
-            const confirmation = await Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
+            const result = await Swal.fire({
+                title: "Are you sure?",
+                text: "This review will be permanently deleted.",
+                icon: "warning",
                 showCancelButton: true,
-                confirmButtonColor: '#e74a3b',
-                cancelButtonColor: '#6b7280',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonColor: "#e74a3b",
+                confirmButtonText: "Yes, delete it!"
             });
 
-            if (!confirmation.isConfirmed) return;
-
-            try {
-                const res = await fetch(`http://localhost:5000/api/reviews/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-
-                if (!res.ok) throw new Error("Failed to delete review");
-                
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Deleted!',
-                    text: 'Review has been deleted.',
-                    timer: 1500,
-                    showConfirmButton: false
-                });
-                
-                fetchAdminReviews(); // Refresh the table
-            } catch (err) {
-                console.error("Deletion error", err);
-                Swal.fire('Error', 'Failed to delete review', 'error');
+            if (result.isConfirmed) {
+                try {
+                    const res = await fetch(`${API_BASE}/reviews/${id}`, {
+                        method: "DELETE",
+                        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+                    });
+                    if (!res.ok) throw new Error("Delete failed");
+                    Swal.fire("Deleted!", "Review removed.", "success");
+                    fetchReviews();
+                } catch (err) { Swal.fire("Error", err.message, "error"); }
             }
         }
+
+        function setupSearch() {
+            document.getElementById('reviewSearch').oninput = (e) => {
+                const val = e.target.value.toLowerCase();
+                const filtered = allReviews.filter(r => 
+                    (r.product && r.product.name.toLowerCase().includes(val)) ||
+                    (r.user && r.user.name.toLowerCase().includes(val)) ||
+                    r.reviewText.toLowerCase().includes(val)
+                );
+                renderTable(filtered);
+            };
+        }
+
+        function viewPhoto(url) {
+            Swal.fire({
+                imageUrl: url,
+                imageAlt: 'Review Photo',
+                showConfirmButton: false,
+                width: 'auto'
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
-</html>l>
+</html>

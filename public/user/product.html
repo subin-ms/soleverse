@@ -308,6 +308,26 @@
             border-color: var(--accent-red);
         }
 
+        .size-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            background: #eee;
+            border-color: #ddd;
+            color: #999;
+        }
+
+        .size-btn:disabled:hover {
+            border-color: #ddd;
+            color: #999;
+        }
+
+        .btn-buy-now:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
         /* Screenshot: Size 38 is black/red active style? No, screenshot shows:
            38: Dark Square (Black bg, white text?)
            Actually looking closely at crop: 38 (Black BG, White Text). 
@@ -1580,15 +1600,38 @@
                 // Stock status
                 const stockEl = document.getElementById('stockStatus');
                 if (stockEl) {
-                    if (data.stock > 0) {
-                        stockEl.innerText = `In Stock (${data.stock} left)`;
+                    if (data.stock > 0 && data.status !== "Out of Stock") {
+                        stockEl.innerText = `In Stock`;
                         stockEl.style.color = '#00FF66';
+                        const addToCartBtn = document.getElementById('addToCartBtn');
+                        const buyNowBtn = document.querySelector('.btn-buy-now');
+                        
+                        if (addToCartBtn) {
+                            addToCartBtn.disabled = false;
+                            addToCartBtn.style.opacity = '1';
+                            addToCartBtn.style.cursor = 'pointer';
+                        }
+                        if (buyNowBtn) {
+                            buyNowBtn.disabled = false;
+                            buyNowBtn.style.opacity = '1';
+                            buyNowBtn.style.cursor = 'pointer';
+                        }
                     } else {
                         stockEl.innerText = "Out of Stock";
                         stockEl.style.color = '#db4444';
-                        document.getElementById('addToCartBtn').disabled = true;
-                        document.getElementById('addToCartBtn').style.opacity = '0.5';
-                        document.getElementById('addToCartBtn').style.cursor = 'not-allowed';
+                        const addToCartBtn = document.getElementById('addToCartBtn');
+                        const buyNowBtn = document.querySelector('.btn-buy-now');
+                        
+                        if (addToCartBtn) {
+                            addToCartBtn.disabled = true;
+                            addToCartBtn.style.opacity = '0.5';
+                            addToCartBtn.style.cursor = 'not-allowed';
+                        }
+                        if (buyNowBtn) {
+                            buyNowBtn.disabled = true;
+                            buyNowBtn.style.opacity = '0.5';
+                            buyNowBtn.style.cursor = 'not-allowed';
+                        }
                     }
                 }
 
@@ -1675,29 +1718,25 @@
                 
                 sizeKeys.forEach(size => {
                     const count = data.sizes[size];
-                    if (count > 0) {
-                        const btn = document.createElement('button');
-                        btn.className = 'size-btn';
-                        btn.innerText = size;
-                        btn.dataset.size = size;
-                        
+                    const btn = document.createElement('button');
+                    btn.className = 'size-btn';
+                    btn.innerText = size;
+                    btn.dataset.size = size;
+                    
+                    if (count <= 0) {
+                        btn.disabled = true;
+                        btn.title = "Out of Stock";
+                    } else {
                         btn.addEventListener('click', function () {
                             const isActive = this.classList.contains('active');
                             document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
                             if (!isActive) {
                                 this.classList.add('active');
-                                if (stockEl && count > 0) {
-                                    stockEl.innerText = `In Stock (${count} left in this size)`;
-                                }
-                            } else {
-                                if (stockEl && data.stock > 0) {
-                                    stockEl.innerText = `In Stock (${data.stock} left total)`;
-                                }
                             }
                         });
-                        
-                        sizeContainer.appendChild(btn);
                     }
+                    
+                    sizeContainer.appendChild(btn);
                 });
                 
                 if (sizeContainer.innerHTML === '') {
