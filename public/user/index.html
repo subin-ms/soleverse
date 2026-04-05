@@ -882,34 +882,7 @@
 
             <br><br>
 
-            <!-- NEW ARRIVALS -->
-            <div class="section-header">
-                <h2 class="section-title" style="padding-left: 0; border: none;">New Arrival</h2>
-            </div>
-            <div class="new-arrival-grid">
-                <div class="big-card">
-                    <img src="../img/yellow tiger banner.png" alt="New Arrival Main">
-                    <div class="overlay-text">
-                        <h2>Custom shoes</h2>
-                        <p>Interactive design that give a shine in eyes.</p>
-                        <button class="btn-view-all" style="margin-top: 20px; padding: 10px 24px;">Shop Now</button>
-                    </div>
-                </div>
-                <div class="small-cards-col">
-                    <div class="small-card"><img src="../img/socks.png">
-                        <div class="overlay-text" style="color:#000; text-shadow:none;">
-                            <h3>Socks</h3>
-                            <button class="btn-view-all" style="margin-top: 20px; padding: 10px 24px;">Shop Now</button>
-                        </div>
-                    </div>
-                    <div class="small-card"><img src="../img/greeens.png">
-                        <div class="overlay-text">
-                            <h3>LATEST DROP</h3>
-                            <button class="btn-view-all" style="margin-top: 20px; padding: 10px 24px;">Shop Now</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <br><br>
         </div>
 
         <script>
@@ -1018,7 +991,12 @@
                     container.innerHTML = products.map(p => {
                         const imgSrc = p.image ? p.image : '../img/default-product.png';
                         let ratingStars = '';
-                        for (let i = 0; i < 5; i++) ratingStars += '<i class="fas fa-star" style="color:#fbbf24;"></i>';
+                        if (p.reviewsCount > 0) {
+                            const fullStars = Math.floor(p.rating || 0);
+                            for (let i = 0; i < fullStars; i++) ratingStars += '<i class="fas fa-star" style="color:#fbbf24;"></i>';
+                            if (p.rating % 1 !== 0) ratingStars += '<i class="fas fa-star-half-alt" style="color:#fbbf24;"></i>';
+                            ratingStars += ` <span style="font-size:12px; opacity:0.6;">(${p.reviewsCount})</span>`;
+                        }
 
                         const hasDiscount = p.discountValue > 0;
                         const displayPrice = hasDiscount 
@@ -1076,7 +1054,12 @@
                             imgSrc = `http://localhost:5000${imgSrc}`;
                         }
                         let ratingStars = '';
-                        for(let i=0; i<5; i++) ratingStars += '<i class="fas fa-star" style="color:#fbbf24;"></i>';
+                        if (p.reviewsCount > 0) {
+                            const fullStars = Math.floor(p.rating || 0);
+                            for (let i = 0; i < fullStars; i++) ratingStars += '<i class="fas fa-star" style="color:#fbbf24;"></i>';
+                            if (p.rating % 1 !== 0) ratingStars += '<i class="fas fa-star-half-alt" style="color:#fbbf24;"></i>';
+                            ratingStars += ` <span style="font-size:12px; opacity:0.6;">(${p.reviewsCount})</span>`;
+                        }
 
                         const hasDiscount = p.discountValue > 0;
                         const displayPrice = hasDiscount 

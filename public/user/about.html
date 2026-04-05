@@ -40,6 +40,13 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            line-height: inherit; /* Fix alignment */
+        }
+
+        @media (max-width: 767px) {
+            :root {
+                --padding-mobile: 0 16px; /* Use the same as header */
+            }
         }
 
         body {
@@ -67,6 +74,12 @@
             max-width: var(--max-width);
             margin: 0 auto;
             padding: var(--padding-desktop);
+        }
+
+        @media (max-width: 767px) {
+            .container {
+                padding: var(--padding-mobile);
+            }
         }
 
         /* Header CSS removed to use header.css */
@@ -110,6 +123,25 @@
             margin-bottom: 40px;
         }
 
+        @media (max-width: 767px) {
+            .about-section {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                margin-bottom: 60px;
+            }
+
+            .about-content h1 {
+                font-size: 32px; /* Fixed awkward line break */
+                margin-bottom: 24px;
+                text-align: center;
+            }
+
+            .about-content p {
+                text-align: center;
+                margin: 0 auto 24px;
+            }
+        }
+
         .about-content p {
             font-size: 16px;
             line-height: 1.6;
@@ -143,6 +175,20 @@
             text-align: center;
             transition: 0.3s;
             cursor: pointer;
+        }
+
+        @media (max-width: 767px) {
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+                margin-bottom: 80px;
+            }
+
+            .services-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                margin-bottom: 80px;
+            }
         }
 
         .stat-card.active {
@@ -448,6 +494,8 @@
     <script src="auth.js"></script>
     <script src="footer.js"></script>
     <script src="header.js"></script>
+    <script src="cart.js"></script>
+    <script src="wishlist.js"></script>
 </body>
 
 </html>

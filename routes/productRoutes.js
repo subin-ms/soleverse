@@ -9,11 +9,13 @@ const {
   getPublicProductById,
   getProductById,
   deleteProduct,
-  updateProduct
+  updateProduct,
+  getSearchSuggestions
 } = require("../controllers/productController");
 const upload = require("../middleware/uploadMiddleware");
 
 router.get("/public", getPublicProducts);
+router.get("/suggestions", getSearchSuggestions);
 router.get("/public/:id", getPublicProductById);
 router.get("/:id", protect, adminOnly, getProductById);
 router.get("/", protect, adminOnly, getProducts);

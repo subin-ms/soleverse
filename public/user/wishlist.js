@@ -46,6 +46,7 @@ async function addToWishlist(productId, event) {
                 timer: 2000,
                 showConfirmButton: false
             });
+            updateWishlistIcon(); // Update badge count
         } else {
             Swal.fire({
                 icon: 'error',
@@ -88,6 +89,7 @@ async function removeFromWishlist(productId, event) {
             if (typeof loadWishlist === "function") {
                 loadWishlist();
             }
+            updateWishlistIcon(); // Update badge count
         } else {
             const data = await res.json();
             Swal.fire({
@@ -127,16 +129,21 @@ async function loadWishlist() {
 
         const items = await res.json();
 
+        // Filter out null products in case any were deleted but stay in DB
+        const validItems = items.filter(item => item && item.product && item.product._id);
+
         if (countBadge) {
             countBadge.innerText = `Wishlist`;
         }
+        
+        updateWishlistIcon(); // Ensure badge is synced with loaded items
 
-        if (items.length === 0) {
+        if (validItems.length === 0) {
             grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px;">Your wishlist is empty.</p>';
             return;
         }
 
-        grid.innerHTML = items.map(item => {
+        grid.innerHTML = validItems.map(item => {
             const p = item.product;
             if (!p) return "";
             
@@ -170,7 +177,7 @@ async function loadWishlist() {
     </div>`;
         }).join("");
 
-        return items;
+        return validItems;
     } catch (error) {
         console.error("Error loading wishlist:", error);
         grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px;">Error loading wishlist.</p>';
@@ -243,26 +250,54 @@ async function loadRecommendations(wishlistItems = []) {
     }
 }
 
+
+
 /* =========================
-   MOVE ALL TO BAG
+   UPDATE WISHLIST ICON
 ========================= */
-async function moveAllToBag() {
-    Swal.fire({
-        icon: 'info',
-        title: 'Coming Soon',
-        text: 'Functionality to move all items to bag is coming soon!'
-    });
+async function updateWishlistIcon() {
+    const currentToken = localStorage.getItem("token");
+    if (!currentToken) return;
+
+    try {
+        const res = await fetch(WISHLIST_API, {
+            headers: { "Authorization": `Bearer ${currentToken}` }
+        });
+        if (!res.ok) return;
+        const rawItems = await res.json();
+        // Filter out null products clearly to avoid "1" on an empty list
+        // and ensure the object structure matches expectations
+        const validItems = (Array.isArray(rawItems) ? rawItems : []).filter(item => item && item.product && item.product._id);
+        const totalItems = validItems.length;
+
+        const wishlistLinks = document.querySelectorAll('a[href="wishlist.html"]');
+        wishlistLinks.forEach(link => {
+            let badge = link.querySelector('.icon-badge');
+            if (totalItems > 0) {
+                if (!badge) {
+                    badge = document.createElement('span');
+                    badge.className = 'icon-badge';
+                    link.appendChild(badge);
+                }
+                badge.innerText = totalItems;
+                badge.style.display = 'flex';
+            } else {
+                if (badge) badge.style.display = 'none';
+            }
+        });
+    } catch (err) {
+        console.error("Error updating wishlist icon:", err);
+    }
 }
 
 // Automatically load wishlist if on the wishlist page
 document.addEventListener("DOMContentLoaded", async () => {
+    updateWishlistIcon(); // Always update the icon badge on every page where wishlist.js is loaded
+    
     if (document.getElementById("wishlistGrid")) {
         const items = await loadWishlist();
         loadRecommendations(items);
     }
     
-    const btnMove = document.querySelector('.btn-move-all');
-    if (btnMove) {
-        btnMove.onclick = moveAllToBag;
-    }
+
 });

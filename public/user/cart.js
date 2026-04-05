@@ -219,22 +219,28 @@ async function renderCartPage() {
             <div class="cart-item-row">
                 <div class="product-col">
                     <div class="product-thumb">
-                        <img src="${p.image}" alt="${p.name}">
+                        <img src="${p.image}" alt="${p.name}" onerror="this.src='../img/logo.png'">
                         <div class="remove-icon-overlay" onclick="removeFromCart('${p._id}', '${item.size || ""}')">
                             <i class="fas fa-times"></i>
                         </div>
                     </div>
-                    <span>${p.name} ${item.size ? `(${item.size})` : ''}</span>
+                    <span class="product-name-label">${p.name} ${item.size ? `(${item.size})` : ''}</span>
                 </div>
-                <div>
+                <div class="cart-col-mobile" data-label="Price">
                     ₹${displayPrice.toFixed(2)}
-                    ${hasDiscount ? `<span class="old-price" style="text-decoration: line-through; color: #999; font-size: 14px; margin-left: 8px;">₹${p.price.toFixed(2)}</span>` : ''}
+                    ${hasDiscount ? `<span class="old-price">₹${p.price.toFixed(2)}</span>` : ''}
                 </div>
-                <div>
-                    <input type="number" class="qty-input" value="${item.quantity}" 
-                        onchange="updateCartQuantity('${p._id}', this.value, '${item.size || ""}')" min="1">
+                <div class="cart-col-mobile" data-label="Quantity">
+                    <div class="qty-wrapper-cart">
+                        <button class="qty-btn-cart" onclick="updateCartQuantity('${p._id}', ${item.quantity - 1}, '${item.size || ""}')"><i class="fas fa-minus"></i></button>
+                        <input type="number" class="qty-input" value="${item.quantity}" 
+                            onchange="updateCartQuantity('${p._id}', this.value, '${item.size || ""}')" min="1">
+                        <button class="qty-btn-cart" onclick="updateCartQuantity('${p._id}', ${item.quantity + 1}, '${item.size || ""}')"><i class="fas fa-plus"></i></button>
+                    </div>
                 </div>
-                <div>₹${itemTotal.toFixed(2)}</div>
+                <div class="cart-col-mobile" data-label="Subtotal">
+                    <span class="item-total-val">₹${itemTotal.toFixed(2)}</span>
+                </div>
             </div>
         `;
     }).join("");

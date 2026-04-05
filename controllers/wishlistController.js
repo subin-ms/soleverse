@@ -44,7 +44,18 @@ exports.getWishlist = async (req, res) => {
       user: req.user.id
     }).populate("product");
 
-    res.json(items);
+    // NEW: Auto-cleanup entries where product is null (deleted from DB)
+    const nullProductIds = items
+      .filter(item => !item.product)
+      .map(item => item._id);
+
+    if (nullProductIds.length > 0) {
+      await Wishlist.deleteMany({ _id: { $in: nullProductIds } });
+    }
+
+    // Return only surviving valid items
+    const validItems = items.filter(item => item.product);
+    res.json(validItems);
 
   } catch (error) {
     res.status(500).json({ message: error.message });

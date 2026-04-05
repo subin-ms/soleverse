@@ -161,36 +161,198 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /* 
    * ---------------------------------------------------------
-   * MOBILE SEARCH
+   * GLOBAL SEARCH LOGIC (Desktop & Mobile)
    * ---------------------------------------------------------
    */
+  
+  // 1. Desktop Search & Suggestions
+  const desktopSearchInput = document.querySelector('.search-input');
+  const desktopSearchBtn = document.querySelector('.search-icon-btn');
+  const searchBoxContainer = document.querySelector('.search-box-container');
+
+  // 1.1 Inject Suggestions Dropdown (Desktop)
+  if (searchBoxContainer && !document.getElementById('searchSuggestions')) {
+    searchBoxContainer.insertAdjacentHTML('beforeend', `
+       <div id="searchSuggestions" class="search-suggestions-dropdown"></div>
+    `);
+  }
+  let suggestionsDropdown = document.getElementById('searchSuggestions');
+
+  function handleSearch(query) {
+    if (query && query.trim().length > 0) {
+      window.location.href = `shop.html?search=${encodeURIComponent(query.trim())}`;
+    }
+  }
+
+  // Debounce helper
+  function debounce(func, timeout = 300) {
+    let timer;
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => { func.apply(this, args); }, timeout);
+    };
+  }
+
+  async function fetchSuggestions(query) {
+    if (!query || query.trim().length < 1) {
+      suggestionsDropdown.classList.remove('active');
+      return;
+    }
+
+    try {
+      const res = await fetch(`http://localhost:5000/api/products/suggestions?q=${encodeURIComponent(query)}`);
+      const data = await res.json();
+      renderSuggestions(data, query);
+    } catch (err) {
+      console.error("Suggestions error", err);
+    }
+  }
+
+  function renderSuggestions(data, query) {
+    const { categories, products } = data;
+    
+    if (categories.length === 0 && products.length === 0) {
+      suggestionsDropdown.classList.remove('active');
+      return;
+    }
+
+    let html = '';
+
+    // Brands Section
+    if (categories.length > 0) {
+      html += `
+        <div class="suggestion-section">
+          <span class="suggestion-title">In Brands</span>
+          <div class="brand-chips">
+            ${categories.map(c => `
+              <a href="shop.html?category=${c._id}" class="brand-chip">${c.name}</a>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // Products Section
+    if (products.length > 0) {
+      html += `
+        <div class="suggestion-section">
+          <span class="suggestion-title">Top Products</span>
+          ${products.map(p => {
+            const hasDiscount = p.discountValue > 0;
+            const finalPrice = hasDiscount 
+                ? (p.discountType === 'percent' ? p.price - (p.price * p.discountValue / 100) : p.price - p.discountValue)
+                : p.price;
+            const imgSrc = p.image ? `http://localhost:5000${p.image}` : '../img/logo.png';
+            
+            return `
+              <a href="product.html?id=${p._id}" class="product-suggestion-item">
+                <img src="${imgSrc}" alt="${p.name}" class="suggestion-thumb" onerror="this.src='../img/logo.png'">
+                <div class="suggestion-info">
+                  <span class="suggestion-name">${p.name}</span>
+                  <span class="suggestion-price">₹${finalPrice.toLocaleString()}</span>
+                </div>
+              </a>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    // Bottom Action
+    html += `
+      <a href="shop.html?search=${encodeURIComponent(query)}" class="see-all-results">
+        See all results for "${query}" <i class="fas fa-arrow-right"></i>
+      </a>
+    `;
+
+    suggestionsDropdown.innerHTML = html;
+    suggestionsDropdown.classList.add('active');
+  }
+
+  const debouncedFetch = debounce((q) => fetchSuggestions(q));
+
+  if (desktopSearchInput) {
+    desktopSearchInput.addEventListener('input', (e) => {
+      // Ensure suggestions is in desktop bar
+      if (!searchBoxContainer.querySelector('#searchSuggestions')) {
+         searchBoxContainer.appendChild(suggestionsDropdown);
+      }
+      debouncedFetch(e.target.value);
+    });
+
+    desktopSearchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        handleSearch(desktopSearchInput.value);
+      }
+    });
+
+    // Close on blur/outside click
+    document.addEventListener('click', (e) => {
+      if (!searchBoxContainer.contains(e.target) && !searchBar.contains(e.target)) {
+        suggestionsDropdown.classList.remove('active');
+      }
+    });
+  }
+
+  if (desktopSearchBtn) {
+    desktopSearchBtn.addEventListener('click', () => {
+      handleSearch(desktopSearchInput.value);
+    });
+  }
+
+  // 2. Mobile Search Overlay Logic
   if (!document.getElementById('mobileSearchBar')) {
     document.body.insertAdjacentHTML('beforeend', `
       <div id="mobileSearchBar" class="mobile-search-bar">
         <form class="mobile-search-form">
           <input type="text" placeholder="Search products..." class="mobile-search-input">
-          <button type="submit"><i class="fas fa-search"></i></button>
-          <button type="button" class="mobile-search-close"><i class="fas fa-times"></i></button>
+          <div class="mobile-search-icons">
+             <button type="submit" class="mobile-search-submit"><i class="fas fa-search"></i></button>
+             <button type="button" class="mobile-search-close"><i class="fas fa-times"></i></button>
+          </div>
         </form>
       </div>
     `);
   }
 
+  const mobileSearchForm = document.querySelector('.mobile-search-form');
+  const mobileSearchInput = document.querySelector('.mobile-search-input');
   const searchTrigger = document.querySelector('.mobile-search-icon');
   const searchBar = document.getElementById('mobileSearchBar');
   const searchClose = document.querySelector('.mobile-search-close');
 
+  if (mobileSearchForm) {
+    mobileSearchForm.oninput = (e) => {
+      // For mobile, the dropdown should probably be a child of mobile-search-bar or body
+      // Let's ensure searchSuggestions is present in mobileBar if needed
+      if (!searchBar.querySelector('#searchSuggestions')) {
+         searchBar.appendChild(suggestionsDropdown);
+      }
+      debouncedFetch(e.target.value);
+    };
+
+    mobileSearchForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      handleSearch(mobileSearchInput.value);
+    });
+  }
+
   if (searchTrigger && searchBar) {
     searchTrigger.addEventListener('click', (e) => {
       e.preventDefault();
+      // Move dropdown to mobile bar
+      if (!searchBar.querySelector('#searchSuggestions')) {
+         searchBar.appendChild(suggestionsDropdown);
+      }
       searchBar.classList.add('active');
-      searchBar.querySelector('input')?.focus();
+      mobileSearchInput?.focus();
     });
   }
 
   if (searchClose && searchBar) {
     searchClose.addEventListener('click', () => {
       searchBar.classList.remove('active');
+      suggestionsDropdown.classList.remove('active');
     });
   }
 

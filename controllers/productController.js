@@ -63,7 +63,7 @@ exports.getProducts = async (req, res) => {
 // 🔍 Get Public Products (only active)
 exports.getPublicProducts = async (req, res) => {
   try {
-    const { category, size, maxPrice, sort, page = 1, limit = 9 } = req.query;
+    const { category, size, maxPrice, sort, search, page = 1, limit = 12 } = req.query;
     const Category = require("../models/categoryModel");
     const publishedCategories = await Category.find({ status: "Published" }, "_id");
     const publishedCategoryIds = publishedCategories.map(c => c._id);
@@ -73,8 +73,20 @@ exports.getPublicProducts = async (req, res) => {
         category: { $in: publishedCategoryIds } 
     };
     
-    if (maxPrice && Number(maxPrice) < 1000) {
+    if (maxPrice && Number(maxPrice) < 50000) {
       filter.price = { $lte: Number(maxPrice) };
+    }
+
+    // --- Search Filter ---
+    if (search) {
+      const searchRegex = new RegExp(search, "i");
+      filter.$and = filter.$and || [];
+      filter.$and.push({
+        $or: [
+          { name: searchRegex },
+          { description: searchRegex }
+        ]
+      });
     }
 
     // --- Category Filter ---
@@ -109,9 +121,9 @@ exports.getPublicProducts = async (req, res) => {
           return condition;
         });
         
-        // If there are other $or conditions later, need to use $and to combine them. 
-        // For now, attaching directly to filter.$or is fine assuming no other $or exist.
-        filter.$or = sizeConditions;
+        // Use $and to combine with search or other filters
+        filter.$and = filter.$and || [];
+        filter.$and.push({ $or: sizeConditions });
       }
     }
 
@@ -258,10 +270,47 @@ exports.updateProduct = async (req, res) => {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    res.json({
-      message: "Product updated successfully",
-      product: updatedProduct
-    });
+    res.json(updatedProduct);
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// 💎 GET SEARCH SUGGESTIONS (API)
+exports.getSearchSuggestions = async (req, res) => {
+  try {
+    const query = req.query.q;
+    if (!query || query.trim().length === 0) {
+      return res.json({ products: [], categories: [] });
+    }
+
+    const searchRegex = new RegExp(query, "i");
+    const Category = require("../models/categoryModel");
+
+    // Simultaneous search for performance
+    const [categories, products] = await Promise.all([
+      // 1. Find matching brands/categories
+      Category.find({ 
+        name: searchRegex, 
+        status: "Published" 
+      })
+      .select("name slug")
+      .limit(3),
+
+      // 2. Find matching top products
+      Product.find({
+        status: { $in: ["Active", "Out of Stock"] },
+        $or: [
+          { name: searchRegex },
+          { description: searchRegex }
+        ]
+      })
+      .select("name price image _id discountType discountValue")
+      .limit(5)
+    ]);
+
+    res.json({ categories, products });
 
   } catch (error) {
     res.status(500).json({ message: error.message });

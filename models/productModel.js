@@ -12,6 +12,8 @@ const productSchema = new mongoose.Schema({
   gallery: [{ type: String }],
   sizes: { type: Object, default: {} },
   stock: { type: Number, default: 0 },
+  rating: { type: Number, default: 0 },
+  reviewsCount: { type: Number, default: 0 },
   status: { type: String, default: "Active", enum: ["Active", "Draft", "Out of Stock"] }
 }, { timestamps: true });
 

@@ -49,68 +49,7 @@
             padding: 0 60px;
         }
 
-        /* HERO BANNER */
-        .shop-hero {
-            position: relative;
-            margin: 40px 0;
-            border-radius: 20px;
-            overflow: hidden;
-            background: linear-gradient(90deg, #111 0%, #333 100%);
-            color: white;
-            height: 300px;
-            /* Adjust height matches screenshot */
-            display: flex;
-            align-items: center;
-            padding: 0 80px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
 
-        .hero-content {
-            z-index: 2;
-            width: 50%;
-        }
-
-        .hero-label {
-            font-size: 16px;
-            color: #ccc;
-            margin-bottom: 10px;
-            font-weight: 500;
-        }
-
-        .hero-title {
-            font-family: var(--font-heading);
-            font-size: 64px;
-            font-weight: 700;
-            line-height: 1.1;
-            margin-bottom: 20px;
-            color: #ff9900;
-            /* Orange Accent matching screenshot */
-            text-transform: uppercase;
-        }
-
-        /* Make 'Get' and 'off' white, '30%' orange if needed, based on screenshot it varies. 
-           Assuming Title is orange as per some variants or plain white. 
-           Let's match the reference text "Get 30% off" */
-
-        .hero-title span {
-            color: #fff;
-        }
-
-        .hero-desc {
-            font-size: 14px;
-            max-width: 400px;
-            line-height: 1.6;
-            color: #ddd;
-        }
-
-        .hero-image {
-            position: absolute;
-            right: 50px;
-            top: 50%;
-            transform: translateY(-50%) rotate(-15deg);
-            width: 450px;
-            z-index: 1;
-        }
 
         /* SECTION HEADER */
         .section-header-row {
@@ -440,7 +379,7 @@
             background: #000;
             color: #fff;
             border: none;
-            height: 48px; /* Fixed height for perfect centering */
+            height: 48px;
             font-size: 13px;
             font-weight: 700;
             cursor: pointer;
@@ -452,7 +391,11 @@
             transition: 0.3s ease;
             text-transform: uppercase;
             line-height: 1;
-            padding: 0; /* Remove padding to rely on height + flex centering */
+            z-index: 10;
+        }
+
+        .mobile-only-inline {
+            display: none;
         }
 
         .add-to-cart-btn i {
@@ -630,7 +573,78 @@
             }
 
             .product-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .product-card {
+                background: #fff;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+                padding-bottom: 2px;
+                overflow: hidden;
+                border: 1px solid #f0f0f0;
+            }
+
+            .badge {
+                /* Matching blue offer look */
+                background: #eef2ff !important;
+                color: #4338ca !important;
+                border-radius: 4px !important;
+                padding: 4px 6px !important;
+                font-weight: 700 !important;
+                font-size: 10px !important;
+                text-transform: uppercase !important;
+                letter-spacing: 0.5px !important;
+                border: 1px solid rgba(67, 56, 202, 0.1);
+            }
+
+            .card-details {
+                padding: 12px 10px;
+            }
+
+            .card-title {
+                font-size: 13px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .card-price {
+                font-size: 14px;
+                font-weight: 800;
+                color: #000;
+            }
+
+            .old-price {
+                font-size: 11px;
+                opacity: 0.5;
+            }
+
+            .desktop-only-overlay {
+                display: none !important;
+            }
+
+            .mobile-only-inline {
+                display: flex !important;
+                position: relative;
+                height: 38px;
+                font-size: 11px;
+                border-radius: 6px;
+                margin: 0 10px 10px;
+                width: calc(100% - 20px);
+                transform: none !important;
+                opacity: 1 !important;
+                bottom: auto;
+                left: auto;
+            }
+
+            .img-container {
+                border-radius: 0;
+            }
+
+            .btn-view-product {
+                display: none; /* Hide in mobile view to match reference */
             }
 
             .footer-grid {
@@ -1060,16 +1074,7 @@
     </header>
 
     <div class="container">
-        <!-- HERO BANNER -->
-        <section class="shop-hero">
-            <div class="hero-content">
-                <div class="hero-label">Limited time only</div>
-                <h1 class="hero-title"><span>GET</span> 30% OFF</h1>
-                <p class="hero-desc">Sneakers made with your comfort in mind so you can put all of your focus into your
-                    next session.</p>
-            </div>
-            <img src="../img/yellow tiger banner.png" alt="Hero Shoe" class="hero-image">
-        </section>
+
 
         <!-- SECTION HEADER -->
         <div class="section-header-row">
@@ -1093,6 +1098,9 @@
                 <i class="fas fa-sliders-h"></i> Filters
             </div>
         </div>
+
+        <!-- SEARCH FEEDBACK -->
+        <div id="searchHeader" style="margin-bottom: 25px; padding: 15px; background: #f8f8f8; border-radius: 8px; font-size: 15px; border: 1px dashed #ddd; display: none;"></div>
 
         <!-- LAYOUT -->
         <div class="shop-layout">
@@ -1325,13 +1333,15 @@
                 const sizeParam = getQueryParam('size');
                 const maxPriceParam = getQueryParam('maxPrice');
                 const sortParam = getQueryParam('sort');
+                const searchParam = getQueryParam('search');
 
-                let url = `http://localhost:5000/api/products/public?page=${page}&limit=6`;
+                let url = `http://localhost:5000/api/products/public?page=${page}&limit=12`;
                 
                 if (categoryParam) url += `&category=${categoryParam}`;
                 if (sizeParam) url += `&size=${sizeParam}`;
                 if (maxPriceParam) url += `&maxPrice=${maxPriceParam}`;
                 if (sortParam) url += `&sort=${sortParam}`;
+                if (searchParam) url += `&search=${encodeURIComponent(searchParam)}`;
 
                 const res = await fetch(url);
                 const data = await res.json();
@@ -1344,6 +1354,17 @@
                 
                 const itemCountSpan = document.querySelector('.item-count');
                 if (itemCountSpan) itemCountSpan.textContent = `${data.totalProducts || 0} items`;
+
+                // Handle search feedback
+                const searchHeader = document.getElementById('searchHeader');
+                if (searchHeader) {
+                    if (searchParam) {
+                        searchHeader.innerHTML = `<i class="fas fa-search" style="margin-right:8px; color:#666;"></i> Showing results for "<strong>${searchParam}</strong>" <a href="shop.html" style="margin-left:15px; font-size:13px; font-weight:600; color:#ff4d00; text-transform:uppercase; text-decoration:none;">× Clear Search</a>`;
+                        searchHeader.style.display = 'block';
+                    } else {
+                        searchHeader.style.display = 'none';
+                    }
+                }
                 
                 if(page > 1 && document.querySelector('.shop-layout')) {
                     document.querySelector('.shop-layout').scrollIntoView({ behavior: 'smooth' });
@@ -1373,40 +1394,45 @@
                 const isOutOfStock = p.status === 'Out of Stock' || p.stock <= 0;
                 const badge = isOutOfStock 
                     ? `<span class="badge out-of-stock">Out of Stock</span>`
-                    : (hasDiscount ? `<span class="badge sale">-${p.discountValue}${p.discountType === 'percent' ? '%' : ' OFF'}</span>` : '');
+                    : (hasDiscount ? `<span class="badge sale">OFFER ${p.discountType === 'percent' ? '-' + p.discountValue + '%' : '-₹' + p.discountValue}</span>` : '');
                 
+                let ratingStars = '';
+                if (p.reviewsCount > 0) {
+                    const fullStars = Math.floor(p.rating || 0);
+                    let starsHtml = '';
+                    for (let i = 0; i < fullStars; i++) starsHtml += '<i class="fas fa-star" style="color:#ff9900;"></i>';
+                    if (p.rating % 1 !== 0) starsHtml += '<i class="fas fa-star-half-alt" style="color:#ff9900;"></i>';
+                    ratingStars = `<div class="card-rating">${starsHtml} <span style="font-size:12px; opacity:0.6;">(${p.reviewsCount})</span></div>`;
+                }
+
                 return `
                 <div class="product-card ${isOutOfStock ? 'out-of-stock' : ''}" onclick="window.location.href='product.html?id=${p._id}'">
                     <div class="img-container">
                         ${badge}
-                        <div class="quick-view-trigger" onclick="event.stopPropagation(); openQuickView('${p._id}')">
-                            <i class="fas fa-eye"></i>
-                        </div>
-                        <img src="${imgSrc}" alt="${p.name}" onerror="this.src='../img/logo.png'">
                         <span class="wishlist-btn" onclick="event.stopPropagation(); addToWishlist('${p._id}')">
                             <i class="far fa-heart"></i>
                         </span>
-                        <button class="add-to-cart-btn" ${isOutOfStock ? 'disabled' : ''} onclick="event.stopPropagation(); addToCart('${p._id}')">
-                            <i class="fas fa-shopping-cart"></i> ${isOutOfStock ? 'Unavailable' : 'Add To Cart'}
+                        <img src="${imgSrc}" alt="${p.name}" onerror="this.src='../img/logo.png'">
+                        <button class="add-to-cart-btn desktop-only-overlay" ${isOutOfStock ? 'disabled' : ''} onclick="event.stopPropagation(); addToCart('${p._id}')">
+                           <i class="fas fa-shopping-cart"></i> ${isOutOfStock ? 'Unavailable' : 'ADD TO CART'}
                         </button>
                     </div>
                     <div class="card-details">
                         <h3 class="card-title">${p.name}</h3>
-                        <div class="card-rating">
-                            <i class="fas fa-star" style="color: #ff9900;"></i>
-                            <i class="fas fa-star" style="color: #ff9900;"></i>
-                            <i class="fas fa-star" style="color: #ff9900;"></i>
-                            <i class="fas fa-star" style="color: #ff9900;"></i>
-                            <i class="fas fa-star" style="color: #ff9900;"></i>
-                        </div>
+                        ${ratingStars}
                         <div class="card-price">
-                            ₹${displayPrice.toFixed(2)}
-                            ${hasDiscount ? `<span class="old-price">₹${p.price.toFixed(2)}</span>` : ''}
+                             ${hasDiscount ? `<span class="old-price">₹${p.price.toLocaleString()}</span>` : ''}
+                             ₹${displayPrice.toLocaleString()}
                         </div>
                         <a href="product.html?id=${p._id}" class="btn-view-product">View Product</a>
+                        <!-- Mobile Add to Cart (Shown via CSS) -->
+                        <button class="add-to-cart-btn mobile-only-inline" ${isOutOfStock ? 'disabled' : ''} onclick="event.stopPropagation(); addToCart('${p._id}')">
+                            ${isOutOfStock ? 'Unavailable' : 'ADD TO CART'}
+                        </button>
                     </div>
                 </div>
-            `}).join('');
+                `;
+            }).join('');
         }
 
         function renderPagination() {

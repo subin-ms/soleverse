@@ -1341,15 +1341,10 @@
         <div class="product-info">
             <h1 class="product-title" id="productTitle">Loading...</h1>
 
-            <div class="product-rating">
-                <div class="stars">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star-half-alt"></i> <!-- 4.5 Stars visual -->
+            <div class="product-rating" id="productRatingContainer" style="display: none;">
+                <div class="stars" id="productStars">
+                    <!-- Dynamically populated stars -->
                 </div>
-                <!-- Reviews removed as requested -->
                 <div class="stock-status" id="stockStatus">Checking stock...</div>
             </div>
 
@@ -1596,6 +1591,25 @@
                 if (descEl) descEl.innerText = data.description || "No description available.";
 
                 document.title = data.name + " - Soleverse";
+
+                // Update Rating Visibility
+                const ratingContainer = document.getElementById('productRatingContainer');
+                const starsContainer = document.getElementById('productStars');
+                if (ratingContainer && starsContainer) {
+                    if (data.reviewsCount > 0) {
+                        ratingContainer.style.display = 'flex';
+                        let starsHtml = '';
+                        const fullStars = Math.floor(data.rating || 0);
+                        for (let i = 0; i < fullStars; i++) starsHtml += '<i class="fas fa-star" style="color:#ff9900;"></i>';
+                        if (data.rating % 1 !== 0) starsHtml += '<i class="fas fa-star-half-alt" style="color:#ff9900;"></i>';
+                        starsHtml += ` <span style="font-size:14px; opacity:0.6; margin-left:8px;">(${data.reviewsCount} reviews)</span>`;
+                        starsContainer.innerHTML = starsHtml;
+                    } else {
+                        // Keep container hidden or only show stock status
+                        ratingContainer.style.display = 'flex'; // Show for stock status
+                        starsContainer.style.display = 'none'; // Hide stars only
+                    }
+                }
 
                 // Stock status
                 const stockEl = document.getElementById('stockStatus');
