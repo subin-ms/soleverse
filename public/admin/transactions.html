@@ -92,6 +92,23 @@
         .pagination { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; background: white; border-top: 1px solid var(--border-color); }
         .page-btn { padding: 0.5rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; background: white; font-weight: 600; cursor: pointer; font-size: 0.85rem; }
         .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        @media (max-width: 1024px) {
+            .toolbar { flex-direction: column; align-items: stretch; gap: 1rem; }
+            .filter-group { width: 100%; justify-content: space-between; }
+            .filter-select { flex: 1; min-width: 0; }
+            .search-input { width: 100%; }
+        }
+
+        @media (max-width: 768px) {
+            .top-navbar { padding: 1rem; }
+            .content-wrapper { padding: 1rem; }
+            .page-header-row { margin-bottom: 1rem; }
+            .section-heading { font-size: 1.25rem; }
+            
+            .filter-group { flex-direction: column; }
+            .filter-select { width: 100%; }
+        }
     </style>
 </head>
 

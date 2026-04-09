@@ -73,6 +73,26 @@
         /* Controls */
         .header-filter { padding: 0.5rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.85rem; font-weight: 600; color: #374151; background: #fff; cursor: pointer; }
         .report-btn { background: #111827; color: white; border: none; padding: 0.6rem 1.25rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+
+        @media (max-width: 1024px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .top-navbar { flex-direction: column; align-items: flex-start; gap: 1rem; padding: 1rem; }
+            .top-navbar div { width: 100%; justify-content: flex-start; }
+            .header-filter { flex: 1; }
+            .report-btn { flex-shrink: 0; }
+            
+            .content-wrapper { padding: 1rem; }
+            .stats-grid { grid-template-columns: 1fr; gap: 1rem; }
+            
+            .chart-section { padding: 1rem; }
+            .chart-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .chart-legend { gap: 1rem; flex-wrap: wrap; }
+            
+            canvas { height: 300px !important; }
+        }
     </style>
 </head>
 
