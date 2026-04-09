@@ -22,7 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if (window.location.href.includes("wishlist.html")) {
     checkAuth().then(isLoggedIn => {
       if (!isLoggedIn) {
-        window.location.href = "login.html";
+        localStorage.clear();
+        window.location.replace("login.html");
       }
     });
   }

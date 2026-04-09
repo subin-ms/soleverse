@@ -1,11 +1,13 @@
 const jwt = require("jsonwebtoken");
 
-exports.protect = (req, res, next) => {
+const User = require("../models/userModel");
+
+exports.protect = async (req, res, next) => {
   // Read token from header FIRST to ensure frontend's localStorage token takes precedence
   let token;
   if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
     token = req.headers.authorization.split(" ")[1];
-  } else if (req.cookies.token) {
+  } else if (req.cookies && req.cookies.token) {
     // Check fallback to cookie
     token = req.cookies.token;
   }
@@ -19,8 +21,12 @@ exports.protect = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // decoded = { id, role, iat, exp }
-    req.user = decoded;
+    // Fetch fresh user from DB to guarantee role hasn't changed
+    req.user = await User.findById(decoded.id).select('-password');
+    
+    if (!req.user) {
+        return res.status(401).json({ message: "User no longer exists" });
+    }
 
     next();
   } catch (error) {

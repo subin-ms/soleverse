@@ -2,11 +2,11 @@
 <html lang="en">
 
 <head>
+    <script src="admin-guard.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Soleverse - Order Management</title>
-    <script src="admin-guard.js"></script>
-    <link rel="stylesheet" href="admin-sidebar.css">
+        <link rel="stylesheet" href="admin-sidebar.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -224,6 +224,13 @@
             background: #f3f4f6;
             padding: 0.25rem;
             border-radius: 8px;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none;
+        }
+        
+        .tab-group::-webkit-scrollbar {
+            display: none;
         }
 
         .tab-item {
@@ -234,6 +241,7 @@
             border-radius: 6px;
             font-weight: 500;
             transition: all 0.2s;
+            white-space: nowrap;
         }
 
         .tab-item.active {
@@ -243,11 +251,28 @@
         }
 
         /* Table */
-        .table-responsive { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 800px; }
         thead { background-color: #f9fafb; border-bottom: 1px solid #e5e7eb; }
-        th { text-align: left; padding: 1rem; color: #4b5563; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
+        th { text-align: left; padding: 1rem; color: #4b5563; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; white-space: nowrap; }
         td { padding: 1rem; border-bottom: 1px solid #f3f4f6; color: #1f2937; vertical-align: middle; }
+        
+        @media (max-width: 768px) {
+            .top-navbar {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem;
+                gap: 1rem;
+            }
+            .page-title { margin-bottom: 0.5rem; }
+            .header-actions {
+                flex-direction: column;
+                width: 100%;
+                align-items: stretch;
+            }
+            .search-container { width: 100%; }
+            .header-filter { width: 100%; }
+        }
 
         /* Status Badge */
         .status-badge {
@@ -774,11 +799,6 @@
         };
 
         document.addEventListener('DOMContentLoaded', () => fetchAllOrders(1));
-
-        // Sidebar Toggle
-        const hamburgerBtn = document.getElementById('hamburger-btn');
-        const sidebar = document.getElementById('sidebar');
-        hamburgerBtn.onclick = () => sidebar.classList.toggle('mobile-open');
     </script>
 </body>
 </html>

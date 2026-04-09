@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <script src="user-guard.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - Soleverse</title>
@@ -1007,6 +1008,19 @@
         }
 
         async function submitOrder() {
+            // Admin checkout restrictor
+            const userStr = localStorage.getItem("currentUser");
+            if (userStr) {
+                try {
+                    const parsedUser = JSON.parse(userStr);
+                    if (parsedUser.role === "admin") {
+                        alert("Admins cannot place orders");
+                        window.location.replace("../admin/dashboard.html");
+                        return;
+                    }
+                } catch(e) {}
+            }
+
             if (!selectedAddressId) {
                 Swal.fire("Wait", "Please select a shipping address", "warning");
                 return;
