@@ -1,4 +1,22 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener("DOMContentLoaded", async () => {
+    // 1. Fetch & Inject Shared Header
+    const headerContainer = document.getElementById("global-header");
+    if (headerContainer) {
+        try {
+            const headerHTML = await fetch("header.html").then(res => {
+                if (!res.ok) throw new Error("Header not found");
+                return res.text();
+            });
+            headerContainer.innerHTML = headerHTML;
+        } catch (error) {
+            console.error("Failed to load global header:", error);
+            // Fallback safety
+            headerContainer.innerHTML = `
+                <div style="padding: 20px; text-align: center; background: #000; color: #fff;">
+                    <h2><a href="index.html" style="color:#fff; text-decoration:none;">Soleverse</a></h2>
+                </div>`;
+        }
+    }
 
   /* 
    * ---------------------------------------------------------

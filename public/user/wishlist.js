@@ -139,7 +139,15 @@ async function loadWishlist() {
         updateWishlistIcon(); // Ensure badge is synced with loaded items
 
         if (validItems.length === 0) {
-            grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px;">Your wishlist is empty.</p>';
+            grid.innerHTML = `
+<div class="empty-wishlist" style="grid-column: 1/-1;">
+  <h2>Your wishlist is empty 💔</h2>
+  <p>Looks like you haven’t added anything yet</p>
+  <br>
+  <button class="btn-outline" onclick="window.location.href='shop.html'">
+    Continue Shopping
+  </button>
+</div>`;
             return;
         }
 

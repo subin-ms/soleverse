@@ -29,8 +29,8 @@ body {
     display: flex !important;
     justify-content: flex-end !important;
     align-items: center !important;
-    /* Enforce standardized header padding (same as Home) */
-    padding: 0 60px !important;
+    /* Enforce standardized header padding */
+    padding: 0 16px !important;
     position: relative !important;
 }
 
@@ -81,8 +81,8 @@ body {
     justify-content: space-between !important;
     align-items: center !important;
     width: 100% !important;
-    /* Enforce standardized header padding (same as Home) */
-    padding: 0 60px !important;
+    /* Enforce standardized header padding */
+    padding: 0 16px !important;
 }
 
 /* Logo */
@@ -614,8 +614,8 @@ body {
 
     /* Tighter Mobile Spacing */
     .nav-icons {
-        gap: 12px;
-        /* Increased to prevent crowding */
+        gap: 16px;
+        /* Uniform spacing per requirements */
     }
 
     .nav-icons a,
@@ -759,4 +759,38 @@ body {
         display: block;
     }
 }
-
+
+/* =========================================================
+   GLOBAL PAGE CONTENT & WISHLIST LAYOUT FIXES
+   ========================================================= */
+
+.main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 16px;
+}
+
+.main-content > *:first-child {
+    margin-top: 20px;
+}
+
+.wishlist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.wishlist-grid img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.empty-wishlist {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+    text-align: center;
+}
