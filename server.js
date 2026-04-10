@@ -19,6 +19,7 @@ const transactionRoutes = require("./routes/transactionRoutes");
 const couponRoutes = require("./routes/couponRoutes");
 const contactRoutes = require("./routes/contactRoutes");
 const returnRoutes = require("./routes/returnRoutes");
+const offerRoutes = require("./routes/offerRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -61,6 +62,7 @@ app.use("/api/transactions", transactionRoutes);
 app.use("/api/coupons", couponRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/returns", returnRoutes);
+app.use("/api/offers", offerRoutes);
 
 // Test Route
 app.get("/", (req, res) => {

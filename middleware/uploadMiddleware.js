@@ -13,6 +13,8 @@ const storage = multer.diskStorage({
       folder += "returns";
     } else if (req.baseUrl && req.baseUrl.includes("review")) {
       folder += "reviews";
+    } else if (req.baseUrl && req.baseUrl.includes("offer")) {
+      folder += "offers";
     } else {
       folder += "misc";
     }

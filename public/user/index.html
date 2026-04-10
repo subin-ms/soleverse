@@ -597,6 +597,79 @@
         }
 
         /* 
+        OFFER BANNER
+        */
+        /* 
+        PREMIUM OFFER CAROUSEL 
+        */
+        .offer-carousel-section { width: 100%; margin: 60px 0; position: relative; overflow: hidden; border-radius: 20px; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.2); }
+        .offer-carousel-container { display: flex; transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1); height: 420px; }
+        .offer-slide { min-width: 100%; position: relative; display: flex; align-items: center; padding: 0 40px; overflow: hidden; color: white; background-color: #1a1a1a; }
+        
+        .offer-slide-bg { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            background-size: cover; background-position: center; z-index: 1; 
+            transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .offer-slide:hover .offer-slide-bg { transform: scale(1.05); }
+        
+        .offer-slide-bg::before { 
+            content: ""; position: absolute; inset: 0; 
+            background: linear-gradient(90deg, rgba(10,10,10,0.85) 0%, rgba(10,10,10,0.4) 30%, transparent 60%); 
+            z-index: 2; 
+        }
+
+        .offer-content { position: relative; z-index: 5; max-width: 550px; text-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        .offer-content h2 { font-family: 'Inter', sans-serif; font-weight: 900; font-size: 64px; line-height: 0.9; text-transform: uppercase; margin-bottom: 20px; letter-spacing: -3px; }
+        .offer-content p { font-size: 1.15rem; opacity: 0.85; line-height: 1.4; margin-bottom: 35px; font-weight: 500; letter-spacing: -0.2px; max-width: 450px; }
+
+        .offer-btn { 
+            display: inline-block; background: white; color: black; padding: 16px 40px; 
+            font-weight: 800; font-size: 14px; text-transform: uppercase; border-radius: 4px; 
+            text-decoration: none; transition: all 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .offer-btn:hover { background: #f0f0f0; transform: translateY(-3px); box-shadow: 0 15px 30px rgba(0,0,0,0.3); }
+
+        /* Badges */
+        .promo-badge-left { 
+            position: absolute; top: 30px; left: 30px; background: #3b82f6; color: white; 
+            padding: 8px 16px; font-weight: 800; font-size: 0.85rem; border-radius: 4px; z-index: 10; text-transform: uppercase;
+        }
+        .expiry-badge-right { 
+            position: absolute; top: 30px; right: 30px; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px);
+            color: white; padding: 10px 18px; font-weight: 700; font-size: 0.75rem; border-radius: 8px; z-index: 10; 
+            text-transform: uppercase; display: flex; align-items: center; gap: 8px; border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Indicators */
+        .carousel-dots { 
+            position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); 
+            display: flex; gap: 10px; z-index: 10; 
+        }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.3); cursor: pointer; transition: all 0.3s; }
+        .dot.active { width: 25px; border-radius: 10px; background: white; }
+
+        @media (max-width: 991px) {
+            .offer-slide { padding: 40px; }
+            .offer-content h2 { font-size: 40px; }
+            .offer-slide-bg { width: 100%; opacity: 0.45; }
+            .expiry-badge-right { top: 20px; right: 20px; bottom: auto; }
+        }
+
+        @media (max-width: 600px) {
+            .offer-carousel-container { height: 380px; }
+            .offer-slide { padding: 25px; align-items: flex-end; padding-bottom: 60px; }
+            .offer-content h2 { font-size: 28px; letter-spacing: -1.5px; margin-bottom: 10px; }
+            .offer-content p { font-size: 0.95rem; margin-bottom: 20px; opacity: 0.9; }
+            .offer-btn { padding: 12px 30px; font-size: 13px; }
+            
+            .promo-badge-left { top: 15px; left: 15px; padding: 6px 12px; font-size: 0.75rem; }
+            .expiry-badge-right { top: 15px; right: 15px; padding: 6px 12px; font-size: 0.65rem; }
+            
+            .carousel-dots { bottom: 15px; }
+        }
+
+        /* 
         RESPONSIVE
         */
         @media (max-width: 1200px) {
@@ -828,6 +901,9 @@
         <div class="category-container" id="categoryContainer">
             <!-- Dynamic categories will load here -->
         </div>
+
+        <div id="offer-container" class="container"></div>
+
         <div class="container">
             <!-- EXPLORE PRODUCTS -->
             <div class="section-header">
@@ -897,9 +973,106 @@
                 /* ===============================
                    LOAD NEW DROPS
                 =============================== */
-
                 loadNewDrops();
+
+                /* ===============================
+                   LOAD OFFERS
+                =============================== */
+                loadOffers();
             });
+
+            /* ===============================
+               LOAD OFFERS FROM BACKEND
+            =============================== */
+            async function loadOffers() {
+                try {
+                    const res = await fetch(`${API_BASE}/offers/active`);
+                    const offers = await res.json();
+
+                    const container = document.getElementById("offer-container");
+                    if (!container) return;
+
+                    if (!offers.length) {
+                        container.style.display = "none";
+                        return;
+                    }
+
+                    // Format Date Helper
+                    const formatDate = (dateStr) => {
+                        const date = new Date(dateStr);
+                        return date.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase();
+                    };
+
+                    const carouselHtml = `
+                        <div class="offer-carousel-section">
+                            <div class="offer-carousel-container" id="carouselTrack">
+                                ${offers.map((offer, index) => `
+                                    <div class="offer-slide">
+                                        <div class="promo-badge-left">
+                                            ${offer.discountValue}${offer.discountType === "Percentage" ? "%" : "₹"} OFF
+                                        </div>
+                                        <div class="expiry-badge-right">
+                                            <i class="far fa-calendar-alt"></i> ENDS ON: ${formatDate(offer.endDate)}
+                                        </div>
+                                        <div class="offer-slide-bg" style="background-image:url('${offer.image}')"></div>
+                                        <div class="offer-content">
+                                            <h2>${offer.title}</h2>
+                                            <p>${offer.description || `Exclusive high-performance footwear from our ${offer.targetCategory} collection. Limited time availability.`}</p>
+                                            <a href="shop.html?category=${encodeURIComponent(offer.targetCategory)}" class="offer-btn">Shop Now</a>
+                                        </div>
+                                    </div>
+                                `).join("")}
+                            </div>
+                            <div class="carousel-dots" id="carouselDots">
+                                ${offers.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}" onclick="goToSlide(${i})"></div>`).join("")}
+                            </div>
+                        </div>
+                    `;
+
+                    container.innerHTML = carouselHtml;
+
+                    // Initialize Carousel Logic
+                    if (offers.length > 1) {
+                        startOfferCarousel(offers.length);
+                    }
+
+                } catch (error) {
+                    console.error("Failed to load offers:", error);
+                }
+            }
+
+            let carouselIndex = 0;
+            let carouselInterval;
+
+            function startOfferCarousel(count) {
+                if (carouselInterval) clearInterval(carouselInterval);
+                carouselInterval = setInterval(() => {
+                    carouselIndex = (carouselIndex + 1) % count;
+                    updateCarousel();
+                }, 5000);
+            }
+
+            function goToSlide(index) {
+                carouselIndex = index;
+                updateCarousel();
+                // Reset timer on manual click
+                const track = document.getElementById("carouselTrack");
+                if (track) {
+                    const slides = track.querySelectorAll('.offer-slide');
+                    startOfferCarousel(slides.length);
+                }
+            }
+
+            function updateCarousel() {
+                const track = document.getElementById("carouselTrack");
+                const dots = document.querySelectorAll(".carousel-dots .dot");
+                if (!track) return;
+                
+                track.style.transform = `translateX(-${carouselIndex * 100}%)`;
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle("active", i === carouselIndex);
+                });
+            }
 
             /* ===============================
                LOAD CATEGORIES FROM BACKEND
