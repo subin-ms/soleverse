@@ -14,17 +14,17 @@ const {
   createRazorpayOrder,
   verifyRazorpayPayment,
 } = require("../controllers/orderController");
-const { protect } = require("../middleware/authMiddleware");
+const { protect, userOnly } = require("../middleware/authMiddleware");
 const { isAdmin } = require("../middleware/adminMiddleware");
 const upload = require("../middleware/uploadMiddleware");
 
 router.use(protect);
 
-router.post("/", placeOrder);
-router.get("/", getMyOrders);
-router.get("/:id", getOrderById);
-router.put("/:id/cancel", cancelOrder);
-router.put("/:id/return", upload.array("images", 3), returnOrder);
+router.post("/", userOnly, placeOrder);
+router.get("/", userOnly, getMyOrders);
+router.get("/:id", userOnly, getOrderById);
+router.put("/:id/cancel", userOnly, cancelOrder);
+router.put("/:id/return", userOnly, upload.array("images", 3), returnOrder);
 
 // Razorpay Routes
 router.post("/razorpay/create-order", createRazorpayOrder);

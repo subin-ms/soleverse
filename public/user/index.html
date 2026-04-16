@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <script src="js/user-protected.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solverse</title>
@@ -710,10 +711,6 @@
             .search-bar {
                 display: none;
             }
-
-            .mobile-toggle {
-                display: block;
-            }
         }
 
         @media (max-width: 768px) {
@@ -1246,10 +1243,6 @@
                         ? '0 2px 10px rgba(0,0,0,0.1)'
                         : 'none';
             });
-
-            function toggleMenu() {
-                document.getElementById('navLinks')?.classList.toggle('active');
-            }
         </script>
 
         <div id="footer-placeholder"></div>
@@ -1259,7 +1252,7 @@
         <script src="cart.js"></script>
         <script src="auth.js"></script>
         <script src="footer.js"></script>
-        <script src="header.js"></script>
+        <script src="header.js" defer></script>
 </body>
 
 </html>

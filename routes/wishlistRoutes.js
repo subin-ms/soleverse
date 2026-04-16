@@ -7,10 +7,10 @@ const {
   removeFromWishlist
 } = require("../controllers/wishlistController");
 
-const { protect } = require("../middleware/authMiddleware");
+const { protect, userOnly } = require("../middleware/authMiddleware");
 
-router.post("/", protect, addToWishlist);
-router.get("/", protect, getWishlist);
-router.delete("/:productId", protect, removeFromWishlist);
+router.post("/", protect, userOnly, addToWishlist);
+router.get("/", protect, userOnly, getWishlist);
+router.delete("/:productId", protect, userOnly, removeFromWishlist);
 
 module.exports = router;

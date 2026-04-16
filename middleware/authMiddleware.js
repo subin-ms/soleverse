@@ -43,3 +43,12 @@ exports.adminOnly = (req, res, next) => {
   }
   next();
 };
+
+exports.userOnly = (req, res, next) => {
+  if (req.user && req.user.role === "admin") {
+    return res.status(403).json({
+      message: "Admins cannot access user features"
+    });
+  }
+  next();
+};

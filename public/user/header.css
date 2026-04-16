@@ -60,18 +60,20 @@ body {
    MAIN HEADER
    ========================================= */
 .main-header {
-    background-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
     border-bottom: 1px solid #e5e5e5;
-    position: sticky;
+    position: relative;
     top: 0;
     margin-top: 0;
-    z-index: 1000;
+    z-index: 10;
     height: auto;
     /* Allow auto height */
     padding: 20px 0;
     /* Vertical padding */
     display: flex;
     align-items: center;
+    transition: all 0.3s ease;
 }
 
 .nav-container {
@@ -373,15 +375,15 @@ body {
 }
 
 /* Mobile Toggle (Hidden on Desktop) */
-.mobile-toggle {
+.menu-icon, .mobile-toggle {
     display: none;
     font-size: 24px;
     cursor: pointer;
     color: #000;
 }
 
-/* Mobile Search Icon (Hidden on Desktop) */
-.mobile-search-trigger {
+/* Mobile Search Icon & Inline Search Tracker (Hidden on Desktop) */
+.mobile-search-trigger, .mobile-inline-search {
     display: none;
 }
 
@@ -531,9 +533,11 @@ body {
     }
 
     /* 1. Toggle Left */
-    .mobile-toggle {
+    .menu-icon, .mobile-toggle {
         display: flex;
         align-items: center;
+        background: none;
+        border: none;
         font-size: 20px;
         /* Reduced size */
         color: #000;
@@ -602,14 +606,14 @@ body {
         display: none;
     }
 
-    /* Show Mobile Search Icon */
-    .mobile-search-trigger,
+    /* Hide Mobile Search Trigger */
+    .mobile-search-trigger {
+        display: none !important;
+    }
+    
+    /* Ensure search icon is visible on mobile */
     .mobile-search-icon {
-        display: block;
-        font-size: 15px;
-        /* Reduced */
-        color: #000;
-        cursor: pointer;
+        display: flex !important;
     }
 
     /* Hide Wishlist on Mobile to prevent collision */
@@ -637,44 +641,84 @@ body {
         text-overflow: clip;
     }
 
-    /* Mobile Navigation Menu */
-    .nav-menu {
-        position: fixed;
-        top: 60px;
-        left: -100%;
-        width: 100%;
-        height: calc(100vh - 60px);
-        background: #ffffff;
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 20px;
-        gap: 0;
-        transition: left 0.3s ease;
-        border-top: 1px solid #eee;
-        overflow-y: auto;
-        z-index: 999;
-        /* Below header content but above page */
-    }
-
-    .nav-menu.active {
+    /* Mobile Dropdown Navigation */
+    .nav-dropdown {
+        display: none;
+        position: absolute;
+        top: 100%; /* always below header */
         left: 0;
+        width: 100%;
+        background: white;
+        border-radius: 0 0 12px 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        padding: 10px 20px;
+        z-index: 10;
     }
 
-    .nav-link {
-        width: 100%;
-        padding: 20px 0;
-        border-bottom: 1px solid #f9f9f9;
-        text-align: left;
-        font-weight: 600; /* Bolder as per screenshot */
-        font-size: 14px;
-        letter-spacing: 0.5px;
-        color: #000;
+    .nav-dropdown.show {
+        display: block;
     }
-    
+
+    .nav-dropdown a {
+        display: block;
+        width: 100%;
+        padding: 15px 0;
+        text-align: left;
+        font-weight: 500;
+        font-size: 16px;
+        letter-spacing: 0.2px;
+        color: #000;
+        text-transform: capitalize;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .nav-dropdown.show a {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
     .nav-link.active {
+        font-weight: 700;
+        text-underline-offset: 4px;
         text-decoration: underline;
-        text-underline-offset: 6px;
-        text-decoration-thickness: 2px;
+    }
+
+    /* Target modal search styling */
+    .mobile-inline-search {
+        display: block;
+        width: 100%;
+        padding: 10px 0 20px 0;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 10px;
+    }
+
+    .mobile-inline-search-form {
+        display: flex;
+        align-items: center;
+        background: #f5f5f5;
+        border-radius: 50px;
+        padding: 10px 20px;
+    }
+
+    .mobile-inline-search-input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        outline: none;
+        font-size: 14px;
+        color: #333;
+    }
+
+    .mobile-inline-search-btn {
+        background: none;
+        border: none;
+        color: #000;
+        font-size: 16px;
+        cursor: pointer;
+        padding-left: 10px;
     }
 
     /* 
@@ -766,6 +810,35 @@ body {
     }
 }
 
+/* DESKTOP SAFETY */
+@media (min-width: 768px) {
+    .menu-icon, .mobile-toggle {
+        display: none !important;
+    }
+
+    .nav-dropdown {
+        display: flex !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        position: static;
+        transform: none;
+        pointer-events: auto;
+        box-shadow: none;
+        background: transparent;
+        flex-direction: row;
+        padding: 0;
+        gap: 48px;
+    }
+    
+    .nav-dropdown a {
+        opacity: 1;
+        transform: none;
+        padding: 0;
+        display: inline-block;
+        width: auto;
+    }
+}
+
 /* =========================================================
    GLOBAL PAGE CONTENT & WISHLIST LAYOUT FIXES
    ========================================================= */
@@ -797,6 +870,107 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 60vh;
     text-align: center;
-}
+}
+
+/* =========================================================
+   PREMIUM UI ANIMATIONS
+   ========================================================= */
+
+/* 1. Global Smooth Page Transition (Layered Fade + Blur) */
+body {
+  opacity: 0;
+  filter: blur(8px);
+  transition: opacity 0.5s ease, filter 0.5s ease;
+}
+
+body.loaded {
+  opacity: 1 !important;
+  filter: blur(0) !important;
+}
+
+/* 3. Product Card 3D Hover Effect */
+.product-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transform-style: preserve-3d;
+}
+
+.product-card:hover {
+  transform: rotateX(5deg) rotateY(-5deg) scale(1.03);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+/* 4. Button Click Animation */
+button:active {
+  transform: scale(0.95);
+}
+
+/* 5. Scroll-Based Reveal (Stagger) */
+.reveal, .fade-in {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.6s ease;
+}
+
+.reveal.show, .fade-in.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 6. Smooth Modal Animation */
+.modal {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.modal.show {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.modal-content {
+  transform: translateY(50px);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.modal.show .modal-content {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* 7. Image Hover Zoom + Parallax */
+.product-card img {
+  transition: transform 0.5s ease;
+}
+
+.product-card:hover img {
+  transform: scale(1.15);
+}
+
+/* 8. Loader Animation */
+#loader {
+  position: fixed;
+  inset: 0;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* 9. Skeleton Loading */
+.skeleton {
+  background: linear-gradient(90deg, #eee, #ddd, #eee);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+

@@ -8,6 +8,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return res.text();
             });
             headerContainer.innerHTML = headerHTML;
+            // Re-initialize logic that depends on header elements
+            initMobileNav();
+            renderAccountUI();
         } catch (error) {
             console.error("Failed to load global header:", error);
             // Fallback safety
@@ -47,31 +50,28 @@ document.addEventListener("DOMContentLoaded", async () => {
    * MOBILE MENU
    * ---------------------------------------------------------
    */
-  const mobileToggle = document.getElementById('mobileToggle');
-  const navMenu = document.getElementById('navMenu');
+  function initMobileNav() {
+    const dropdown = document.getElementById("navDropdown");
+    const menuBtn = document.querySelector(".menu-icon");
 
-  if (mobileToggle && navMenu) {
-    mobileToggle.addEventListener('click', () => {
-      navMenu.classList.toggle('active');
-      document.body.style.overflow =
-        navMenu.classList.contains('active') ? 'hidden' : '';
+    if (!dropdown || !menuBtn) return;
+    
+    if (menuBtn.dataset.bound) return;
+    menuBtn.dataset.bound = "true";
 
-      const icon = mobileToggle.querySelector('i');
-      if (icon) {
-        icon.classList.toggle('fa-bars');
-        icon.classList.toggle('fa-times');
-      }
+    menuBtn.addEventListener("click", () => {
+      dropdown.classList.toggle("show");
     });
   }
+
+  
 
   /* 
    * ---------------------------------------------------------
    * ACCOUNT DROPDOWN (ONLY AFTER LOGIN) ✅ FIXED
    * ---------------------------------------------------------
    */
-  const userContainer = document.querySelector('.user-dropdown-container');
-
-  function renderAccountUI() {
+  function renderAccountUI() { const userContainer = document.querySelector('.user-dropdown-container');
     if (!userContainer) return;
 
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
@@ -374,4 +374,89 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  /*/* =========================================================
+     PREMIUM UI ANIMATIONS (DOM Content Loaded Parts)
+     ========================================================= */
+
+  // Add product card reveal classes automatically if they don't have it
+  document.querySelectorAll(".product-card").forEach(el => {
+      if(!el.classList.contains("reveal") && !el.classList.contains("fade-in")) {
+          el.classList.add("reveal");
+      }
+  });
+
+  // 5. Scroll-Based Reveal (Staggered)
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add("show");
+        }, i * 100);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll(".reveal, .fade-in").forEach(el => observer.observe(el));
+
+  // 2. Page Exit Animation (Before Navigation) - With Blur
+  document.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", function (e) {
+      if (this.href && !this.href.includes("#") && !this.target && !this.hasAttribute("download")) {
+          if(this.hostname === window.location.hostname) {
+              e.preventDefault();
+              document.body.style.opacity = "0";
+              document.body.style.filter = "blur(6px)";
+              setTimeout(() => {
+                  window.location.href = this.href;
+              }, 400);
+          }
+      }
+    });
+  });
+
+  // 3. Magnetic Buttons (Premium Feel)
+  document.querySelectorAll("button, .btn, .btn-primary, .btn-heat").forEach(btn => {
+    btn.addEventListener("mousemove", e => {
+      const rect = btn.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+    });
+
+    btn.addEventListener("mouseleave", () => {
+      btn.style.transform = ""; // Reset inline transform
+    });
+  });
+
+  // 8. Micro Interaction (Add to Cart Feedback)
+  document.body.addEventListener('click', (e) => {
+    const btn = e.target.closest('.add-to-cart-btn, .btn-add');
+    if(btn) {
+       const originalText = btn.innerHTML;
+       const originalBg = btn.style.background;
+       btn.innerText = "Added ✓";
+       btn.style.background = "#00d65b"; // Modern Green
+       setTimeout(() => {
+         btn.innerHTML = originalText;
+         btn.style.background = originalBg;
+       }, 1500);
+    }
+  });
+
 });
+
+/* =========================================================
+   PREMIUM UI ANIMATIONS (Window Load Parts)
+   ========================================================= */
+
+// 1. Global Smooth Page Transition & Loader
+window.addEventListener("load", () => {
+  document.body.classList.add("loaded");
+  const loader = document.getElementById("loader");
+  if(loader) loader.style.display = "none";
+});
+
+// Fallback just in case load event was missed or too fast
+if (document.readyState === "complete") {
+   document.body.classList.add("loaded");
+}

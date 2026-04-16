@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { protect } = require("../middleware/authMiddleware");
+const { protect, userOnly } = require("../middleware/authMiddleware");
 const {
   addToCart,
   getCart,
@@ -9,8 +9,8 @@ const {
   clearCart
 } = require("../controllers/cartController");
 
-// All cart routes are protected
-router.use(protect);
+// All cart routes are protected and restricted to users only
+router.use(protect, userOnly);
 
 router.post("/", addToCart);
 router.get("/", getCart);

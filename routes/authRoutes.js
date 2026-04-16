@@ -13,7 +13,7 @@ const {
   updateProfile
 
 } = require("../controllers/authController");
-const { protect,adminOnly } = require("../middleware/authMiddleware");
+const { protect, adminOnly, userOnly } = require("../middleware/authMiddleware");
 
 
 
@@ -44,7 +44,7 @@ router.get("/verify/:token", async (req, res) => {
   }
 });
 
-router.get("/me", protect, async (req, res) => {
+router.get("/me", protect, userOnly, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
     if (!user) {
@@ -55,7 +55,7 @@ router.get("/me", protect, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-router.put("/profile", protect, updateProfile);
+router.put("/profile", protect, userOnly, updateProfile);
 router.post("/verify-otp", verifyOTP);
 router.post("/register", registerUser);
 router.post("/login", loginUser);
