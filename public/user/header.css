@@ -886,7 +886,7 @@ body {
 
 body.loaded {
   opacity: 1 !important;
-  filter: blur(0) !important;
+  filter: none !important;
 }
 
 /* 3. Product Card 3D Hover Effect */

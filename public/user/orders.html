@@ -529,8 +529,9 @@
                 container.innerHTML = orders.map(order => {
                     const date = new Date(order.createdAt).toLocaleDateString();
                     const itemCount = order.items.reduce((acc, item) => acc + item.quantity, 0);
-                    const statusClass = order.status.toLowerCase() === 'pending' ? 'status-pending' : 
-                                      order.status.toLowerCase() === 'cancelled' ? 'status-cancelled' : 
+                    const status = order.status || "";
+                    const statusClass = status.toLowerCase() === 'pending' ? 'status-pending' : 
+                                      status.toLowerCase() === 'cancelled' ? 'status-cancelled' : 
                                       'status-completed';
 
                     return `

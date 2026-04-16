@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 position: fixed;
                 left: 0;
                 top: 0;
-                height: 100vh;
+                height: 100dvh;
                 width: 280px;
                 background: #fff;
                 z-index: 1001;
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 top: 0;
                 left: 0;
                 width: 100%;
-                height: 100vh;
+                height: 100dvh;
                 background: rgba(0,0,0,0.5);
                 z-index: 1000;
                 opacity: 0;
@@ -99,6 +99,20 @@ document.addEventListener('DOMContentLoaded', () => {
             /* Hide the sidebar titles on mobile if desired, or let them flow */
             .sidebar-title {
                 margin-top: 10px;
+                color: #999;
+                font-size: 13px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+            
+            /* Overriding uncomfortable inline styles from HTML */
+            .sidebar-menu {
+                margin-top: 5px !important;
+                padding-top: 0 !important;
+                border-top: none !important;
+            }
+            .sidebar-block {
+                margin-top: 15px !important;
             }
         }
     `;

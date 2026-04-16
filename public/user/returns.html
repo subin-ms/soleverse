@@ -476,7 +476,7 @@
                 if (!res.ok) throw new Error("Failed to fetch returns");
 
                 const allOrders = await res.json();
-                const returns = allOrders.filter(o => o.status.toLowerCase() === 'returned');
+                const returns = allOrders.filter(o => o.status && o.status.toLowerCase() === 'returned');
 
                 if (returns.length === 0) {
                     container.innerHTML = `

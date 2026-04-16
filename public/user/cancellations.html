@@ -589,7 +589,7 @@
                 if (!res.ok) throw new Error("Failed to fetch cancellations");
 
                 const allOrders = await res.json();
-                const cancellations = allOrders.filter(o => o.status.toLowerCase() === 'cancelled');
+                const cancellations = allOrders.filter(o => o.status && o.status.toLowerCase() === 'cancelled');
 
                 if (cancellations.length === 0) {
                     listContainer.style.display = "none";
@@ -601,20 +601,21 @@
                     const date = new Date(order.updatedAt || order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
                     
                     const firstItem = order.items && order.items.length > 0 ? order.items[0] : null;
-                    const productName = firstItem ? firstItem.product.name : "Unknown Product";
+                    const productName = firstItem && firstItem.product ? firstItem.product.name : "Unknown Product";
                     let moreItemsText = "";
                     if (order.items && order.items.length > 1) {
                         moreItemsText = ` <span style="color:#888; font-size:13px; font-weight:400;">(+${order.items.length - 1} more items)</span>`;
                     }
                     
-                    let imgPath = firstItem && firstItem.product.image ? firstItem.product.image : 'https://via.placeholder.com/80';
+                    let imgPath = firstItem && firstItem.product && firstItem.product.image ? firstItem.product.image : 'https://via.placeholder.com/80';
                     if (!imgPath.startsWith('http')) {
                         imgPath = imgPath.startsWith('/') ? `http://localhost:5000${imgPath}` : `http://localhost:5000/${imgPath.replace(/\\/g, '/')}`;
                     }
                     
                     // Refund Status Rendering
                     let refundBlockHTML = "";
-                    if (order.paymentMethod.toLowerCase() === 'cod' && order.paymentStatus !== 'Paid') {
+                    const pyMethod = order.paymentMethod || "";
+                    if (pyMethod.toLowerCase() === 'cod' && order.paymentStatus !== 'Paid') {
                         refundBlockHTML = `
                             <div class="refund-block cod">
                                 <i class="fas fa-info-circle refund-icon" style="color:#555; background:none; box-shadow:none;"></i>
