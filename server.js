@@ -70,7 +70,7 @@ app.use("/api/offers", offerRoutes);
 
 // Test Route
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "public", "user", "index.html"));
 });
 
 // Start Server
