@@ -3,7 +3,11 @@ const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const path = require("path");
+const mongoose = require("mongoose");
 
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB Atlas Connected"))
+  .catch(err => console.log(err));
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const productRoutes = require("./routes/productRoutes");
@@ -31,7 +35,7 @@ connectDB();
 
 app.use(
   cors({
-    origin: ["http://127.0.0.1:5500","http://localhost:5500"],
+    origin:"*",
     credentials: true
   })
 );
@@ -66,10 +70,10 @@ app.use("/api/offers", offerRoutes);
 
 // Test Route
 app.get("/", (req, res) => {
-  res.send("Soleverse backend running");
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 // Start Server
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0",() => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
