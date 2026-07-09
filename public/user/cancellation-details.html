@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <script src="js/user-protected.js"></script>
+    <script src="/user/js/user-protected.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cancellation Details - Soleverse</title>
@@ -282,19 +282,19 @@
         }
         
     </style>
-    <link rel="stylesheet" href="footer.css">
+    <link rel="stylesheet" href="/user/footer.css">
 </head>
 
 <body>
 
     <header class="simple-header">
         <div style="max-width: var(--container-width); margin: 0 auto; padding: 0 var(--padding-x);">
-            <a href="index.html" style="font-size: 24px; font-weight: 700; color: #000;">Soleverse</a>
+            <a href="/" style="font-size: 24px; font-weight: 700; color: #000;">Soleverse</a>
         </div>
     </header>
 
     <div class="main-container">
-        <a href="cancellations.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to my cancellations</a>
+        <a href="/user/cancellations.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to my cancellations</a>
         <div id="loadingMask">Loading details...</div>
         <div id="contentMask" style="display:none;">
             <!-- Header -->
@@ -364,7 +364,7 @@
 
             if (!orderId) {
                 alert("Missing Order ID");
-                window.location.href = "cancellations.html";
+                window.location.href = "/user/cancellations.html";
                 return;
             }
 
@@ -472,6 +472,6 @@
             }).join('');
         }
     </script>
-    <script src="footer.js"></script>
+    <script src="/user/footer.js"></script>
 </body>
 </html>

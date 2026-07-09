@@ -19,11 +19,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Protect wishlist
-  if (window.location.href.includes("wishlist.html")) {
+  if (window.location.href.includes("/user/wishlist.html")) {
     checkAuth().then(isLoggedIn => {
       if (!isLoggedIn) {
         localStorage.clear();
-        window.location.replace("login.html");
+        window.location.replace("/user/login.html");
       }
     });
   }
@@ -34,12 +34,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!isLoggedIn) return;
 
-    const signUpLink = document.querySelector('.nav-menu a[href="signup.html"]');
+    const signUpLink = document.querySelector('.nav-menu a[href="/user/signup.html"]');
     if (signUpLink) signUpLink.style.display = "none";
   });
 
   // Login Page Logic: Clear session to ensure fresh login
-  if (window.location.pathname.endsWith('login.html')) {
+  if (window.location.pathname.endsWith('/user/login.html')) {
     localStorage.removeItem('token');
     localStorage.removeItem('currentUser');
     localStorage.removeItem('isLoggedIn');
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
   //       if (!res.ok) return alert(data.message);
 
   //       alert("Signup successful. Please login.");
-  //       window.location.href = "login.html";
+  //       window.location.href = "/user/login.html";
   //     });
   //   }
 });

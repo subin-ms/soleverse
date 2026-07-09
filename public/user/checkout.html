@@ -2,8 +2,8 @@
 <html lang="en">
 
 <head>
-    <script src="js/user-protected.js"></script>
-    <script src="user-guard.js"></script>
+    <script src="/user/js/user-protected.js"></script>
+    <script src="/user/user-guard.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - Soleverse</title>
@@ -15,8 +15,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <link rel="stylesheet" href="header.css">
-    <link rel="stylesheet" href="footer.css">
+    <link rel="stylesheet" href="/user/header.css">
+    <link rel="stylesheet" href="/user/footer.css">
     <style>
         /* RESET & VARIABLES */
         :root {
@@ -644,8 +644,8 @@
                     
                     <div class="payment-options">
                         <!-- Wallet -->
-                        <div class="payment-card" onclick="selectPayment('wallet')">
-                            <input type="radio" name="payment" id="payment-wallet" value="wallet">
+                        <div class="payment-card" onclick="selectPayment('wallet')" style="border-color: #000;">
+                            <input type="radio" name="payment" id="payment-wallet" value="wallet" checked>
                             <label for="payment-wallet">
                                 My Wallet
                                 <span class="balance" id="wallet-balance-display">Balance: ₹0.00</span>
@@ -653,19 +653,6 @@
                             <i class="fas fa-wallet icon"></i>
                         </div>
                         
-                        <!-- Online -->
-                        <div class="payment-card" onclick="selectPayment('online')">
-                            <input type="radio" name="payment" id="payment-online" value="online">
-                            <label for="payment-online">Razorpay / UPI / Card</label>
-                            <i class="fas fa-credit-card icon"></i>
-                        </div>
-                        
-                        <!-- COD -->
-                        <div class="payment-card" onclick="selectPayment('cod')" id="cod-card">
-                            <input type="radio" name="payment" id="payment-cod" value="cod" checked>
-                            <label for="payment-cod">Cash on Delivery</label>
-                            <i class="fas fa-money-bill-wave icon"></i>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -730,10 +717,10 @@
 
     <div id="footer-placeholder"></div>
 
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <script src="auth.js"></script>
-    <script src="footer.js"></script>
-    <script src="header.js" defer></script>
+
+    <script src="/user/auth.js"></script>
+    <script src="/user/footer.js"></script>
+    <script src="/user/header.js" defer></script>
 
 
     <script>
@@ -750,7 +737,7 @@
         // --- Init ---
         document.addEventListener("DOMContentLoaded", () => {
             if (!currentToken) {
-                window.location.href = "login.html";
+                window.location.href = "/user/login.html";
                 return;
             }
             fetchAddresses();
@@ -1107,7 +1094,7 @@
                         icon: "success",
                         confirmButtonText: "View My Orders"
                     }).then(() => {
-                        window.location.href = "orders.html";
+                        window.location.href = "/user/orders.html";
                     });
                 } else {
                     throw new Error(data.message || "Failed to place order");
@@ -1216,7 +1203,7 @@
                         icon: "success",
                         confirmButtonText: "View My Orders"
                     }).then(() => {
-                        window.location.href = "orders.html";
+                        window.location.href = "/user/orders.html";
                     });
                 } else {
                     throw new Error(result.message || "Verification failed");
@@ -1226,9 +1213,9 @@
             }
         }
     </script>
-    <script src="footer.js"></script>
-    <script src="auth.js"></script>
-    <script src="header.js" defer></script>
+    <script src="/user/footer.js"></script>
+    <script src="/user/auth.js"></script>
+    <script src="/user/header.js" defer></script>
 </body>
 
 </html>

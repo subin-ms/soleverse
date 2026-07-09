@@ -38,7 +38,7 @@ async function addToCart(productId, quantity = 1, size = null, event) {
             showCancelButton: true
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = "login.html";
+                window.location.href = "/user/login.html";
             }
         });
         return;
@@ -134,7 +134,7 @@ async function removeFromCart(productId, size = null) {
         });
 
         if (res.ok) {
-            if (window.location.pathname.includes('cart.html')) {
+            if (window.location.pathname.includes('/user/cart.html')) {
                 renderCartPage();
             }
             updateCartIcon();
@@ -164,14 +164,14 @@ async function updateCartQuantity(productId, newQty, size = null) {
         });
 
         if (res.ok) {
-            if (window.location.pathname.includes('cart.html')) {
+            if (window.location.pathname.includes('/user/cart.html')) {
                 renderCartPage();
             }
             updateCartIcon();
         } else {
             const data = await res.json();
             Swal.fire({ icon: 'error', title: 'Error', text: data.message || "Failed to update quantity." });
-            if (window.location.pathname.includes('cart.html')) {
+            if (window.location.pathname.includes('/user/cart.html')) {
                 renderCartPage(); // Reset input value to backend cart value
             }
         }
@@ -258,7 +258,7 @@ async function updateCartIcon() {
 
     // Removed restrictive page checks to allow global updates
 
-    const cartLinks = document.querySelectorAll('a[href="cart.html"]');
+    const cartLinks = document.querySelectorAll('a[href="/user/cart.html"]');
     cartLinks.forEach(link => {
         let badge = link.querySelector('.icon-badge');
         if (totalItems > 0) {

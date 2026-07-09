@@ -5,7 +5,7 @@ const Offer = require("../models/offerModel");
 // @access  Private/Admin
 const createOffer = async (req, res) => {
   try {
-    const { title, discountType, discountValue, targetCategory, description, startDate, endDate, isActive } = req.body;
+    const { title, discountType, discountValue, offerType, targetCategory, targetProduct, description, startDate, endDate, isActive } = req.body;
     
     if (!req.file) {
       return res.status(400).json({ message: "Please upload an image" });
@@ -18,7 +18,9 @@ const createOffer = async (req, res) => {
       title,
       discountType,
       discountValue,
+      offerType: offerType || "Category",
       targetCategory,
+      targetProduct: targetProduct || null,
       description,
       startDate,
       endDate,
@@ -43,7 +45,7 @@ const getActiveOffers = async (req, res) => {
       isActive: true,
       startDate: { $lte: now },
       endDate: { $gte: now }
-    }).sort({ startDate: -1 });
+    }).populate("targetProduct").sort({ startDate: -1 });
 
     res.json(offers);
   } catch (error) {
@@ -73,12 +75,14 @@ const updateOffer = async (req, res) => {
       return res.status(404).json({ message: "Offer not found" });
     }
 
-    const { title, discountType, discountValue, targetCategory, description, startDate, endDate, isActive } = req.body;
+    const { title, discountType, discountValue, offerType, targetCategory, targetProduct, description, startDate, endDate, isActive } = req.body;
 
     offer.title = title || offer.title;
     offer.discountType = discountType || offer.discountType;
     offer.discountValue = discountValue || offer.discountValue;
-    offer.targetCategory = targetCategory || offer.targetCategory;
+    offer.offerType = offerType || offer.offerType;
+    offer.targetCategory = targetCategory !== undefined ? targetCategory : offer.targetCategory;
+    offer.targetProduct = targetProduct !== undefined ? targetProduct : offer.targetProduct;
     offer.description = description || offer.description;
     offer.startDate = startDate || offer.startDate;
     offer.endDate = endDate || offer.endDate;

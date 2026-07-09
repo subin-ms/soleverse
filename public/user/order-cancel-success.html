@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <script src="js/user-protected.js"></script>
+    <script src="/user/js/user-protected.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Cancelled - Soleverse</title>
@@ -84,7 +84,7 @@
             cursor: pointer;
         }
     </style>
-    <link rel="stylesheet" href="header.css">
+    <link rel="stylesheet" href="/user/header.css">
     <style>
         /* 
         GLOBAL STYLES 
@@ -596,7 +596,7 @@
             }
         }
     </style>
-    <link rel="stylesheet" href="footer.css">
+    <link rel="stylesheet" href="/user/footer.css">
 </head>
 
 <body>
@@ -610,7 +610,7 @@
             <span>Home /</span> <span class="active">My Account</span>
         </div>
         <div class="welcome-text">
-            Welcome! <span id="welcome-name">Md Rimel</span>
+            Welcome! <span id="welcome-name">User</span>
         </div>
     </div>
 
@@ -621,7 +621,7 @@
             <div class="sidebar-block">
                 <h4 class="sidebar-title">Manage My Account</h4>
                 <div class="sidebar-menu">
-                    <a href="account.html" class="sidebar-item">My Profile</a>
+                    <a href="/user/account.html" class="sidebar-item">My Profile</a>
                     <a href="address-book.html" class="sidebar-item">Address Book</a>
                     <a href="payment-options.html" class="sidebar-item">My Payment Options</a>
                 </div>
@@ -630,9 +630,9 @@
             <div class="sidebar-block" style="margin-top: 24px;">
                 <h4 class="sidebar-title" style="margin-bottom: 16px;">My Orders</h4>
                 <div class="sidebar-menu">
-                    <a href="orders.html" class="sidebar-item">My Orders</a>
+                    <a href="/user/orders.html" class="sidebar-item">My Orders</a>
                     <a href="returns.html" class="sidebar-item">My Returns</a>
-                    <a href="cancellations.html" class="sidebar-item">Cancellations</a>
+                    <a href="/user/cancellations.html" class="sidebar-item">Cancellations</a>
                 </div>
             </div>
 
@@ -679,9 +679,9 @@
     <div id="footer-placeholder"></div>
 
 
-    <script src="footer.js"></script>
-    <script src="auth.js"></script>
-    <script src="header.js" defer></script>
+    <script src="/user/footer.js"></script>
+    <script src="/user/auth.js"></script>
+    <script src="/user/header.js" defer></script>
     <script>
         const API_BASE = "http://localhost:5000/api/orders";
         const urlParams = new URLSearchParams(window.location.search);
@@ -694,7 +694,7 @@
                     <div class="success-wrapper" style="padding: 40px;">
                         <div class="success-icon"><i class="fas fa-check"></i></div>
                         <div class="success-text">Order Cancelled Successfully</div>
-                        <a href="orders.html" style="display:inline-block; margin-top:20px; color:#00BFFF; font-size:16px; font-weight:500;">Back to My Orders</a>
+                        <a href="/user/orders.html" style="display:inline-block; margin-top:20px; color:#00BFFF; font-size:16px; font-weight:500;">Back to My Orders</a>
                     </div>
                 `;
                 return;
@@ -771,7 +771,7 @@
 
             itemsContainer.innerHTML += `
                 <div style="text-align: center; margin-top: 40px;">
-                    <a href="orders.html" style="padding: 12px 30px; background: #000; color: #fff; border-radius: 4px; font-weight: 500;">Back to My Orders</a>
+                    <a href="/user/orders.html" style="padding: 12px 30px; background: #000; color: #fff; border-radius: 4px; font-weight: 500;">Back to My Orders</a>
                 </div>
             `;
         }

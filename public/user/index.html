@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <script src="js/user-protected.js"></script>
+    <script src="/user/js/user-protected.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solverse</title>
@@ -16,9 +16,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <link rel="stylesheet" href="header.css">
-    <link rel="stylesheet" href="footer.css">
-    <script src="footer.js"></script>
+    <link rel="stylesheet" href="/user/header.css">
+    <link rel="stylesheet" href="/user/footer.css">
+    <script src="/user/footer.js"></script>
     <style>
         /* 
         global styles
@@ -187,7 +187,7 @@
         }
 
         .product-image-wrapper {
-            background: #f5f5f5;
+            background: transparent;
             aspect-ratio: 1;
             overflow: hidden;
             margin-bottom: 12px;
@@ -818,9 +818,9 @@
     <!-- HERO SECTION -->
     <section class="hero">
         <div class="hero-carousel" style="width: 100%; height: 100%; position: absolute; inset: 0;">
-            <div class="hero-slide active" style="background-image: url('../img/banner 2.png');">
+            <div class="hero-slide active" style="background-image: url('/img/banner 2.png');">
             </div>
-            <div class="hero-slide" style="background-image: url('../img/HERO.png');">
+            <div class="hero-slide" style="background-image: url('/img/HERO.png');">
             </div>
         </div>
 
@@ -858,9 +858,7 @@
                 <!-- Products will be injected here dynamically -->
             </div>
 
-            <div class="view-all-container">
-                <a href="shop.html" class="btn-view-all" style="display: inline-block; text-decoration: none;">View All Products</a>
-            </div>
+                <a href="/user/shop.html" class="btn-view-all" style="display: inline-block; text-decoration: none;">View All Products</a>
 
             <br><br>
 
@@ -868,7 +866,7 @@
         </div>
 
         <script>
-            const API_BASE = "http://localhost:5000/api";
+            const API_BASE = "/api";
 
             /* ===============================
                DOM READY
@@ -950,7 +948,18 @@
                     const carouselHtml = `
                         <div class="offer-carousel-section">
                             <div class="offer-carousel-container" id="carouselTrack">
-                                ${offers.map((offer, index) => `
+                                ${offers.map((offer, index) => {
+                                    const offerLink = offer.offerType === 'Product' 
+                                        ? `/user/product.html?id=${offer.targetProduct?._id || offer.targetProduct}`
+                                        : (offer.offerType === 'Category' 
+                                            ? `/user/shop.html?category=${encodeURIComponent(offer.targetCategory)}`
+                                            : '/user/shop.html');
+                                    
+                                    const description = offer.description || (offer.offerType === 'Product' 
+                                        ? `Exclusive deal on ${offer.targetProduct?.name || 'this item'}. Limited time availability.`
+                                        : `Exclusive high-performance footwear from our ${offer.targetCategory || 'latest'} collection. Limited time availability.`);
+
+                                    return `
                                     <div class="offer-slide">
                                         <div class="promo-badge-left">
                                             ${offer.discountValue}${offer.discountType === "Percentage" ? "%" : "₹"} OFF
@@ -961,11 +970,11 @@
                                         <div class="offer-slide-bg" style="background-image:url('${offer.image}')"></div>
                                         <div class="offer-content">
                                             <h2>${offer.title}</h2>
-                                            <p>${offer.description || `Exclusive high-performance footwear from our ${offer.targetCategory} collection. Limited time availability.`}</p>
-                                            <a href="shop.html?category=${encodeURIComponent(offer.targetCategory)}" class="offer-btn">Shop Now</a>
+                                            <p>${description}</p>
+                                            <a href="${offerLink}" class="offer-btn">Shop Now</a>
                                         </div>
                                     </div>
-                                `).join("")}
+                                `}).join("")}
                             </div>
                             <div class="carousel-dots" id="carouselDots">
                                 ${offers.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}" onclick="goToSlide(${i})"></div>`).join("")}
@@ -1068,7 +1077,7 @@
                     }
 
                     container.innerHTML = products.map(p => {
-                        const imgSrc = p.image ? p.image : '../img/default-product.png';
+                        const imgSrc = p.image ? p.image : '/img/default-product.png';
                         let ratingStars = '';
                         if (p.reviewsCount > 0) {
                             const fullStars = Math.floor(p.rating || 0);
@@ -1087,7 +1096,7 @@
                             : '';
 
                         return `
-                    <div class="product-card" onclick="window.location.href='product.html?id=${p._id}'">
+                    <div class="product-card" onclick="window.location.href='/user/product.html?id=${p._id}'">
                         <div class="product-image-wrapper">
                             ${badgeHtml}
                             <span class="wishlist-btn" onclick="event.stopPropagation(); addToWishlist('${p._id}')"><i class="far fa-heart"></i></span>
@@ -1128,7 +1137,7 @@
                     }
 
                     container.innerHTML = products.map(p => {
-                        let imgSrc = p.image ? p.image : '../img/default-product.png';
+                        let imgSrc = p.image ? p.image : '/img/default-product.png';
                         if (imgSrc.startsWith('/uploads')) {
                             imgSrc = `http://localhost:5000${imgSrc}`;
                         }
@@ -1150,7 +1159,7 @@
                             : '';
 
                         return `
-                        <div class="product-card" onclick="window.location.href='product.html?id=${p._id}'">
+                        <div class="product-card" onclick="window.location.href='/user/product.html?id=${p._id}'">
                             <div class="product-image-wrapper">
                                 ${badgeHtml}
                                 <span class="wishlist-btn" onclick="event.stopPropagation(); addToWishlist('${p._id}')"><i class="far fa-heart"></i></span>
@@ -1174,7 +1183,7 @@
             }
 
             function goToCategory(slug) {
-                window.location.href = `shop.html?category=${slug}`;
+                window.location.href = `/user/shop.html?category=${slug}`;
             }
 
             /* ===============================
@@ -1194,12 +1203,12 @@
 
         <div id="footer-placeholder"></div>
 
-        <script src="wishlist.js"></script>
-        <script src="products.js"></script>
-        <script src="cart.js"></script>
-        <script src="auth.js"></script>
-        <script src="footer.js"></script>
-        <script src="header.js" defer></script>
+        <script src="/user/wishlist.js"></script>
+        <script src="/user/products.js"></script>
+        <script src="/user/cart.js"></script>
+        <script src="/user/auth.js"></script>
+        <script src="/user/footer.js"></script>
+        <script src="/user/header.js" defer></script>
 </body>
 
 </html>

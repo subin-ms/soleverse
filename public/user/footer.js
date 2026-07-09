@@ -14,10 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="footer-nav-col">
                             <h4>Info</h4>
                             <ul>
-                                <li><a href="account.html">Account</a></li>
-                                <li><a href="login.html">Login/register</a></li>
-                                <li><a href="about.html">About us</a></li>
-                                <li><a href="contact.html">Contacts</a></li>
+                                <li><a href="/user/account.html">Account</a></li>
+                                <li><a href="/user/login.html">Login/register</a></li>
+                                <li><a href="/user/about.html">About us</a></li>
+                                <li><a href="/user/contact.html">Contacts</a></li>
                             </ul>
                         </div>
                         <div class="footer-nav-col">

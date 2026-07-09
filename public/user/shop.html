@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <script src="js/user-protected.js"></script>
+    <script src="/user/js/user-protected.js"></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Shop - Soleverse</title>
@@ -16,8 +16,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <link rel="stylesheet" href="header.css" />
-    <link rel="stylesheet" href="footer.css" />
+    <link rel="stylesheet" href="/user/header.css" />
+    <link rel="stylesheet" href="/user/footer.css" />
     <style>
         /* 
         SHOP SPECIFIC STYLES 
@@ -248,7 +248,7 @@
         }
 
         .img-container {
-            background-color: #f6f6f6;
+            background-color: transparent;
             border-radius: 8px;
             aspect-ratio: 1;
             display: flex;
@@ -1182,11 +1182,11 @@
     <!-- GLOBAL FOOTER PLACEHOLDER -->
     <div id="footer-placeholder"></div>
 
-    <script src="wishlist.js"></script>
-    <script src="auth.js"></script>
-    <script src="products.js"></script>
-    <script src="cart.js"></script>
-    <script src="header.js" defer></script>
+    <script src="/user/wishlist.js"></script>
+    <script src="/user/auth.js"></script>
+    <script src="/user/products.js"></script>
+    <script src="/user/cart.js"></script>
+    <script src="/user/header.js" defer></script>
     <script>
         // Mobile Sidebar Toggle Logic
         const filterToggleBtn = document.getElementById('filterToggleBtn');
@@ -1321,7 +1321,7 @@
                 const searchHeader = document.getElementById('searchHeader');
                 if (searchHeader) {
                     if (searchParam) {
-                        searchHeader.innerHTML = `<i class="fas fa-search" style="margin-right:8px; color:#666;"></i> Showing results for "<strong>${searchParam}</strong>" <a href="shop.html" style="margin-left:15px; font-size:13px; font-weight:600; color:#ff4d00; text-transform:uppercase; text-decoration:none;">× Clear Search</a>`;
+                        searchHeader.innerHTML = `<i class="fas fa-search" style="margin-right:8px; color:#666;"></i> Showing results for "<strong>${searchParam}</strong>" <a href="/user/shop.html" style="margin-left:15px; font-size:13px; font-weight:600; color:#ff4d00; text-transform:uppercase; text-decoration:none;">× Clear Search</a>`;
                         searchHeader.style.display = 'block';
                     } else {
                         searchHeader.style.display = 'none';
@@ -1347,7 +1347,7 @@
 
             container.innerHTML = products.map(p => {
                 // Use p.image (from API) instead of p.images
-                const imgSrc = (p.image) ? `http://localhost:5000${p.image}` : '../img/logo.png';
+                const imgSrc = (p.image) ? `http://localhost:5000${p.image}` : '/img/logo.png';
                 const hasDiscount = p.discountValue > 0;
                 const displayPrice = hasDiscount 
                     ? (p.discountType === 'percent' ? p.price - (p.price * p.discountValue / 100) : p.price - p.discountValue)
@@ -1368,13 +1368,13 @@
                 }
 
                 return `
-                <div class="product-card ${isOutOfStock ? 'out-of-stock' : ''}" onclick="window.location.href='product.html?id=${p._id}'">
+                <div class="product-card ${isOutOfStock ? 'out-of-stock' : ''}" onclick="window.location.href='/user/product.html?id=${p._id}'">
                     <div class="img-container">
                         ${badge}
                         <span class="wishlist-btn" onclick="event.stopPropagation(); addToWishlist('${p._id}')">
                             <i class="far fa-heart"></i>
                         </span>
-                        <img src="${imgSrc}" alt="${p.name}" onerror="this.src='../img/logo.png'">
+                        <img src="${imgSrc}" alt="${p.name}" onerror="this.src='/img/logo.png'">
                         <button class="add-to-cart-btn desktop-only-overlay" ${isOutOfStock ? 'disabled' : ''} onclick="event.stopPropagation(); addToCart('${p._id}')">
                            <i class="fas fa-shopping-cart"></i> ${isOutOfStock ? 'Unavailable' : 'ADD TO CART'}
                         </button>
@@ -1386,7 +1386,7 @@
                              ${hasDiscount ? `<span class="old-price">₹${p.price.toLocaleString()}</span>` : ''}
                              ₹${displayPrice.toLocaleString()}
                         </div>
-                        <a href="product.html?id=${p._id}" class="btn-view-product">View Product</a>
+                        <a href="/user/product.html?id=${p._id}" class="btn-view-product">View Product</a>
                         <!-- Mobile Add to Cart (Shown via CSS) -->
                         <button class="add-to-cart-btn mobile-only-inline" ${isOutOfStock ? 'disabled' : ''} onclick="event.stopPropagation(); addToCart('${p._id}')">
                             ${isOutOfStock ? 'Unavailable' : 'ADD TO CART'}
@@ -1465,7 +1465,7 @@
                 currentQVProduct = product;
 
                 // Basic Info
-                document.getElementById('qvMainImg').src = product.image ? `http://localhost:5000${product.image}` : '../img/logo.png';
+                document.getElementById('qvMainImg').src = product.image ? `http://localhost:5000${product.image}` : '/img/logo.png';
                 document.getElementById('qvTitle').innerText = product.name;
                 document.getElementById('qvDesc').innerText = product.description || "Premium Converse sneakers designed for style and comfort.";
                 
@@ -1561,6 +1561,6 @@
         };
 
     </script>
-    <script src="footer.js"></script>
+    <script src="/user/footer.js"></script>
 </body>
 </html>

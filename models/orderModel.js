@@ -48,7 +48,7 @@ const orderSchema = new mongoose.Schema(
       type: String,
       required: true,
       enum: ["cod", "wallet", "online", "bank"],
-      default: "cod",
+      default: "wallet",
     },
     status: {
       type: String,

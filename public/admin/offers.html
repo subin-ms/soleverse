@@ -313,16 +313,27 @@
                             <label class="form-label">Offer Type</label>
                             <select name="offerType" class="form-control">
                                 <option value="Category">Category Offer</option>
+                                <option value="Product">Product Offer</option>
                                 <option value="Global">Global Offer</option>
                             </select>
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" id="targetCategoryGroup">
                         <label class="form-label">Target Category <span style="color:red;">*</span></label>
-                        <select name="targetCategory" id="targetCategoryDropdown" class="form-control" required>
+                        <select name="targetCategory" id="targetCategoryDropdown" class="form-control">
                             <option value="">Select Category...</option>
                         </select>
+                    </div>
+
+                    <div class="form-group" id="targetProductGroup" style="display:none;">
+                        <label class="form-label">Target Product <span style="color:red;">*</span></label>
+                        <div style="position:relative;">
+                            <input type="text" id="productSearchInput" class="form-control" placeholder="Search for a product...">
+                            <div id="productSearchResults" style="position:absolute; top:100%; left:0; width:100%; background:white; border:1px solid #e2e8f0; border-radius:8px; z-index:1000; display:none; max-height:200px; overflow-y:auto; box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);"></div>
+                        </div>
+                        <input type="hidden" name="targetProduct" id="targetProductHidden">
+                        <div id="selectedProductPreview" style="margin-top:10px; font-size:0.85rem; color:var(--primary-blue); font-weight:600; display:none;"></div>
                     </div>
 
                     <div class="form-grid">
@@ -470,6 +481,7 @@
                             <img src="${o.image}" class="offer-banner" alt="${o.title}">
                             <span class="offer-badge">${o.discountValue}${o.discountType === "Percentage" ? "%" : "₹"} OFF</span>
                             <span class="status-pill status-${statusClass}">${statusText}</span>
+                            <span style="position:absolute; top:40px; left:12px; font-size:0.6rem; background:rgba(0,0,0,0.6); color:white; padding:2px 6px; border-radius:4px; font-weight:700;">${o.offerType || 'Category'}</span>
                             
                             <div class="card-stats-overlay">
                                 <span class="days-left-badge">
@@ -488,7 +500,7 @@
                             
                             <div class="offer-cat">
                                 <svg class="icon" style="width:14px;height:14px;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-                                ${o.targetCategory}
+                                ${o.offerType === 'Product' ? (o.targetProduct?.name || 'Unknown Product') : (o.targetCategory || 'Global')}
                                 <span class="insight-badge" style="margin-left:auto;">${o.discountType}</span>
                             </div>
 
@@ -560,7 +572,17 @@
             const form = document.getElementById("offerForm");
             form.title.value = o.title;
             form.offerType.value = o.offerType || "Category";
-            form.targetCategory.value = o.targetCategory;
+            // Trigger toggle
+            form.offerType.onchange();
+
+            if (o.offerType === "Product" && o.targetProduct) {
+                document.getElementById('targetProductHidden').value = o.targetProduct._id || o.targetProduct;
+                document.getElementById('productSearchInput').value = o.targetProduct.name || 'Selected Product';
+                document.getElementById('selectedProductPreview').innerText = `Selected: ${o.targetProduct.name || 'Product'}`;
+                document.getElementById('selectedProductPreview').style.display = 'block';
+            } else {
+                form.targetCategory.value = o.targetCategory || "";
+            }
             form.discountType.value = o.discountType;
             form.discountValue.value = o.discountValue;
             form.startDate.value = o.startDate.split("T")[0];
@@ -580,8 +602,18 @@
         // Create/Update Offer
         document.getElementById("offerForm").onsubmit = async (e) => {
             e.preventDefault();
-            const fd = new FormData(e.target);
+            const form = e.target;
+            const fd = new FormData(form);
             
+            // Validation
+            const offerType = fd.get("offerType");
+            if (offerType === "Category" && !fd.get("targetCategory")) {
+                return Swal.fire("Required", "Please select a target category", "warning");
+            }
+            if (offerType === "Product" && !fd.get("targetProduct")) {
+                return Swal.fire("Required", "Please select a target product", "warning");
+            }
+
             try {
                 const url = editingId ? `${API_BASE}/offers/${editingId}` : `${API_BASE}/offers`;
                 const method = editingId ? "PATCH" : "POST";
@@ -603,6 +635,67 @@
             } catch (error) {
                 Swal.fire("Error", "Connection to server failed.", "error");
             }
+        };
+
+        // Offer Type Toggle Logic
+        document.querySelector('select[name="offerType"]').onchange = function() {
+            const val = this.value;
+            const catGroup = document.getElementById('targetCategoryGroup');
+            const prodGroup = document.getElementById('targetProductGroup');
+            
+            if (val === 'Category') {
+                catGroup.style.display = 'block';
+                prodGroup.style.display = 'none';
+            } else if (val === 'Product') {
+                catGroup.style.display = 'none';
+                prodGroup.style.display = 'block';
+            } else {
+                catGroup.style.display = 'none';
+                prodGroup.style.display = 'none';
+            }
+        };
+
+        // Product Search Logic
+        let searchTimeout;
+        document.getElementById('productSearchInput').oninput = function() {
+            const query = this.value.trim();
+            const resultsDiv = document.getElementById('productSearchResults');
+            
+            if (searchTimeout) clearTimeout(searchTimeout);
+            if (query.length < 2) {
+                resultsDiv.style.display = 'none';
+                return;
+            }
+
+            searchTimeout = setTimeout(async () => {
+                try {
+                    const res = await fetch(`${API_BASE}/products/suggestions?q=${encodeURIComponent(query)}`);
+                    const data = await res.json();
+                    const products = data.products || [];
+
+                    if (products.length === 0) {
+                        resultsDiv.innerHTML = '<div style="padding:10px; color:#94a3b8; font-size:0.85rem;">No products found</div>';
+                    } else {
+                        resultsDiv.innerHTML = products.map(p => `
+                            <div class="prod-search-item" onclick="selectProduct('${p._id}', '${p.name}')" style="padding:10px; border-bottom:1px solid #f1f5f9; cursor:pointer; font-size:0.85rem; display:flex; align-items:center; gap:10px;">
+                                <img src="${p.image}" style="width:30px; height:30px; object-fit:cover; border-radius:4px;">
+                                <span>${p.name}</span>
+                            </div>
+                        `).join('');
+                    }
+                    resultsDiv.style.display = 'block';
+                } catch (err) { console.error(err); }
+            }, 300);
+        };
+
+        window.selectProduct = (id, name) => {
+            document.getElementById('targetProductHidden').value = id;
+            document.getElementById('productSearchInput').value = name;
+            document.getElementById('productSearchResults').style.display = 'none';
+            
+            const preview = document.getElementById('selectedProductPreview');
+            preview.innerText = `Selected: ${name}`;
+            preview.style.display = 'block';
         };
 
         // Delete Offer

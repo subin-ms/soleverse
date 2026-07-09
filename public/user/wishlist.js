@@ -20,7 +20,7 @@ async function addToWishlist(productId, event) {
             showCancelButton: true
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = "login.html";
+                window.location.href = "/user/login.html";
             }
         });
         return;
@@ -144,7 +144,7 @@ async function loadWishlist() {
   <h2>Your wishlist is empty 💔</h2>
   <p>Looks like you haven’t added anything yet</p>
   <br>
-  <button class="btn-outline" onclick="window.location.href='shop.html'">
+  <button class="btn-outline" onclick="window.location.href='/user/shop.html'">
     Continue Shopping
   </button>
 </div>`;
@@ -165,7 +165,7 @@ async function loadWishlist() {
             return `
     <div class="product-card ${isOutOfStock ? 'status-out-of-stock' : ''}">
       <div class="card-image">
-        <img src="${p.image}" alt="${p.name}" onclick="window.location.href='product.html?id=${p._id}'" style="cursor: pointer; ${isOutOfStock ? 'filter: grayscale(0.5); opacity: 0.6;' : ''}">
+        <img src="${p.image}" alt="${p.name}" onclick="window.location.href='/user/product.html?id=${p._id}'" style="cursor: pointer; ${isOutOfStock ? 'filter: grayscale(0.5); opacity: 0.6;' : ''}">
         <button class="add-to-cart-btn" ${isOutOfStock ? 'disabled' : ''} onclick="addToCart('${p._id}')" ${isOutOfStock ? 'style="background: #ccc; cursor: not-allowed;"' : ''}>
             <i class="fas fa-shopping-cart"></i> ${isOutOfStock ? 'Out of Stock' : 'Add To Cart'}
         </button>
@@ -176,7 +176,7 @@ async function loadWishlist() {
         </div>
       </div>
       <div class="card-details">
-        <h3 class="product-name" onclick="window.location.href='product.html?id=${p._id}'" style="cursor: pointer;">${p.name}</h3>
+        <h3 class="product-name" onclick="window.location.href='/user/product.html?id=${p._id}'" style="cursor: pointer;">${p.name}</h3>
         <div class="product-price">
             ₹${displayPrice.toFixed(2)}
             ${hasDiscount ? `<span class="old-price" style="text-decoration: line-through; color: #999; font-size: 14px; margin-left: 8px;">₹${p.price.toFixed(2)}</span>` : ''}
@@ -232,7 +232,7 @@ async function loadRecommendations(wishlistItems = []) {
             return `
     <div class="product-card ${isOutOfStock ? 'status-out-of-stock' : ''}">
       <div class="card-image">
-        <img src="${p.image}" alt="${p.name}" onclick="window.location.href='product.html?id=${p._id}'" style="cursor: pointer; ${isOutOfStock ? 'filter: grayscale(0.5); opacity: 0.6;' : ''}">
+        <img src="${p.image}" alt="${p.name}" onclick="window.location.href='/user/product.html?id=${p._id}'" style="cursor: pointer; ${isOutOfStock ? 'filter: grayscale(0.5); opacity: 0.6;' : ''}">
         <button class="add-to-cart-btn" ${isOutOfStock ? 'disabled' : ''} onclick="addToCart('${p._id}')" ${isOutOfStock ? 'style="background: #ccc; cursor: not-allowed;"' : ''}>
             <i class="fas fa-shopping-cart"></i> ${isOutOfStock ? 'Out of Stock' : 'Add To Cart'}
         </button>
@@ -243,7 +243,7 @@ async function loadRecommendations(wishlistItems = []) {
         </div>
       </div>
       <div class="card-details">
-        <h3 class="product-name" onclick="window.location.href='product.html?id=${p._id}'" style="cursor: pointer;">${p.name}</h3>
+        <h3 class="product-name" onclick="window.location.href='/user/product.html?id=${p._id}'" style="cursor: pointer;">${p.name}</h3>
         <div class="product-price">
             ₹${displayPrice.toFixed(2)}
             ${hasDiscount ? `<span class="old-price" style="text-decoration: line-through; color: #999; font-size: 14px; margin-left: 8px;">₹${p.price.toFixed(2)}</span>` : ''}
@@ -278,7 +278,7 @@ async function updateWishlistIcon() {
         const validItems = (Array.isArray(rawItems) ? rawItems : []).filter(item => item && item.product && item.product._id);
         const totalItems = validItems.length;
 
-        const wishlistLinks = document.querySelectorAll('a[href="wishlist.html"]');
+        const wishlistLinks = document.querySelectorAll('a[href="/user/wishlist.html"]');
         wishlistLinks.forEach(link => {
             let badge = link.querySelector('.icon-badge');
             if (totalItems > 0) {

@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const headerContainer = document.getElementById("global-header");
     if (headerContainer) {
         try {
-            const headerHTML = await fetch("header.html").then(res => {
+            const headerHTML = await fetch("/user/header.html").then(res => {
                 if (!res.ok) throw new Error("Header not found");
                 return res.text();
             });
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             // Fallback safety
             headerContainer.innerHTML = `
                 <div style="padding: 20px; text-align: center; background: #000; color: #fff;">
-                    <h2><a href="index.html" style="color:#fff; text-decoration:none;">Soleverse</a></h2>
+                    <h2><a href="/" style="color:#fff; text-decoration:none;">Soleverse</a></h2>
                 </div>`;
         }
     }
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", async () => {
    */
   const currentPath = window.location.pathname;
   let filename = currentPath.substring(currentPath.lastIndexOf('/') + 1);
-  if (!filename) filename = 'index.html';
+  if (!filename) filename = '/';
 
   const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
 
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // Hide Signup/Login links if already logged in
-    if (isLoggedIn && (href === 'signup.html' || href === 'login.html')) {
+    if (isLoggedIn && (href && (href.includes('/user/signup.html') || href.includes('/user/login.html')))) {
       link.style.display = 'none';
     }
   });
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // ❌ NOT LOGGED IN → show login icon only
     if (!isLoggedIn) {
       userContainer.innerHTML = `
-        <a href="login.html" class="nav-icon-link">
+        <a href="/user/login.html" class="nav-icon-link">
           <i class="far fa-user"></i>
         </a>
       `;
@@ -93,8 +93,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       </button>
 
       <div class="dropdown-menu" id="accountDropdown">
-        <a href="account.html"><i class="far fa-user"></i> Manage My Account</a>
-        <a href="orders.html"><i class="fas fa-box-open"></i> My Order</a>
+        <a href="/user/account.html"><i class="far fa-user"></i> Manage My Account</a>
+        <a href="/user/orders.html"><i class="fas fa-box-open"></i> My Order</a>
         <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
       </div>
     `;
@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       e.stopPropagation();
 
       try {
-        await fetch("http://localhost:5000/api/auth/logout", {
+        await fetch("/api/auth/logout", {
           method: "POST",
           credentials: "include"
         });
@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       localStorage.removeItem('isLoggedIn');
       localStorage.removeItem('token'); // Clear token as well
-      window.location.href = "login.html";
+      window.location.href = "/user/login.html";
     });
   }
 
@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (isLoggedIn && token) {
       try {
-        const res = await fetch("http://localhost:5000/api/auth/me", {
+        const res = await fetch("/api/auth/me", {
           headers: { "Authorization": `Bearer ${token}` }
         });
         if (res.ok) {
@@ -162,7 +162,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             // NEW: If they are on any page and we find out they are admin,
             // make sure clicking the user icon/links points to admin side.
             if (data.user.role && data.user.role.toLowerCase() === 'admin_disabled') {
-              const accountLinks = document.querySelectorAll('a[href="account.html"]');
+              const accountLinks = document.querySelectorAll('a[href="/user/account.html"]');
               accountLinks.forEach(link => {
                   link.href = '../admin/dashboard.html';
               });
@@ -198,7 +198,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function handleSearch(query) {
     if (query && query.trim().length > 0) {
-      window.location.href = `shop.html?search=${encodeURIComponent(query.trim())}`;
+      window.location.href = `/user/shop.html?search=${encodeURIComponent(query.trim())}`;
     }
   }
 
@@ -218,7 +218,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
-      const res = await fetch(`http://localhost:5000/api/products/suggestions?q=${encodeURIComponent(query)}`);
+      const res = await fetch(`/api/products/suggestions?q=${encodeURIComponent(query)}`);
       const data = await res.json();
       renderSuggestions(data, query);
     } catch (err) {
@@ -243,7 +243,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           <span class="suggestion-title">In Brands</span>
           <div class="brand-chips">
             ${categories.map(c => `
-              <a href="shop.html?category=${c._id}" class="brand-chip">${c.name}</a>
+              <a href="/user/shop.html?category=${c._id}" class="brand-chip">${c.name}</a>
             `).join('')}
           </div>
         </div>
@@ -263,7 +263,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const imgSrc = p.image ? `http://localhost:5000${p.image}` : '../img/logo.png';
             
             return `
-              <a href="product.html?id=${p._id}" class="product-suggestion-item">
+              <a href="/user/product.html?id=${p._id}" class="product-suggestion-item">
                 <img src="${imgSrc}" alt="${p.name}" class="suggestion-thumb" onerror="this.src='../img/logo.png'">
                 <div class="suggestion-info">
                   <span class="suggestion-name">${p.name}</span>
@@ -278,7 +278,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Bottom Action
     html += `
-      <a href="shop.html?search=${encodeURIComponent(query)}" class="see-all-results">
+      <a href="/user/shop.html?search=${encodeURIComponent(query)}" class="see-all-results">
         See all results for "${query}" <i class="fas fa-arrow-right"></i>
       </a>
     `;

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="js/user-protected.js"></script>
+    <script src="/user/js/user-protected.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Write a Review - Soleverse</title>
@@ -241,14 +241,14 @@
         .btn-submit:hover { opacity: 0.9; }
 
     </style>
-    <link rel="stylesheet" href="footer.css">
+    <link rel="stylesheet" href="/user/footer.css">
 </head>
 <body>
 
     <div class="review-container">
         <div class="header-area">
             <h1>WRITE A REVIEW</h1>
-            <a href="orders.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Orders</a>
+            <a href="/user/orders.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Orders</a>
         </div>
 
         <form id="reviewForm">
@@ -302,7 +302,7 @@
         </form>
     </div>
 
-    <script src="auth.js"></script>
+    <script src="/user/auth.js"></script>
     <script>
         const API_BASE = "http://localhost:5000/api";
         const urlParams = new URLSearchParams(window.location.search);
@@ -315,7 +315,7 @@
         async function init() {
             if (!orderId || !productId) {
                 Swal.fire("Error", "Missing order or product information.", "error")
-                .then(() => window.location.href = 'orders.html');
+                .then(() => window.location.href = '/user/orders.html');
                 return;
             }
             await fetchDetails();
@@ -518,6 +518,6 @@
 
         document.addEventListener('DOMContentLoaded', init);
     </script>
-    <script src="footer.js"></script>
+    <script src="/user/footer.js"></script>
 </body>
 </html>

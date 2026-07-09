@@ -1695,8 +1695,18 @@
                         btn.addEventListener('click', function () {
                             const isActive = this.classList.contains('active');
                             document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+                            
+                            const stockEl = document.getElementById('stockStatus');
                             if (!isActive) {
                                 this.classList.add('active');
+                                if (stockEl) {
+                                    stockEl.innerHTML = `In Stock <span style="font-size: 13px; opacity: 0.8;">(${count} remaining)</span>`;
+                                }
+                            } else {
+                                // Deselecting
+                                if (stockEl) {
+                                    stockEl.innerText = `In Stock`;
+                                }
                             }
                         });
                     }

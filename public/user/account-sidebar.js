@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. DETERMINE EXACT ACTIVE LINK
     const currentPath = window.location.pathname;
-    const filename = currentPath.substring(currentPath.lastIndexOf('/') + 1) || 'index.html';
+    const filename = currentPath.substring(currentPath.lastIndexOf('/') + 1) || '/';
     let activeLink = null;
 
     menuItems.forEach(item => {
@@ -158,11 +158,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!activeLink) {
         if (filename.includes('order-details') || filename.includes('order-cancel') || filename.includes('order-review')) {
-            activeLink = findLinkByHref('orders.html');
+            activeLink = findLinkByHref('/user/orders.html');
         } else if (filename.includes('return') && !filename.includes('returns.html')) {
             activeLink = findLinkByHref('returns.html');
-        } else if (filename === 'profile.html' || filename === 'account.html') {
-            activeLink = findLinkByHref('account.html');
+        } else if (filename === 'profile.html' || filename === '/user/account.html') {
+            activeLink = findLinkByHref('/user/account.html');
         }
     }
 
@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('token');
             localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('currentUser');
-            window.location.href = 'login.html';
+            window.location.href = '/user/login.html';
         });
     }
 });

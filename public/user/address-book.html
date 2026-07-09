@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <script src="js/user-protected.js"></script>
+    <script src="/user/js/user-protected.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Address Book - Soleverse</title>
@@ -377,8 +377,8 @@
             display: none;
         }
     </style>
-    <link rel="stylesheet" href="header.css">
-    <link rel="stylesheet" href="footer.css">
+    <link rel="stylesheet" href="/user/header.css">
+    <link rel="stylesheet" href="/user/footer.css">
 </head>
 
 <body>
@@ -392,7 +392,7 @@
             <span>Home /</span> <span class="active">My Account</span>
         </div>
         <div class="welcome-text">
-            Welcome! <span id="welcome-name">Md Rimel</span>
+            Welcome! <span id="welcome-name">User</span>
         </div>
     </div>
 
@@ -403,7 +403,7 @@
             <div class="sidebar-block">
                 <h4 class="sidebar-title">Manage My Account</h4>
                 <div class="sidebar-menu">
-                    <a href="account.html" class="sidebar-item">My Profile</a>
+                    <a href="/user/account.html" class="sidebar-item">My Profile</a>
                     <a href="address-book.html" class="sidebar-item">Address Book</a>
                     <a href="payment-options.html" class="sidebar-item">My Payment Options</a>
                 </div>
@@ -412,9 +412,9 @@
             <div class="sidebar-block" style="margin-top: 24px;">
                 <h4 class="sidebar-title" style="margin-bottom: 16px;">My Orders</h4>
                 <div class="sidebar-menu">
-                    <a href="orders.html" class="sidebar-item">My Orders</a>
+                    <a href="/user/orders.html" class="sidebar-item">My Orders</a>
                     <a href="returns.html" class="sidebar-item">My Returns</a>
-                    <a href="cancellations.html" class="sidebar-item">Cancellations</a>
+                    <a href="/user/cancellations.html" class="sidebar-item">Cancellations</a>
                 </div>
             </div>
 
@@ -501,7 +501,7 @@
             </div>
 
             <div id="back-to-checkout" style="display:none; margin-top: 40px; text-align: center;">
-                <a href="checkout.html" style="display:inline-block; border: 2px solid #000; padding:12px 40px; font-weight:800; text-transform:uppercase;">Back to Checkout</a>
+                <a href="/user/checkout.html" style="display:inline-block; border: 2px solid #000; padding:12px 40px; font-weight:800; text-transform:uppercase;">Back to Checkout</a>
             </div>
 
         </main>
@@ -509,9 +509,9 @@
 
     <div id="footer-placeholder"></div>
 
-    <script src="header.js" defer></script>
-    <script src="footer.js"></script>
-    <script src="auth.js"></script>
+    <script src="/user/header.js" defer></script>
+    <script src="/user/footer.js"></script>
+    <script src="/user/auth.js"></script>
     <script>
         const API_BASE = "http://localhost:5000/api";
         const token = localStorage.getItem("token");
@@ -520,7 +520,7 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             if (!token) {
-                window.location.href = "login.html";
+                window.location.href = "/user/login.html";
                 return;
             }
             fetchAddresses();
