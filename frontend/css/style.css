@@ -1,0 +1,601 @@
+:root {
+    --primary-black: #000000;
+    --primary-white: #FFFFFF;
+    --accent-red: #D32F2F;
+    --accent-green: #00D150;
+    --text-grey: #757575;
+    --bg-light: #F9F9F9;
+    --font-main: 'Inter', sans-serif;
+    --transition: all 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    /* More classic Converse look */
+    color: var(--primary-black);
+    background-color: var(--primary-white);
+    overflow-x: hidden;
+    line-height: 1.5;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition);
+}
+
+ul {
+    list-style: none;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+.container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 40px;
+    /* Wider padding for desktop feel */
+}
+
+/* Utilities */
+.section {
+    padding: 60px 0;
+}
+
+.section-title {
+    font-size: 32px;
+    /* Larger */
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+    display: block;
+    /* Align left cleanly */
+    letter-spacing: -0.5px;
+}
+
+.section-title::before {
+    display: none;
+    /* Remove the bar, usually Converse is cleaner */
+}
+
+.center-btn-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.view-all-btn {
+    border: 1px solid #ccc;
+    padding: 10px 30px;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--primary-black);
+}
+
+.view-all-btn:hover {
+    background: var(--primary-black);
+    color: var(--primary-white);
+    border-color: var(--primary-black);
+}
+
+/* Header (Keep existing but enhance) */
+.top-bar {
+    background-color: var(--primary-black);
+    color: var(--primary-white);
+    font-size: 11px;
+    padding: 8px 0;
+}
+
+.top-bar .container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.top-links {
+    display: flex;
+    gap: 30px;
+}
+
+.top-links a:hover {
+    text-decoration: underline;
+}
+
+header {
+    padding: 20px 0;
+    border-bottom: 1px solid #eee;
+    background: white;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo h1 {
+    font-family: 'Arial Black', sans-serif;
+    font-size: 40px;
+    letter-spacing: -2px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.main-nav {
+    display: flex;
+    gap: 40px;
+}
+
+.nav-link {
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    position: relative;
+}
+
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -24px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--primary-black);
+}
+
+/* Hero */
+.hero {
+    background: #f5f5f5;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.hero-image {
+    max-height: 450px;
+    object-fit: contain;
+    margin: 0 auto;
+    filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.15));
+}
+
+/* Product Content */
+.section-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.view-all-link {
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.product-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+}
+
+.product-card {
+    background: transparent;
+    /* Seamless */
+    /* transition: transform 0.3s; */
+}
+
+/* .product-card:hover { transform: translateY(-5px); } */
+
+.card-image {
+    background: #f6f6f6;
+    padding: 0;
+    margin-bottom: 20px;
+    height: 350px;
+    /* Taller, more premium */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.card-image:hover img {
+    transform: scale(1.05);
+    /* Subtle zoom */
+    transition: transform 0.5s ease;
+}
+
+.card-image img {
+    max-width: 90%;
+    mix-blend-mode: multiply;
+    /* Helps integrate shoe onto grey bg */
+}
+
+.wishlist-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    /* Minimalist */
+    border: 1px solid #ddd;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wishlist-btn:hover {
+    border-color: black;
+}
+
+.card-details h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #000;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.price {
+    font-size: 15px;
+    color: #333;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.rating {
+    margin-top: 5px;
+    font-size: 13px;
+    color: black;
+    font-weight: 600;
+    /* Stars usually black in converse design or gold */
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.rating i {
+    font-size: 11px;
+    color: orange;
+}
+
+.rating i.fa-regular {
+    color: #ccc;
+}
+
+/* Categories */
+.categories .category-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.category-card {
+    border: 1px solid #eee;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.category-card:hover {
+    border-color: var(--primary-black);
+    background: #fafafa;
+}
+
+.category-card i {
+    font-size: 30px;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.category-card span {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+/* Promo Banner */
+.promo-banner {
+    position: relative;
+    background: #111;
+    color: white;
+    padding: 80px 0;
+    overflow: hidden;
+    margin-top: 40px;
+    background: linear-gradient(45deg, #3a0000, #000);
+    /* Dark vibe */
+}
+
+.promo-banner .container {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.promo-content {
+    max-width: 50%;
+}
+
+.promo-title {
+    font-size: 48px;
+    font-weight: 900;
+    margin-bottom: 10px;
+    color: white;
+    background: linear-gradient(to right, #f12711, #f5af19);
+    /* -webkit-background-clip: text; */
+    -webkit-text-fill-color: transparent;
+    text-transform: uppercase;
+}
+
+.promo-subtitle {
+    font-size: 18px;
+    margin-bottom: 30px;
+    color: #ddd;
+}
+
+.btn-primary {
+    background: var(--accent-green);
+    color: white;
+    padding: 12px 30px;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: inline-block;
+    border-radius: 4px;
+    /* Slight round */
+}
+
+.promo-image-bg {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%) rotate(-15deg);
+    max-width: 600px;
+    opacity: 0.8;
+    z-index: 1;
+}
+
+/* New Arrival */
+.new-arrival-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    height: 500px;
+}
+
+.large-card {
+    position: relative;
+    background: #f0f0f0;
+    height: 100%;
+    overflow: hidden;
+}
+
+.large-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.overlay-content {
+    position: absolute;
+    bottom: 40px;
+    left: 40px;
+    color: var(--primary-black);
+    /* Depending on img */
+}
+
+.large-card .overlay-content {
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.large-card h3 {
+    font-size: 32px;
+    text-transform: uppercase;
+    font-weight: 800;
+}
+
+.link-btn {
+    display: inline-block;
+    margin-top: 15px;
+    font-weight: 700;
+    text-decoration: underline;
+    color: inherit;
+}
+
+.small-grid {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 20px;
+}
+
+.small-card {
+    background: #f0f0f0;
+    position: relative;
+    overflow: hidden;
+}
+
+.small-card img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.shop-btn-sm {
+    background: white;
+    padding: 8px 20px;
+    font-weight: 600;
+    font-size: 13px;
+    color: black;
+    border-radius: 20px;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+}
+
+/* Features */
+.feature-grid {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    border-top: 1px solid #eee;
+    padding-top: 60px;
+}
+
+.feature-item i {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.feature-item h4 {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.feature-item p {
+    font-size: 13px;
+    color: #666;
+}
+
+
+
+/* Responsive Media Queries */
+@media (max-width: 1024px) {
+
+    .product-grid-4,
+    .category-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .footer-top {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 20px;
+    }
+
+    .top-links {
+        display: none;
+    }
+
+    /* Simplify top bar */
+    .mobile-menu-btn {
+        display: block;
+        z-index: 1001;
+        position: relative;
+    }
+
+    .main-nav {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: white;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .main-nav.active {
+        display: flex;
+    }
+
+    .nav-link {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .header-content {
+        padding: 10px 0;
+    }
+
+    .hero {
+        min-height: 300px;
+    }
+
+    .hero-image {
+        max-height: 250px;
+    }
+
+    .promo-banner .container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .promo-content {
+        max-width: 100%;
+        margin-bottom: 30px;
+    }
+
+    .promo-image-bg {
+        position: static;
+        transform: none;
+        max-width: 80%;
+        margin: 0 auto;
+    }
+
+    .new-arrival-grid {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+
+    .large-card {
+        height: 400px;
+    }
+
+    .small-grid {
+        height: 400px;
+    }
+
+    .product-grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .feature-grid {
+        flex-direction: column;
+        gap: 30px;
+    }
+}
+
+@media (max-width: 480px) {
+    .product-grid-4 {
+        grid-template-columns: 1fr;
+        /* Single column for mobile */
+    }
+
+    .footer-top {
+        grid-template-columns: 1fr;
+    }
+}
