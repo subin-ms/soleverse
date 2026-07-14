@@ -82,7 +82,7 @@
             const password = document.getElementById("signupPassword").value.trim();
 
             try {
-                const res = await fetch("`${API_BASE}/`auth/register", {
+                const res = await fetch(`${API_BASE}/auth/register`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ name, email, password })
@@ -127,7 +127,7 @@
                     }
 
                     try {
-                        const res = await fetch("`${API_BASE}/`auth/verify-otp", {
+                        const res = await fetch(`${API_BASE}/auth/verify-otp`, {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify({ email, otp })

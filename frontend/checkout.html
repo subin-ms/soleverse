@@ -848,10 +848,15 @@
                     ? (prod.discountType === 'percent' ? prod.price - (prod.price * prod.discountValue / 100) : prod.price - prod.discountValue)
                     : prod.price;
 
+                let imgSrc = prod.image || 'img/logo.png';
+                if (imgSrc.startsWith('/uploads')) {
+                    imgSrc = `${API_BASE.replace('/api', '')}${imgSrc}`;
+                }
+
                 const div = document.createElement('div');
                 div.className = 'order-item';
                 div.innerHTML = `
-                    <img src="${prod.image}" alt="${prod.name}">
+                    <img src="${imgSrc}" alt="${prod.name}">
                     <div class="order-item-details">
                         <div class="order-item-name">${prod.name}</div>
                         <div class="order-item-meta">Size: ${item.size || 'N/A'} | Qty: ${item.quantity}</div>

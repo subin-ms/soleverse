@@ -685,7 +685,7 @@
     <script src="js/auth.js"></script>
     <script src="js/header.js" defer></script>
     <script>
-        const _local_api_base = _local_api_base + "/orders";
+        const _local_api_base = API_BASE + "/orders";
         const urlParams = new URLSearchParams(window.location.search);
         const orderId = urlParams.get('id');
 
@@ -754,7 +754,7 @@
                 itemsContainer.innerHTML += `
                     <div class="item-card" style="margin-bottom: 20px;">
                         <div class="item-left">
-                            <img src="${_local_api_base.replace('/api', '')}${p.image}" alt="${p.name}" class="item-img">
+                            <img src="${API_BASE.replace('/api', '')}${p.image}" alt="${p.name}" class="item-img">
                             <div class="item-details">
                                 <div class="item-name">${p.name}</div>
                                 <div class="size-qty">Size: ${item.size || 'N/A'} &nbsp; Quantity: ${item.quantity}</div>

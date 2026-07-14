@@ -1079,7 +1079,10 @@
                     }
 
                     container.innerHTML = products.map(p => {
-                        const imgSrc = p.image ? p.image : 'img/default-product.png';
+                        let imgSrc = p.image ? p.image : 'img/default-product.png';
+                        if (imgSrc.startsWith('/uploads')) {
+                            imgSrc = `${API_BASE.replace('/api', '')}${imgSrc}`;
+                        }
                         let ratingStars = '';
                         if (p.reviewsCount > 0) {
                             const fullStars = Math.floor(p.rating || 0);

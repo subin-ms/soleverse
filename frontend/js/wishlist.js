@@ -161,11 +161,15 @@ async function loadWishlist() {
                 : p.price;
 
             const isOutOfStock = p.status === 'Out of Stock' || p.stock <= 0;
+            let imgSrc = p.image || 'img/logo.png';
+            if (imgSrc.startsWith('/uploads')) {
+                imgSrc = `${API_BASE.replace('/api', '')}${imgSrc}`;
+            }
             
             return `
     <div class="product-card ${isOutOfStock ? 'status-out-of-stock' : ''}">
       <div class="card-image">
-        <img src="${p.image}" alt="${p.name}" onclick="window.location.href='product.html?id=${p._id}'" style="cursor: pointer; ${isOutOfStock ? 'filter: grayscale(0.5); opacity: 0.6;' : ''}">
+        <img src="${imgSrc}" alt="${p.name}" onclick="window.location.href='product.html?id=${p._id}'" style="cursor: pointer; ${isOutOfStock ? 'filter: grayscale(0.5); opacity: 0.6;' : ''}">
         <button class="add-to-cart-btn" ${isOutOfStock ? 'disabled' : ''} onclick="addToCart('${p._id}')" ${isOutOfStock ? 'style="background: #ccc; cursor: not-allowed;"' : ''}>
             <i class="fas fa-shopping-cart"></i> ${isOutOfStock ? 'Out of Stock' : 'Add To Cart'}
         </button>
@@ -201,7 +205,7 @@ async function loadRecommendations(wishlistItems = []) {
     if (!grid) return;
 
     try {
-        let url = "`${API_BASE}/`products/public?limit=4";
+        let url = `${API_BASE}/products/public?limit=4`;
         
         // Try to find a category from the wishlist to show "related" items
         if (wishlistItems.length > 0) {
@@ -228,11 +232,15 @@ async function loadRecommendations(wishlistItems = []) {
                 : p.price;
 
             const isOutOfStock = p.status === 'Out of Stock' || p.stock <= 0;
+            let imgSrc = p.image || 'img/logo.png';
+            if (imgSrc.startsWith('/uploads')) {
+                imgSrc = `${API_BASE.replace('/api', '')}${imgSrc}`;
+            }
 
             return `
     <div class="product-card ${isOutOfStock ? 'status-out-of-stock' : ''}">
       <div class="card-image">
-        <img src="${p.image}" alt="${p.name}" onclick="window.location.href='product.html?id=${p._id}'" style="cursor: pointer; ${isOutOfStock ? 'filter: grayscale(0.5); opacity: 0.6;' : ''}">
+        <img src="${imgSrc}" alt="${p.name}" onclick="window.location.href='product.html?id=${p._id}'" style="cursor: pointer; ${isOutOfStock ? 'filter: grayscale(0.5); opacity: 0.6;' : ''}">
         <button class="add-to-cart-btn" ${isOutOfStock ? 'disabled' : ''} onclick="addToCart('${p._id}')" ${isOutOfStock ? 'style="background: #ccc; cursor: not-allowed;"' : ''}>
             <i class="fas fa-shopping-cart"></i> ${isOutOfStock ? 'Out of Stock' : 'Add To Cart'}
         </button>

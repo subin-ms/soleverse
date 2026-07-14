@@ -76,7 +76,7 @@
       }
 
       try {
-        const res = await fetch("`${API_BASE}/`auth/verify-forgot-otp", {
+        const res = await fetch(`${API_BASE}/auth/verify-forgot-otp`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, otp })

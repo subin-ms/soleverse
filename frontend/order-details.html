@@ -910,7 +910,7 @@
 
     <script src="js/header.js" defer></script>
     <script>
-        const _local_api_base = _local_api_base + "/orders";
+        const _local_api_base = API_BASE + "/orders";
         const urlParams = new URLSearchParams(window.location.search);
         const orderId = urlParams.get('id');
 
@@ -1000,7 +1000,7 @@
                 itemsContainer.innerHTML += `
                     <div class="item-row-mini">
                         <div class="item-left-mini">
-                            <img src="${_local_api_base.replace('/api', '')}${p.image}" alt="${p.name}" class="img-thumb-mini">
+                            <img src="${API_BASE.replace('/api', '')}${p.image}" alt="${p.name}" class="img-thumb-mini">
                             <div class="item-info-mini">
                                 <h4>${p.name}</h4>
                                 <p>Size: ${item.size || 'N/A'} | Qty: ${item.quantity}</p>

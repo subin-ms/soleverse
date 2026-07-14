@@ -1,1 +1,1 @@
-const API_BASE = "https://YOUR_BACKEND_URL/api";
+const API_BASE = "https://soleverse-uo2p.onrender.com/api";

@@ -1432,7 +1432,7 @@
         
         async function loadCategories() {
             try {
-                const res = await fetch("`${API_BASE}/`categories/published");
+                const res = await fetch(`${API_BASE}/categories/published`);
                 const categories = await res.json();
                 const container = document.getElementById("categoryList");
                 container.innerHTML = "";

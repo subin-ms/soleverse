@@ -215,11 +215,16 @@ async function renderCartPage() {
         const itemTotal = displayPrice * item.quantity;
         subtotal += itemTotal;
 
+        let imgSrc = p.image || 'img/logo.png';
+        if (imgSrc.startsWith('/uploads')) {
+            imgSrc = `${API_BASE.replace('/api', '')}${imgSrc}`;
+        }
+
         return `
             <div class="cart-item-row">
                 <div class="product-col">
                     <div class="product-thumb">
-                        <img src="${p.image}" alt="${p.name}" onerror="this.src="img/logo.png"">
+                        <img src="${imgSrc}" alt="${p.name}" onerror="this.src='img/logo.png'">
                         <div class="remove-icon-overlay" onclick="removeFromCart('${p._id}', '${item.size || ""}')">
                             <i class="fas fa-times"></i>
                         </div>
