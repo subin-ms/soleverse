@@ -32,7 +32,10 @@ connectDB();
 // ================= Middleware =================
 
 const allowedOrigins = [
+    "https://soleverse.online",
+    "https://www.soleverse.online",
     "https://soleverse-plum.vercel.app",
+    "https://soleverse-h0k07dvo8-subinms.vercel.app",
     "http://localhost:3000"
 ];
 
