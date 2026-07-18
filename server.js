@@ -36,7 +36,8 @@ const allowedOrigins = [
     "https://www.soleverse.online",
     "https://soleverse-plum.vercel.app",
     "https://soleverse-h0k07dvo8-subinms.vercel.app",
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "http://localhost:5000"
 ];
 
 app.use(cors({
