@@ -149,6 +149,7 @@
                     startTimer();
 
                     resendBtn.addEventListener('click', async () => {
+                        Swal.resetValidationMessage();
                         resendBtn.innerText = "Sending...";
                         resendBtn.style.pointerEvents = "none";
                         try {
@@ -161,8 +162,20 @@
                                 resendBtn.innerText = "Resend OTP";
                                 resendBtn.style.pointerEvents = "auto";
                                 startTimer();
+                                
+                                // Show a mini success toast so the user knows it worked
+                                Swal.mixin({
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true
+                                }).fire({
+                                    icon: 'success',
+                                    title: 'New OTP sent to your email!'
+                                });
                             } else {
-                                Swal.showValidationMessage("Failed to resend OTP");
+                                Swal.showValidationMessage("Failed to resend OTP. Please try again.");
                                 resendBtn.innerText = "Resend OTP";
                                 resendBtn.style.pointerEvents = "auto";
                             }
