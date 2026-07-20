@@ -80,6 +80,14 @@ app.use("/api/contact", contactRoutes);
 app.use("/api/returns", returnRoutes);
 app.use("/api/offers", offerRoutes);
 
+// Global Error Handler
+app.use((err, req, res, next) => {
+    console.error("Unhandled Error 👉", err);
+    res.status(500).json({
+        message: err.message || "An unexpected server error occurred."
+    });
+});
+
 // Test Route
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "user", "index.html"));
