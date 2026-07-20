@@ -7,7 +7,7 @@ const Offer = require('../models/offerModel');
 const MONGODB_URI = process.env.MONGO_URI;
 
 // A generic placeholder image that looks decent for products
-const PLACEHOLDER_IMG = 'https://via.placeholder.com/500x500/f3f4f6/333333?text=Soleverse+Product';
+const PLACEHOLDER_IMG = 'https://res.cloudinary.com/demo/image/upload/w_500,h_500,c_fill/shoe.jpg';
 
 async function fixBrokenImages() {
     console.log("=== FIXING BROKEN DATABASE IMAGES ===");
@@ -21,14 +21,14 @@ async function fixBrokenImages() {
         let pUpdated = 0;
         for (const p of products) {
             let updateData = {};
-            if (p.image && (p.image.includes('/uploads/') || p.image.includes('v1312461204/sample.jpg'))) {
+            if (p.image && (p.image.includes('/uploads/') || p.image.includes('v1312461204/sample.jpg') || p.image.includes('via.placeholder.com'))) {
                 updateData.image = PLACEHOLDER_IMG;
             }
             if (p.gallery && p.gallery.length > 0) {
                 const newGallery = [];
                 let galleryChanged = false;
                 for (const g of p.gallery) {
-                    if (g.includes('/uploads/') || g.includes('v1312461204/sample.jpg')) {
+                    if (g.includes('/uploads/') || g.includes('v1312461204/sample.jpg') || g.includes('via.placeholder.com')) {
                         newGallery.push(PLACEHOLDER_IMG);
                         galleryChanged = true;
                     } else {
@@ -51,7 +51,7 @@ async function fixBrokenImages() {
         const categories = await Category.find({});
         let cUpdated = 0;
         for (const c of categories) {
-            if (c.image && (c.image.includes('/uploads/') || c.image.includes('v1312461204/sample.jpg'))) {
+            if (c.image && (c.image.includes('/uploads/') || c.image.includes('v1312461204/sample.jpg') || c.image.includes('via.placeholder.com'))) {
                 await Category.updateOne({ _id: c._id }, { $set: { image: PLACEHOLDER_IMG } });
                 cUpdated++;
             }
@@ -63,7 +63,7 @@ async function fixBrokenImages() {
         const offers = await Offer.find({});
         let oUpdated = 0;
         for (const o of offers) {
-            if (o.image && (o.image.includes('/uploads/') || o.image.includes('v1312461204/sample.jpg'))) {
+            if (o.image && (o.image.includes('/uploads/') || o.image.includes('v1312461204/sample.jpg') || o.image.includes('via.placeholder.com'))) {
                 await Offer.updateOne({ _id: o._id }, { $set: { image: PLACEHOLDER_IMG } });
                 oUpdated++;
             }
