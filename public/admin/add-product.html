@@ -619,10 +619,14 @@
                 // Show Main Image
                 if (data.image) {
                     let curImg = data.image;
-                    if (curImg && !curImg.startsWith('/uploads/products/') && curImg.includes('/uploads/')) {
-                        curImg = `/uploads/products/${curImg.split('/').pop()}`;
+                    if (curImg.startsWith('http')) {
+                        mainPreview.src = curImg;
+                    } else {
+                        if (curImg && !curImg.startsWith('/uploads/products/') && curImg.includes('/uploads/')) {
+                            curImg = `/uploads/products/${curImg.split('/').pop()}`;
+                        }
+                        mainPreview.src = `/uploads/products/${curImg.split('/').pop()}`;
                     }
-                    mainPreview.src = `http://localhost:5000${curImg}`;
                     mainPreview.style.display = 'block';
                     emptyState.style.display = 'none';
                     uploadBox.classList.add('has-image');
@@ -633,7 +637,7 @@
                     data.gallery.forEach(curImg => {
                         const div = document.createElement('div');
                         div.className = 'gallery-item existing-image';
-                        const imgSrc = curImg.startsWith('http') ? curImg : `http://localhost:5000/uploads/products/${curImg.split('/').pop()}`;
+                        const imgSrc = curImg.startsWith('http') ? curImg : `/uploads/products/${curImg.split('/').pop()}`;
                         div.innerHTML = `<img src="${imgSrc}"><div class="remove-btn">&times;</div>`;
                         div.querySelector('.remove-btn').onclick = () => { div.remove(); };
                         galleryGrid.insertBefore(div, galleryGrid.querySelector('.add-gallery-btn'));
