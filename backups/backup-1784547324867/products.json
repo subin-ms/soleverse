@@ -1,0 +1,94 @@
+[
+  {
+    "_id": "69c65d5061a5a39c2e2443dc",
+    "name": "converse Watermelon Edition 🍉",
+    "sku": "converse-watermelon-editon",
+    "description": "Step into fresh street style with the Soleverse Drip Kicks, inspired by bold colors and artistic expression. Featuring a vibrant red base with unique green drip detailing, these sneakers deliver a standout look that blends creativity with everyday comfort.",
+    "price": 2199,
+    "discountType": "percent",
+    "discountValue": 10,
+    "category": "69bfce83140f512c9ebba65d",
+    "image": "/uploads/products/1774607696261.JPG",
+    "gallery": [
+      "/uploads/products/1774607696443.png"
+    ],
+    "sizes": {
+      "6": 0,
+      "7": 0,
+      "8": 0,
+      "9": 5,
+      "10": 0,
+      "11": 0,
+      "12": 0
+    },
+    "stock": 5,
+    "rating": 0,
+    "reviewsCount": 0,
+    "status": "Active",
+    "createdAt": "2026-03-27T10:34:56.455Z",
+    "updatedAt": "2026-07-16T11:09:42.945Z",
+    "__v": 0
+  },
+  {
+    "_id": "69c6523561a5a39c2e2442f2",
+    "name": "converse yellow tiger",
+    "sku": "converse-yellow-tiger",
+    "description": "Step into bold style with the Soleverse Stride High-Tops, designed to turn heads and elevate your everyday look. Featuring a vibrant yellow canvas with striking red stripe detailing, these sneakers bring a perfect mix of streetwear attitude and modern flair.",
+    "price": 1600,
+    "discountType": "percent",
+    "discountValue": 10,
+    "category": "69bfce83140f512c9ebba65d",
+    "image": "/uploads/products/1774604853231.png",
+    "gallery": [
+      "/uploads/products/1774604853270.png",
+      "/uploads/products/1774604853279.png"
+    ],
+    "sizes": {
+      "6": 0,
+      "7": 2,
+      "8": 0,
+      "9": 0,
+      "10": 0,
+      "11": 0,
+      "12": 0
+    },
+    "stock": 0,
+    "rating": 0,
+    "reviewsCount": 0,
+    "status": "Out of Stock",
+    "createdAt": "2026-03-27T09:47:33.296Z",
+    "updatedAt": "2026-04-03T12:12:23.522Z",
+    "__v": 0
+  },
+  {
+    "_id": "69c6546c61a5a39c2e244342",
+    "name": "converse peace",
+    "sku": "converse-peace",
+    "description": "Make a bold statement with the Soleverse Peace High-Tops — where street style meets powerful expression. Featuring a striking black canvas with oversized “PEACE” typography, these sneakers are designed for those who stand out and speak through style",
+    "price": 1999,
+    "discountType": "percent",
+    "discountValue": 5,
+    "category": "69bfce83140f512c9ebba65d",
+    "image": "/uploads/products/1774605420536.png",
+    "gallery": [
+      "/uploads/products/1774605420614.png",
+      "/uploads/products/1774605420623.png"
+    ],
+    "sizes": {
+      "6": 0,
+      "7": 0,
+      "8": 0,
+      "9": 0,
+      "10": 0,
+      "11": 0,
+      "12": 0
+    },
+    "stock": 0,
+    "rating": 0,
+    "reviewsCount": 0,
+    "status": "Active",
+    "createdAt": "2026-03-27T09:57:00.630Z",
+    "updatedAt": "2026-06-21T11:31:57.202Z",
+    "__v": 0
+  }
+]

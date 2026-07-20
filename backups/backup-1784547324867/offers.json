@@ -1,0 +1,18 @@
+[
+  {
+    "_id": "69d7dd526fc8d452585f9301",
+    "title": "CONVERSE heats",
+    "image": "http://localhost:5000/uploads/offers/1775754578767.png",
+    "discountType": "Percentage",
+    "discountValue": 20,
+    "offerType": "Category",
+    "targetCategory": "custom",
+    "description": "nothing\r\n",
+    "startDate": "2026-04-09T00:00:00.000Z",
+    "endDate": "2026-06-23T00:00:00.000Z",
+    "isActive": true,
+    "createdAt": "2026-04-09T17:09:38.820Z",
+    "updatedAt": "2026-06-21T10:04:08.116Z",
+    "__v": 0
+  }
+]

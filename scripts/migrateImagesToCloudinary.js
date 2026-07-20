@@ -108,7 +108,7 @@ async function migrateProducts() {
 
         if (changed) {
             // Update MongoDB ONLY after upload succeeds
-            await product.save();
+            await Product.updateOne({ _id: product._id }, { $set: { image: product.image, gallery: product.gallery } });
             updated++;
             console.log(`✅ Updated product: ${product.name}`);
         } else {
@@ -130,7 +130,7 @@ async function migrateCategories() {
             const secureUrl = await uploadToCloudinary(cat.image, 'soleverse/categories');
             if (secureUrl) {
                 cat.image = secureUrl;
-                await cat.save(); // Update ONLY after upload succeeds
+                await Category.updateOne({ _id: cat._id }, { $set: { image: secureUrl } }); // Update ONLY after upload succeeds
                 updated++;
                 console.log(`✅ Updated category: ${cat.name}`);
             }
@@ -156,7 +156,7 @@ async function migrateOffers() {
             const secureUrl = await uploadToCloudinary(relativePath, 'soleverse/offers');
             if (secureUrl) {
                 offer.image = secureUrl;
-                await offer.save();
+                await Offer.updateOne({ _id: offer._id }, { $set: { image: secureUrl } });
                 updated++;
                 console.log(`✅ Updated offer: ${offer.title}`);
             }
@@ -193,7 +193,7 @@ async function migrateReturns() {
             }
             if (changed) {
                 ret.images = newImages;
-                await ret.save();
+                await Return.updateOne({ _id: ret._id }, { $set: { images: newImages } });
                 updated++;
                 console.log(`✅ Updated return request: ${ret._id}`);
             } else {
@@ -232,7 +232,7 @@ async function migrateReviews() {
             }
             if (changed) {
                 rev.photos = newPhotos;
-                await rev.save();
+                await Review.updateOne({ _id: rev._id }, { $set: { photos: newPhotos } });
                 updated++;
                 console.log(`✅ Updated review: ${rev._id}`);
             } else {

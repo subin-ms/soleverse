@@ -1,0 +1,21 @@
+[
+  {
+    "_id": "69cf92c1a48f6ec9c7484219",
+    "orderId": "69ce2d7df29ceba6cf7e93c5",
+    "userId": "698ac7b1dd49a9df8c8cd2a9",
+    "reason": "Wrong size",
+    "condition": "Unopened",
+    "resolution": "Wallet",
+    "pickupAddress": "vimal ms\r\ncalicut, \r\ncalicut, kerala 956447\r\nPhone: 8456845684",
+    "images": [
+      "/uploads/returns/1775211201561.png",
+      "/uploads/returns/1775211201565.png"
+    ],
+    "comments": "",
+    "status": "Approved",
+    "refundAmount": 0,
+    "createdAt": "2026-04-03T10:13:21.582Z",
+    "updatedAt": "2026-04-03T10:13:21.582Z",
+    "__v": 0
+  }
+]
