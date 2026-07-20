@@ -84,7 +84,8 @@ app.use("/api/offers", offerRoutes);
 app.use((err, req, res, next) => {
     console.error("Unhandled Error 👉", err);
     res.status(500).json({
-        message: err.message || "An unexpected server error occurred."
+        message: err.message || String(err),
+        stack: err.stack
     });
 });
 
