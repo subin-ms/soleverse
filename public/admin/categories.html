@@ -392,10 +392,7 @@
                 <tr>
                     <td>
                         <div style="display:flex;align-items:center;gap:12px;">
-                            ${cat.image ? 
-                                `<img src="http://localhost:5000${cat.image}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;background:#f3f4f6;">` 
-                                : `<div style="width:40px;height:40px;background:#f3f4f6;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#9ca3af;">No IMG</div>`
-                            }
+                            ${cat.image ? (cat.image.startsWith('http') ? `<img src="${cat.image}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;background:#f3f4f6;">` : `<img src="/uploads/categories/${cat.image.split('/').pop()}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;background:#f3f4f6;">`) : `<div style="width:40px;height:40px;border-radius:6px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:10px;color:#9ca3af;">No IMG</div>`}
                             <div>
                                 <div class="cat-name">${cat.name}</div>
                                 <div class="cat-description">${cat.description || 'No description'}</div>

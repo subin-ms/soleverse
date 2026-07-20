@@ -266,11 +266,16 @@
                 const isDraft = p.status === "Draft";
                 const rowNo = startIndex + idx + 1;
                 
-                let curImg = p.image || '';
-                if (curImg && !curImg.startsWith('/uploads/products/') && curImg.includes('/uploads/')) {
-                    curImg = `/uploads/products/${curImg.split('/').pop()}`;
+                let imgUrl = '';
+                if (p.image) {
+                    if (p.image.startsWith('http')) {
+                        imgUrl = p.image;
+                    } else if (p.image.includes('/uploads/')) {
+                        imgUrl = `/uploads/products/${p.image.split('/').pop()}`;
+                    } else {
+                        imgUrl = p.image;
+                    }
                 }
-                const imgUrl = curImg ? `http://localhost:5000${curImg}` : '';
 
                 const row = `
                     <tr>

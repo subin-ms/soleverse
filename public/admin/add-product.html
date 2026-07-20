@@ -630,14 +630,11 @@
 
                 // Show Gallery
                 if (data.gallery && data.gallery.length > 0) {
-                    data.gallery.forEach(img => {
-                        let curImg = img;
-                        if (curImg && !curImg.startsWith('/uploads/products/') && curImg.includes('/uploads/')) {
-                            curImg = `/uploads/products/${curImg.split('/').pop()}`;
-                        }
+                    data.gallery.forEach(curImg => {
                         const div = document.createElement('div');
                         div.className = 'gallery-item existing-image';
-                        div.innerHTML = `<img src="http://localhost:5000${curImg}"><div class="remove-btn">&times;</div>`;
+                        const imgSrc = curImg.startsWith('http') ? curImg : `http://localhost:5000/uploads/products/${curImg.split('/').pop()}`;
+                        div.innerHTML = `<img src="${imgSrc}"><div class="remove-btn">&times;</div>`;
                         div.querySelector('.remove-btn').onclick = () => { div.remove(); };
                         galleryGrid.insertBefore(div, galleryGrid.querySelector('.add-gallery-btn'));
                     });

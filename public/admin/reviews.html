@@ -258,10 +258,10 @@
             const tbody = document.getElementById('reviewTableBody');
             tbody.innerHTML = reviews.length ? reviews.map(r => `
                 <tr>
-                    <td>
-                        <div style="display:flex; align-items:center; gap:12px;">
-                            ${r.product ? `<img src="http://localhost:5000${r.product.image}" class="rev-img" style="cursor:default;">` : ''}
-                            <span class="prod-title">${r.product ? r.product.name : 'Unknown Product'}</span>
+                    <td style="width: 250px;">
+                        <div class="product-info-cell">
+                            ${r.product ? (r.product.image.startsWith('http') ? `<img src="${r.product.image}" class="rev-img" style="cursor:default;">` : `<img src="/uploads/products/${r.product.image.split('/').pop()}" class="rev-img" style="cursor:default;">`) : ''}
+                            <span style="font-weight: 600; color:#111827; overflow:hidden; text-overflow:ellipsis;">${r.product ? r.product.name : 'Unknown Product'}</span>
                         </div>
                     </td>
                     <td>
@@ -272,8 +272,8 @@
                         <div class="star-rating">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
                         <div class="review-text">${r.reviewText}</div>
                         ${r.photos && r.photos.length ? `
-                            <div class="review-photos">
-                                ${r.photos.map(p => `<img src="http://localhost:5000${p}" class="rev-img" onclick="viewPhoto('http://localhost:5000${p}')">`).join('')}
+                            <div class="rev-photos">
+                                ${r.photos.map(p => (p.startsWith('http') ? `<img src="${p}" class="rev-img" onclick="viewPhoto('${p}')">` : `<img src="/uploads/reviews/${p.split('/').pop()}" class="rev-img" onclick="viewPhoto('/uploads/reviews/${p.split('/').pop()}')">`)).join('')}
                             </div>
                         ` : ''}
                     </td>
