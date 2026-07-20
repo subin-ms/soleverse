@@ -229,10 +229,17 @@ const forgotPassword = async (req, res) => {
     console.log("💾 OTP SAVED TO DB");
 
     // 🚨 THIS IS WHERE IT USUALLY FAILS (Made Async)
+    const resetDateString = new Date().toLocaleTimeString();
     sendEmail({
       to: email,
-      subject: "Soleverse Password Reset OTP",
-      html: `<h1>Your OTP: ${otp}</h1>`
+      subject: `Soleverse Password Reset OTP (${resetDateString})`,
+      html: `
+        <h2>Password Reset Request</h2>
+        <p>Your OTP to reset your password is:</p>
+        <h1 style="color: #ff3366; letter-spacing: 5px;">${otp}</h1>
+        <p>This OTP is valid for 10 minutes.</p>
+        <p style="font-size: 11px; color: #999; margin-top: 20px;">Request sent at: ${resetDateString}</p>
+      `
     }).catch(err => console.error("OTP Email Error:", err));
 
     console.log("✅ EMAIL SENT SUCCESS");
