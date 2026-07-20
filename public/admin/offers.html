@@ -614,6 +614,11 @@
                 return Swal.fire("Required", "Please select a target product", "warning");
             }
 
+            const fileInput = document.getElementById("bannerInput");
+            if (fileInput.files.length === 0) {
+                fd.delete("image");
+            }
+
             try {
                 const url = editingId ? `${API_BASE}/offers/${editingId}` : `${API_BASE}/offers`;
                 const method = editingId ? "PATCH" : "POST";
