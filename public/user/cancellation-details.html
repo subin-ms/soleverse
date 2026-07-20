@@ -370,7 +370,7 @@
 
             const token = localStorage.getItem("token");
             try {
-                const res = await fetch(`http://localhost:5000/api/orders/${orderId}`, {
+                const res = await fetch(`/api/orders/${orderId}`, {
                     headers: { "Authorization": `Bearer ${token}` }
                 });
 
@@ -402,7 +402,7 @@
 
             // Fetch Cancellation Reason
             try {
-                const cancelRes = await fetch(`http://localhost:5000/api/orders/${order._id}/cancellation`, {
+                const cancelRes = await fetch(`/api/orders/${order._id}/cancellation`, {
                     headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
                 });
                 if (cancelRes.ok) {

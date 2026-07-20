@@ -1297,7 +1297,7 @@
                 const sortParam = getQueryParam('sort');
                 const searchParam = getQueryParam('search');
 
-                let url = `http://localhost:5000/api/products/public?page=${page}&limit=12`;
+                let url = `/api/products/public?page=${page}&limit=12`;
                 
                 if (categoryParam) url += `&category=${categoryParam}`;
                 if (sizeParam) url += `&size=${sizeParam}`;
@@ -1430,7 +1430,7 @@
         
         async function loadCategories() {
             try {
-                const res = await fetch("http://localhost:5000/api/categories/published");
+                const res = await fetch("/api/categories/published");
                 const categories = await res.json();
                 const container = document.getElementById("categoryList");
                 container.innerHTML = "";
@@ -1460,7 +1460,7 @@
 
         async function openQuickView(productId) {
             try {
-                const res = await fetch(`http://localhost:5000/api/products/public/${productId}`);
+                const res = await fetch(`/api/products/public/${productId}`);
                 const product = await res.json();
                 currentQVProduct = product;
 

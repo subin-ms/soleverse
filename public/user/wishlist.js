@@ -1,4 +1,4 @@
-const WISHLIST_API = "http://localhost:5000/api/wishlist";
+const WISHLIST_API = "/api/wishlist";
 const token = localStorage.getItem("token");
 
 /* =========================
@@ -201,7 +201,7 @@ async function loadRecommendations(wishlistItems = []) {
     if (!grid) return;
 
     try {
-        let url = "http://localhost:5000/api/products/public?limit=4";
+        let url = "/api/products/public?limit=4";
         
         // Try to find a category from the wishlist to show "related" items
         if (wishlistItems.length > 0) {

@@ -615,7 +615,7 @@
             }
 
             try {
-                const res = await fetch(`http://localhost:5000/api/orders/${orderId}`, {
+                const res = await fetch(`/api/orders/${orderId}`, {
                     headers: { "Authorization": `Bearer ${token}` }
                 });
                 if(!res.ok) throw new Error("Failed to fetch order");
@@ -768,7 +768,7 @@
             });
 
             try {
-                const res = await fetch(`http://localhost:5000/api/orders/${orderId}/return`, {
+                const res = await fetch(`/api/orders/${orderId}/return`, {
                     method: 'PUT',
                     headers: { 
                         "Authorization": `Bearer ${token}`

@@ -1,4 +1,4 @@
-const CART_API = "http://localhost:5000/api/cart";
+const CART_API = "/api/cart";
 // Removed static token to prevent stale auth issues
 
 /* =========================
@@ -47,7 +47,7 @@ async function addToCart(productId, quantity = 1, size = null, event) {
     // ✅ If size is required but not provided (e.g. from Home/Shop page)
     if (size === null) {
         try {
-            const productRes = await fetch(`http://localhost:5000/api/products/public/${productId}`);
+            const productRes = await fetch(`/api/products/public/${productId}`);
             const productData = await productRes.json();
             
             if (productData.sizes && Object.keys(productData.sizes).length > 0) {

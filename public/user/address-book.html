@@ -513,7 +513,7 @@
     <script src="/user/footer.js"></script>
     <script src="/user/auth.js"></script>
     <script>
-        const API_BASE = "http://localhost:5000/api";
+        const API_BASE = "/api";
         const token = localStorage.getItem("token");
         const urlParams = new URLSearchParams(window.location.search);
         const fromCheckout = urlParams.get('from') === 'checkout';
