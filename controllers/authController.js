@@ -26,8 +26,8 @@ const registerUser = async (req, res) => {
       user.otpExpires = Date.now() + 10 * 60 * 1000;
       await user.save();
 
-      // 📧 SEND OTP EMAIL
-      await sendEmail({
+      // 📧 SEND OTP EMAIL ASYNC (Do not wait for SMTP to finish)
+      sendEmail({
         to: email,
         subject: "Soleverse Account Verification OTP",
         html: `
@@ -36,7 +36,7 @@ const registerUser = async (req, res) => {
           <h1>${otp}</h1>
           <p>This OTP is valid for 10 minutes.</p>
         `
-      });
+      }).catch(err => console.error("OTP Email Error:", err));
 
       console.log("📧 RESENT REGISTER OTP 👉", otp);
 
@@ -56,8 +56,8 @@ const registerUser = async (req, res) => {
       isVerified: false
     });
 
-    // 📧 SEND OTP EMAIL
-    await sendEmail({
+    // 📧 SEND OTP EMAIL ASYNC
+    sendEmail({
       to: email,
       subject: "Soleverse Account Verification OTP",
       html: `
@@ -66,7 +66,7 @@ const registerUser = async (req, res) => {
         <h1>${otp}</h1>
         <p>This OTP is valid for 10 minutes.</p>
       `
-    });
+    }).catch(err => console.error("OTP Email Error:", err));
 
     console.log("📧 REGISTER OTP SENT 👉", otp);
 
@@ -224,12 +224,12 @@ const forgotPassword = async (req, res) => {
 
     console.log("💾 OTP SAVED TO DB");
 
-    // 🚨 THIS IS WHERE IT USUALLY FAILS
-    await sendEmail({
+    // 🚨 THIS IS WHERE IT USUALLY FAILS (Made Async)
+    sendEmail({
       to: email,
       subject: "Soleverse Password Reset OTP",
       html: `<h1>Your OTP: ${otp}</h1>`
-    });
+    }).catch(err => console.error("OTP Email Error:", err));
 
     console.log("✅ EMAIL SENT SUCCESS");
 
