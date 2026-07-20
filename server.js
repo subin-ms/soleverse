@@ -83,8 +83,9 @@ app.use("/api/offers", offerRoutes);
 // Global Error Handler
 app.use((err, req, res, next) => {
     console.error("Unhandled Error 👉", err);
+    let errorStr = err.message || (typeof err === 'object' ? JSON.stringify(err) : String(err));
     res.status(500).json({
-        message: `Error: ${err.message || String(err)} | Stack: ${err.stack || 'No stack'}`
+        message: `Error: ${errorStr} | Stack: ${err.stack || 'No stack'}`
     });
 });
 
