@@ -18,6 +18,12 @@ exports.addProduct = async (req, res) => {
     const galleryFiles = req.files && req.files['gallery'] ? req.files['gallery'] : [];
     const gallery = galleryFiles.map(f => f.path);
 
+    let finalStock = Number(stock) || 0;
+    if (Object.keys(parsedSizes).length > 0) {
+      finalStock = Object.values(parsedSizes).reduce((sum, count) => sum + (Number(count) || 0), 0);
+    }
+    const finalStatus = finalStock <= 0 ? "Out of Stock" : (status || "Active");
+
     const product = await Product.create({
       name,
       sku,
@@ -29,8 +35,8 @@ exports.addProduct = async (req, res) => {
       image,
       gallery,
       sizes: parsedSizes,
-      stock: Number(stock) || 0,   // ✅ FIX HERE
-      status
+      stock: finalStock,
+      status: finalStatus
     });
 
     res.status(201).json({
