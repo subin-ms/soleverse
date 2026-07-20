@@ -1173,7 +1173,7 @@
                         <i class="fas fa-undo-alt"></i>
                         <div class="qv-delivery-text">
                             <h5>Return Delivery</h5>
-                            <p>Free 30 Days Delivery Returns. Details</p>
+                            <p>Free 4 Days Delivery Returns. <span class="link-style" style="cursor:pointer;" onclick="showReturnPolicy()">Details</span></p>
                         </div>
                     </div>
                 </div>
@@ -1562,6 +1562,23 @@
             if(e.target.id === 'quickViewModal') closeQuickView();
         };
 
+        function showReturnPolicy() {
+            Swal.fire({
+                title: 'Return Policy & Rules',
+                html: `
+                    <div style="text-align: left; font-size: 14px; line-height: 1.6; color: #444;">
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            <li style="margin-bottom: 12px;"><i class="fas fa-check-circle" style="color: #00C853;"></i> Returns are accepted within <strong>4 days</strong> from delivery date.</li>
+                            <li style="margin-bottom: 12px;"><i class="fas fa-check-circle" style="color: #00C853;"></i> Items must be unworn, unwashed, and in original packaging with tags.</li>
+                            <li style="margin-bottom: 12px;"><i class="fas fa-check-circle" style="color: #00C853;"></i> Refunds are issued exclusively to your Soleverse Wallet.</li>
+                        </ul>
+                    </div>
+                `,
+                icon: 'info',
+                confirmButtonColor: '#DB4444',
+                confirmButtonText: 'Got it'
+            });
+        }
     </script>
     <script src="js/footer.js"></script>
 </body>
