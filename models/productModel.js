@@ -18,7 +18,7 @@ const productSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // Auto-sync status with stock levels
-productSchema.pre("save", function(next) {
+productSchema.pre("save", function() {
   // If stock is zero but status is Active, force it to Out of Stock
   if (this.stock <= 0 && this.status === "Active") {
     this.status = "Out of Stock";
@@ -27,7 +27,6 @@ productSchema.pre("save", function(next) {
   else if (this.stock > 0 && this.status === "Out of Stock") {
     this.status = "Active";
   }
-  next();
 });
 
 module.exports = mongoose.model("Product", productSchema);
