@@ -1951,14 +1951,10 @@
                                     ${hasDiscount ? `<span class="pc-old-price">₹${p.price.toFixed(2)}</span>` : ''}
                                 </div>
                                 <div class="pc-rating-row">
-                                    <div class="stars">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
+                                    <div class="stars" style="color:#fbbf24;">
+                                        ${generateStars(p.rating || 0)}
                                     </div>
-                                    <span>(99)</span>
+                                    <span style="font-size:13px; opacity:0.7; margin-left:5px;">(${p.reviewsCount || 0})</span>
                                 </div>
                             </div>
                         </div>
