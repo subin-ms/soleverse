@@ -260,7 +260,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const finalPrice = hasDiscount 
                 ? (p.discountType === 'percent' ? p.price - (p.price * p.discountValue / 100) : p.price - p.discountValue)
                 : p.price;
-            const imgSrc = p.image ? `${API_BASE.replace('/api', '')}${p.image}` : 'img/logo.png';
+            const imgSrc = p.image ? `${p.image && p.image.startsWith('http') ? p.image : API_BASE.replace('/api', '') + p.image}` : 'img/logo.png';
             
             return `
               <a href="product.html?id=${p._id}" class="product-suggestion-item">

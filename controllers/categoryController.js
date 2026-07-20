@@ -18,7 +18,7 @@ exports.addCategory = async (req, res) => {
     }
 
     const image = req.file
-      ? `/uploads/categories/${req.file.filename}`
+      ? req.file.path
       : null;
 
     const category = await Category.create({
@@ -100,7 +100,7 @@ exports.updateCategory = async (req, res) => {
 
     // ✅ Update image if new file uploaded
     if (req.file) {
-      category.image = `/uploads/categories/${req.file.filename}`;
+      category.image = req.file.path;
     }
     // ✅ Update other fields
     category.name = name || category.name;

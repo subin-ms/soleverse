@@ -350,7 +350,7 @@
                 const selectElement = document.getElementById('productSelect');
                 selectElement.innerHTML = `<option>${p.name} (Size: ${item.size || 'N/A'})</option>`;
                 
-                document.getElementById('displayImg').src = `${API_BASE.replace('/api', '')}${p.image}`;
+                document.getElementById('displayImg').src = `${p.image && p.image.startsWith('http') ? p.image : API_BASE.replace('/api', '') + p.image}`;
                 document.getElementById('displayName').innerText = p.name;
                 document.getElementById('displayOrderInfo').innerText = `Order #${order._id.slice(-8).toUpperCase()} • Ordered on ${formattedDate}`;
                 document.getElementById('displaySize').innerText = `Size: ${item.size || 'N/A'}`;

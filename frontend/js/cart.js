@@ -217,7 +217,9 @@ async function renderCartPage() {
 
         let imgSrc = p.image || 'img/logo.png';
         if (imgSrc.startsWith('/uploads')) {
-            imgSrc = `${API_BASE.replace('/api', '')}${imgSrc}`;
+            imgSrc = `${imgSrc && imgSrc.startsWith('http') ? imgSrc : API_BASE.replace('/api', '') + imgSrc}`;
+        } else if (imgSrc.startsWith('/')) {
+            imgSrc = `${imgSrc && imgSrc.startsWith('http') ? imgSrc : API_BASE.replace('/api', '') + imgSrc}`;
         }
 
         return `

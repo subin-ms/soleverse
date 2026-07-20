@@ -253,7 +253,7 @@ exports.returnOrder = async (req, res) => {
     }
 
     // Process uploaded images
-    const images = req.files ? req.files.map(file => `/uploads/returns/${file.filename}`) : [];
+    const images = req.files ? req.files.map(file => file.path) : [];
 
     order.status = "Returned";
     

@@ -1349,7 +1349,7 @@
 
             container.innerHTML = products.map(p => {
                 // Use p.image (from API) instead of p.images
-                const imgSrc = (p.image) ? `${API_BASE.replace('/api', '')}${p.image}` : 'img/logo.png';
+                const imgSrc = (p.image) ? `${p.image && p.image.startsWith('http') ? p.image : API_BASE.replace('/api', '') + p.image}` : 'img/logo.png';
                 const hasDiscount = p.discountValue > 0;
                 const displayPrice = hasDiscount 
                     ? (p.discountType === 'percent' ? p.price - (p.price * p.discountValue / 100) : p.price - p.discountValue)
@@ -1467,7 +1467,7 @@
                 currentQVProduct = product;
 
                 // Basic Info
-                document.getElementById('qvMainImg').src = product.image ? `${API_BASE.replace('/api', '')}${product.image}` : 'img/logo.png';
+                document.getElementById('qvMainImg').src = product.image ? `${product.image && product.image.startsWith('http') ? product.image : API_BASE.replace('/api', '') + product.image}` : 'img/logo.png';
                 document.getElementById('qvTitle').innerText = product.name;
                 document.getElementById('qvDesc').innerText = product.description || "Premium Converse sneakers designed for style and comfort.";
                 

@@ -454,7 +454,11 @@
                 const p = item.product;
                 let imgPath = p.image || 'https://via.placeholder.com/80';
                 if (!imgPath.startsWith('http')) {
-                    imgPath = imgPath.startsWith('/') ? `${API_BASE.replace('/api', '')}${imgPath}` : `${API_BASE.replace('/api', '')}/${imgPath.replace(/\\/g, '/')}`;
+                    if (imgPath.startsWith('http')) {
+                        // Already absolute (Cloudinary)
+                    } else {
+                        imgPath = imgPath.startsWith('/') ? `${imgPath && imgPath.startsWith('http') ? imgPath : API_BASE.replace('/api', '') + imgPath}` : `${API_BASE.replace('/api', '')}/${imgPath.replace(/\\/g, '/')}`;
+                    }
                 }
 
                 return `

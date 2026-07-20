@@ -1000,7 +1000,7 @@
                 itemsContainer.innerHTML += `
                     <div class="item-row-mini">
                         <div class="item-left-mini">
-                            <img src="${API_BASE.replace('/api', '')}${p.image}" alt="${p.name}" class="img-thumb-mini">
+                            <img src="${p.image && p.image.startsWith('http') ? p.image : API_BASE.replace('/api', '') + p.image}" alt="${p.name}" class="img-thumb-mini">
                             <div class="item-info-mini">
                                 <h4>${p.name}</h4>
                                 <p>Size: ${item.size || 'N/A'} | Qty: ${item.quantity}</p>

@@ -11,8 +11,7 @@ const createOffer = async (req, res) => {
       return res.status(400).json({ message: "Please upload an image" });
     }
 
-    const baseUrl = `${req.protocol}://${req.get("host")}`;
-    const imagePath = `/uploads/offers/${req.file.filename}`;
+    const image = req.file.path;
 
     const offer = await Offer.create({
       title,
@@ -25,7 +24,7 @@ const createOffer = async (req, res) => {
       startDate,
       endDate,
       isActive: isActive === 'false' ? false : true,
-      image: `${baseUrl}${imagePath}`
+      image: image
     });
 
     res.status(201).json(offer);
@@ -91,8 +90,7 @@ const updateOffer = async (req, res) => {
     }
 
     if (req.file) {
-      const baseUrl = `${req.protocol}://${req.get("host")}`;
-      offer.image = `${baseUrl}/uploads/offers/${req.file.filename}`;
+      offer.image = req.file.path;
     }
 
     const updatedOffer = await offer.save();

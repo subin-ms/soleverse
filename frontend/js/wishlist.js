@@ -163,8 +163,10 @@ async function loadWishlist() {
             const isOutOfStock = p.status === 'Out of Stock' || p.stock <= 0;
             let imgSrc = p.image || 'img/logo.png';
             if (imgSrc.startsWith('/uploads')) {
-                imgSrc = `${API_BASE.replace('/api', '')}${imgSrc}`;
-            }
+            imgSrc = `${imgSrc && imgSrc.startsWith('http') ? imgSrc : API_BASE.replace('/api', '') + imgSrc}`;
+        } else if (imgSrc.startsWith('/')) {
+            imgSrc = `${imgSrc && imgSrc.startsWith('http') ? imgSrc : API_BASE.replace('/api', '') + imgSrc}`;
+        }
             
             return `
     <div class="product-card ${isOutOfStock ? 'status-out-of-stock' : ''}">
@@ -234,8 +236,10 @@ async function loadRecommendations(wishlistItems = []) {
             const isOutOfStock = p.status === 'Out of Stock' || p.stock <= 0;
             let imgSrc = p.image || 'img/logo.png';
             if (imgSrc.startsWith('/uploads')) {
-                imgSrc = `${API_BASE.replace('/api', '')}${imgSrc}`;
-            }
+            imgSrc = `${imgSrc && imgSrc.startsWith('http') ? imgSrc : API_BASE.replace('/api', '') + imgSrc}`;
+        } else if (imgSrc.startsWith('/')) {
+            imgSrc = `${imgSrc && imgSrc.startsWith('http') ? imgSrc : API_BASE.replace('/api', '') + imgSrc}`;
+        }
 
             return `
     <div class="product-card ${isOutOfStock ? 'status-out-of-stock' : ''}">

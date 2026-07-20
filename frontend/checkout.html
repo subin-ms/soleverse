@@ -850,8 +850,10 @@
 
                 let imgSrc = prod.image || 'img/logo.png';
                 if (imgSrc.startsWith('/uploads')) {
-                    imgSrc = `${API_BASE.replace('/api', '')}${imgSrc}`;
-                }
+            imgSrc = `${imgSrc && imgSrc.startsWith('http') ? imgSrc : API_BASE.replace('/api', '') + imgSrc}`;
+        } else if (imgSrc.startsWith('/')) {
+            imgSrc = `${imgSrc && imgSrc.startsWith('http') ? imgSrc : API_BASE.replace('/api', '') + imgSrc}`;
+        }
 
                 const div = document.createElement('div');
                 div.className = 'order-item';

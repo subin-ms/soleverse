@@ -754,7 +754,7 @@
                 itemsContainer.innerHTML += `
                     <div class="item-card" style="margin-bottom: 20px;">
                         <div class="item-left">
-                            <img src="${API_BASE.replace('/api', '')}${p.image}" alt="${p.name}" class="item-img">
+                            <img src="${p.image && p.image.startsWith('http') ? p.image : API_BASE.replace('/api', '') + p.image}" alt="${p.name}" class="item-img">
                             <div class="item-details">
                                 <div class="item-name">${p.name}</div>
                                 <div class="size-qty">Size: ${item.size || 'N/A'} &nbsp; Quantity: ${item.quantity}</div>

@@ -1048,7 +1048,7 @@
                     container.innerHTML = categories.map(cat => `
             <div class="cat-card" onclick="goToCategory('${cat.slug}')">
                 ${cat.image
-                            ? `<img src="${API_BASE.replace('/api', '')}${cat.image}"
+                            ? `<img src="${cat.image && cat.image.startsWith('http') ? cat.image : API_BASE.replace('/api', '') + cat.image}"
                             style="width:60px;height:60px;object-fit:cover;border-radius:8px;">`
                             : `<i class="fas fa-shoe-prints"></i>`
                         }
@@ -1081,8 +1081,10 @@
                     container.innerHTML = products.map(p => {
                         let imgSrc = p.image ? p.image : 'img/default-product.png';
                         if (imgSrc.startsWith('/uploads')) {
-                            imgSrc = `${API_BASE.replace('/api', '')}${imgSrc}`;
-                        }
+            imgSrc = `${imgSrc && imgSrc.startsWith('http') ? imgSrc : API_BASE.replace('/api', '') + imgSrc}`;
+        } else if (imgSrc.startsWith('/')) {
+            imgSrc = `${imgSrc && imgSrc.startsWith('http') ? imgSrc : API_BASE.replace('/api', '') + imgSrc}`;
+        }
                         let ratingStars = '';
                         if (p.reviewsCount > 0) {
                             const fullStars = Math.floor(p.rating || 0);
@@ -1144,8 +1146,10 @@
                     container.innerHTML = products.map(p => {
                         let imgSrc = p.image ? p.image : 'img/default-product.png';
                         if (imgSrc.startsWith('/uploads')) {
-                            imgSrc = `${API_BASE.replace('/api', '')}${imgSrc}`;
-                        }
+            imgSrc = `${imgSrc && imgSrc.startsWith('http') ? imgSrc : API_BASE.replace('/api', '') + imgSrc}`;
+        } else if (imgSrc.startsWith('/')) {
+            imgSrc = `${imgSrc && imgSrc.startsWith('http') ? imgSrc : API_BASE.replace('/api', '') + imgSrc}`;
+        }
                         let ratingStars = '';
                         if (p.reviewsCount > 0) {
                             const fullStars = Math.floor(p.rating || 0);

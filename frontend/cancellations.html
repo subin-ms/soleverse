@@ -611,7 +611,7 @@
                     
                     let imgPath = firstItem && firstItem.product && firstItem.product.image ? firstItem.product.image : 'https://via.placeholder.com/80';
                     if (!imgPath.startsWith('http')) {
-                        imgPath = imgPath.startsWith('/') ? `${API_BASE.replace('/api', '')}${imgPath}` : `${API_BASE.replace('/api', '')}/${imgPath.replace(/\\/g, '/')}`;
+                        imgPath = imgPath.startsWith('/') ? `${imgPath && imgPath.startsWith('http') ? imgPath : API_BASE.replace('/api', '') + imgPath}` : `${API_BASE.replace('/api', '')}/${imgPath.replace(/\\/g, '/')}`;
                     }
                     
                     // Refund Status Rendering

@@ -31,7 +31,7 @@ exports.submitReview = async (req, res) => {
     }
 
     // Process uploaded photos
-    const photos = req.files ? req.files.map((file) => `/${file.destination.replace(/\\/g, "/")}/${file.filename}`) : [];
+    const photos = req.files ? req.files.map((file) => file.path) : [];
 
     const review = await Review.create({
       user: userId,

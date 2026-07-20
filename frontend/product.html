@@ -1613,9 +1613,9 @@
                     
                     // Collect all applicable image URLs
                     const allImages = [];
-                    if (data.image) allImages.push(`${API_BASE.replace('/api', '')}${data.image}`);
+                    if (data.image) allImages.push(`${data.image && data.image.startsWith('http') ? data.image : API_BASE.replace('/api', '') + data.image}`);
                     if (data.gallery && data.gallery.length > 0) {
-                        data.gallery.forEach(img => allImages.push(`${API_BASE.replace('/api', '')}${img}`));
+                        data.gallery.forEach(img => allImages.push(`${img && img.startsWith('http') ? img : API_BASE.replace('/api', '') + img}`));
                     }
                     
                     if (allImages.length === 0) {
@@ -1859,7 +1859,7 @@
 
                 const photoHtml = (rev.photos && rev.photos.length > 0) 
                     ? `<div class="review-photos">
-                        ${rev.photos.map(p => `<img src="${API_BASE.replace('/api', '')}${p}" class="review-photo" onclick="window.open(this.src)">`).join('')}
+                        ${rev.photos.map(p => `<img src="${p && p.startsWith('http') ? p : API_BASE.replace('/api', '') + p}" class="review-photo" onclick="window.open(this.src)">`).join('')}
                        </div>`
                     : '';
 
@@ -1919,7 +1919,7 @@
                 }
 
                 container.innerHTML = related.map(p => {
-                    const imgSrc = p.image ? `${API_BASE.replace('/api', '')}${p.image}` : 'https://via.placeholder.com/250x250?text=No+Image';
+                    const imgSrc = p.image ? `${p.image && p.image.startsWith('http') ? p.image : API_BASE.replace('/api', '') + p.image}` : 'https://via.placeholder.com/250x250?text=No+Image';
                     
                     const hasDiscount = p.discountValue > 0;
                     const displayPrice = hasDiscount 

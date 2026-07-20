@@ -1,0 +1,13 @@
+[
+  {
+    "_id": "69bfce83140f512c9ebba65d",
+    "name": "custom",
+    "slug": "custom",
+    "description": "pre customised",
+    "status": "Published",
+    "image": "/uploads/categories/1775203266183.png",
+    "createdAt": "2026-03-22T11:12:03.534Z",
+    "updatedAt": "2026-04-03T08:01:06.262Z",
+    "__v": 0
+  }
+]

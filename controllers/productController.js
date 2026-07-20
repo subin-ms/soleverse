@@ -10,15 +10,13 @@ exports.addProduct = async (req, res) => {
       try { parsedSizes = JSON.parse(sizes); } catch(e) {}
     }
 
-    // ✅ Get image from multer
+    // ✅ Get image from multer (Cloudinary secure_url)
     const imageFile = req.files && req.files['image'] ? req.files['image'][0] : (req.file ? req.file : null);
-    const image = imageFile
-      ? `/${imageFile.destination.replace(/\\/g, '/')}/${imageFile.filename}`
-      : null;
+    const image = imageFile ? imageFile.path : null;
 
     // ✅ Get gallery images from multer
     const galleryFiles = req.files && req.files['gallery'] ? req.files['gallery'] : [];
-    const gallery = galleryFiles.map(f => `/${f.destination.replace(/\\/g, '/')}/${f.filename}`);
+    const gallery = galleryFiles.map(f => f.path);
 
     const product = await Product.create({
       name,
@@ -246,13 +244,13 @@ exports.updateProduct = async (req, res) => {
     // ✅ Handle Main Image
     const imageFile = req.files && req.files['image'] ? req.files['image'][0] : null;
     if (imageFile) {
-      updateData.image = `/${imageFile.destination.replace(/\\/g, '/')}/${imageFile.filename}`;
+      updateData.image = imageFile.path;
     }
 
     // ✅ Handle Gallery Images
     const galleryFiles = req.files && req.files['gallery'] ? req.files['gallery'] : [];
     if (galleryFiles.length > 0) {
-      const newGallery = galleryFiles.map(f => `/${f.destination.replace(/\\/g, '/')}/${f.filename}`);
+      const newGallery = galleryFiles.map(f => f.path);
       // Find current product to append to gallery
       const currentProduct = await Product.findById(req.params.id);
       if (currentProduct) {

@@ -634,7 +634,7 @@
                 
                 if (!img.startsWith('http')) {
                     if (img.startsWith('/')) {
-                        img = `${API_BASE.replace('/api', '')}${img}`;
+                        img = `${img && img.startsWith('http') ? img : API_BASE.replace('/api', '') + img}`;
                     } else {
                         img = `${API_BASE.replace('/api', '')}/${img.replace(/\\/g, '/')}`;
                     }
