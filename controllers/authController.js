@@ -27,14 +27,16 @@ const registerUser = async (req, res) => {
       await user.save();
 
       // 📧 SEND OTP EMAIL ASYNC (Do not wait for SMTP to finish)
+      const dateString = new Date().toLocaleTimeString();
       sendEmail({
         to: email,
-        subject: "Soleverse Account Verification OTP",
+        subject: `Soleverse Verification OTP (${dateString})`,
         html: `
           <h2>Welcome back to Soleverse 👟</h2>
           <p>Your verification OTP is:</p>
-          <h1>${otp}</h1>
+          <h1 style="color: #007bff; letter-spacing: 5px;">${otp}</h1>
           <p>This OTP is valid for 10 minutes.</p>
+          <p style="font-size: 11px; color: #999; margin-top: 20px;">Request sent at: ${dateString}</p>
         `
       }).catch(err => console.error("OTP Email Error:", err));
 
@@ -57,14 +59,16 @@ const registerUser = async (req, res) => {
     });
 
     // 📧 SEND OTP EMAIL ASYNC
+    const firstDateString = new Date().toLocaleTimeString();
     sendEmail({
       to: email,
-      subject: "Soleverse Account Verification OTP",
+      subject: `Soleverse Account Verification OTP (${firstDateString})`,
       html: `
         <h2>Welcome to Soleverse 👟</h2>
         <p>Your account verification OTP is:</p>
-        <h1>${otp}</h1>
+        <h1 style="color: #007bff; letter-spacing: 5px;">${otp}</h1>
         <p>This OTP is valid for 10 minutes.</p>
+        <p style="font-size: 11px; color: #999; margin-top: 20px;">Request sent at: ${firstDateString}</p>
       `
     }).catch(err => console.error("OTP Email Error:", err));
 
