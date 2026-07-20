@@ -97,7 +97,7 @@
                     return;
                 }
 
-                openOtpModal(email);
+                openOtpModal(name, email, password);
 
             } catch (err) {
                 Swal.fire("Error", "Server not reachable", "error");
@@ -106,7 +106,8 @@
             }
         });
 
-        function openOtpModal(email) {
+        function openOtpModal(name, email, password) {
+            let timerInterval;
             Swal.fire({
                 title: "Verify OTP",
                 text: "Enter the 6-digit OTP sent to your email",
@@ -116,6 +117,64 @@
                     maxlength: 6,
                     autocapitalize: "off",
                     autocorrect: "off"
+                },
+                footer: `<div id="otp-timer-container" style="font-size:14px; text-align:center;">
+                            <span id="otp-timer-text" style="color:#666;">Resend OTP in <strong id="otp-countdown">60</strong>s</span>
+                            <a id="resend-otp-btn" href="javascript:void(0)" style="display:none; color:var(--primary-blue); font-weight:600; text-decoration:none;">Resend OTP</a>
+                         </div>`,
+                didOpen: () => {
+                    let timeLeft = 60;
+                    const countdownEl = document.getElementById('otp-countdown');
+                    const timerText = document.getElementById('otp-timer-text');
+                    const resendBtn = document.getElementById('resend-otp-btn');
+
+                    const startTimer = () => {
+                        timeLeft = 60;
+                        timerText.style.display = 'inline';
+                        resendBtn.style.display = 'none';
+                        countdownEl.innerText = timeLeft;
+                        
+                        clearInterval(timerInterval);
+                        timerInterval = setInterval(() => {
+                            timeLeft--;
+                            countdownEl.innerText = timeLeft;
+                            if (timeLeft <= 0) {
+                                clearInterval(timerInterval);
+                                timerText.style.display = 'none';
+                                resendBtn.style.display = 'inline';
+                            }
+                        }, 1000);
+                    };
+
+                    startTimer();
+
+                    resendBtn.addEventListener('click', async () => {
+                        resendBtn.innerText = "Sending...";
+                        resendBtn.style.pointerEvents = "none";
+                        try {
+                            const res = await fetch(`${API_BASE}/auth/register`, {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ name, email, password })
+                            });
+                            if (res.ok) {
+                                resendBtn.innerText = "Resend OTP";
+                                resendBtn.style.pointerEvents = "auto";
+                                startTimer();
+                            } else {
+                                Swal.showValidationMessage("Failed to resend OTP");
+                                resendBtn.innerText = "Resend OTP";
+                                resendBtn.style.pointerEvents = "auto";
+                            }
+                        } catch (err) {
+                            Swal.showValidationMessage("Network error");
+                            resendBtn.innerText = "Resend OTP";
+                            resendBtn.style.pointerEvents = "auto";
+                        }
+                    });
+                },
+                willClose: () => {
+                    clearInterval(timerInterval);
                 },
                 confirmButtonText: "Verify",
                 showCancelButton: false,
