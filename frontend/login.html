@@ -106,8 +106,16 @@
                         showConfirmButton: false
                     });
 
-                    // Redirect to home (admin panel is deployed separately)
-                    window.location.href = "index.html";
+                    // Redirect logic
+                    if (data.user.role === 'admin') {
+                        // For admins, redirect to the admin dashboard.
+                        // If API_BASE is absolute (e.g. Vercel pointing to Render), this redirects to the backend domain.
+                        // If they are already on the backend domain, it redirects to the local /admin.
+                        const adminUrl = API_BASE.replace('/api', '') + '/admin/dashboard.html';
+                        window.location.href = adminUrl;
+                    } else {
+                        window.location.href = "index.html";
+                    }
 
                 } catch (error) {
                     console.error("Login Error:", error);

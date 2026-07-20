@@ -106,11 +106,10 @@
                         showConfirmButton: false
                     });
 
-                    // Redirect based on role
-                    const role = data.user && data.user.role ? data.user.role.toLowerCase() : 'user';
-
-                    if (role === "admin") {
-                        window.location.href = "../admin/dashboard.html";
+                    // Redirect logic
+                    if (data.user.role === 'admin') {
+                        const adminUrl = API_BASE.replace('/api', '') + '/admin/dashboard.html';
+                        window.location.href = adminUrl;
                     } else {
                         window.location.href = "/";
                     }
