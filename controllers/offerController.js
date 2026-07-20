@@ -18,8 +18,8 @@ const createOffer = async (req, res) => {
       discountType,
       discountValue,
       offerType: offerType || "Category",
-      targetCategory,
-      targetProduct: targetProduct || null,
+      targetCategory: (targetCategory === "" || targetCategory === "null") ? null : targetCategory,
+      targetProduct: (targetProduct === "" || targetProduct === "null") ? null : targetProduct,
       description,
       startDate,
       endDate,
@@ -81,7 +81,12 @@ const updateOffer = async (req, res) => {
     offer.discountValue = discountValue || offer.discountValue;
     offer.offerType = offerType || offer.offerType;
     offer.targetCategory = targetCategory !== undefined ? targetCategory : offer.targetCategory;
-    offer.targetProduct = targetProduct !== undefined ? targetProduct : offer.targetProduct;
+    
+    // Fix: If targetProduct is empty string or "null", set it to null instead of ""
+    if (targetProduct !== undefined) {
+      offer.targetProduct = (targetProduct === "" || targetProduct === "null") ? null : targetProduct;
+    }
+    
     offer.description = description || offer.description;
     offer.startDate = startDate || offer.startDate;
     offer.endDate = endDate || offer.endDate;
