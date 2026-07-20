@@ -12,6 +12,12 @@ const createOffer = async (req, res) => {
     }
 
     const image = req.file.path;
+    
+    let parsedEndDate = endDate;
+    if (endDate) {
+      parsedEndDate = new Date(endDate);
+      parsedEndDate.setUTCHours(23, 59, 59, 999);
+    }
 
     const offer = await Offer.create({
       title,
@@ -22,7 +28,7 @@ const createOffer = async (req, res) => {
       targetProduct: (targetProduct === "" || targetProduct === "null") ? null : targetProduct,
       description,
       startDate,
-      endDate,
+      endDate: parsedEndDate,
       isActive: isActive === 'false' ? false : true,
       image: image
     });
@@ -89,7 +95,13 @@ const updateOffer = async (req, res) => {
     
     offer.description = description || offer.description;
     offer.startDate = startDate || offer.startDate;
-    offer.endDate = endDate || offer.endDate;
+    
+    if (endDate) {
+      const parsedEnd = new Date(endDate);
+      parsedEnd.setUTCHours(23, 59, 59, 999);
+      offer.endDate = parsedEnd;
+    }
+
     if (isActive !== undefined) {
       offer.isActive = isActive === 'false' ? false : true;
     }
